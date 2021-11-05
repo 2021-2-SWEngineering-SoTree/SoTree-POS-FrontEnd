@@ -5,17 +5,21 @@ import { Login } from './Login';
 
 const Div = styled.div`
     max-width: 1980px;
-    padding: 20px;
+    margin-top : 5rem;
+    padding : 1rem 10rem;
     flex-wrap: nowrap;
     display: flex;
     gap: 1em;
     height : 680px;
 `;
+
 const LeftDiv = styled.div`
     width : 200%;
     height : 100%;
     flex-grow : 1;
+    margin-right : 15rem;
 `;
+
 const LogoDiv = styled.div`
     min-width : 600px;
     height : 300px;
@@ -32,7 +36,7 @@ const LoginDiv = styled.div`
 `;
 
 const LogoImg = styled.img`
-    width : 600px;
+    width : 800px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
