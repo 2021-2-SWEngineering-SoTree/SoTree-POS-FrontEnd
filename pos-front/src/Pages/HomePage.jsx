@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import SoTree_Main_Logo from '../Assets/SoTree_Vector_Logo.svg'
 import UserInfo from '../Components/UserInfo';
-import { Link } from 'react-router-dom';
+import ResturantManagementPage from './RestaurantManagement/ResturantManagementPage';
+import RestaurantSalesHomePage from './RestaurantSalesHome/RestaurantSalesHomePage';
+import { Link, Routes, Route } from 'react-router-dom';
 
 const Div = styled.div`
     max-width: 1980px;
@@ -59,20 +61,24 @@ const Button = styled.button`
 const HomePage = () => {
     return (
         <Div>
-            <LeftDiv>
-                <LogoDiv>
-                    <LogoImg src = {SoTree_Main_Logo} alt="Logo"/>
-                </LogoDiv>
-            </LeftDiv>
-            <LoginDiv>
-                <UserInfo/>
-                <Link to = "/sale"><Button>판매</Button></Link>
-                <Link to = "/restaurantManagement"><Button>매장관리</Button></Link>
-                <Link to = "/restaurantSalesHome"><Button>매출현황</Button></Link>
-                <Link to = "/employeeManagement"><Button>직원관리</Button></Link>
-                <Link to = "/close"><Button>마감</Button></Link>
-            </LoginDiv>
-        </Div>
+        <Routes>
+            <Route path="/restaurantManagement" element={<ResturantManagementPage/>}/>
+            <Route path="/restaurantSalesHome" element={<RestaurantSalesHomePage/>}/>
+        </Routes>
+        <LeftDiv>
+            <LogoDiv>
+                <LogoImg src = {SoTree_Main_Logo} alt="Logo"/>
+            </LogoDiv>
+        </LeftDiv>
+        <LoginDiv>
+            <UserInfo/>
+            <Link to = "/sale"><Button>판매</Button></Link>
+            <Link to = "/restaurantManagement"><Button>매장관리</Button></Link>
+            <Link to = "/restaurantSalesHome"><Button>매출현황</Button></Link>
+            <Link to = "/employeeManagement"><Button>직원관리</Button></Link>
+            <Link to = "/close"><Button>마감</Button></Link>
+        </LoginDiv>
+    </Div>
     );
 };
 
