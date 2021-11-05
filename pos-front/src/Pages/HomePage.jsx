@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 
 const Div = styled.div`
     max-width: 1980px;
-    padding: 20px;
+    margin-top : 5rem;
+    padding : 1rem 10rem;
     flex-wrap: nowrap;
     display: flex;
     gap: 1em;
@@ -16,6 +17,7 @@ const LeftDiv = styled.div`
     width : 200%;
     height : 100%;
     flex-grow : 1;
+    margin-right : 15rem;
 `;
 const LogoDiv = styled.div`
     min-width : 600px;
