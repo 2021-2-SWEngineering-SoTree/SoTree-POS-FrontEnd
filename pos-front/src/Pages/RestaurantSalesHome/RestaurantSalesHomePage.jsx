@@ -5,6 +5,7 @@ import { Route, Link, Routes } from 'react-router-dom';
 import MenuAvgTimeTemplate from './MenuAvgTime/MenuAvgTimeTemplate';
 import MenuSalesTemplate from './MenuSales/MenuSalesTemplate';
 import SalesTemplate from './Sales/SalesTemplate';
+import Header from '../../Components/Header';
 
 const Div = styled.div`
     max-width: 1980px;
@@ -70,6 +71,7 @@ const Button = styled.button`
 const RestaurantSalesHomePage = () => {
     return (
         <>
+        <Header text ={"매출 현황"} restaurantName = {"혜민이네 돈까스"}/>
         <Div>
             <LeftDiv>
                 <LogoDiv>
@@ -78,15 +80,15 @@ const RestaurantSalesHomePage = () => {
             </LeftDiv>
             <RightDiv>
             <InnerRightDiv>
-                <Link to = "/menusales"><Button>메뉴 통계</Button></Link>
-                <Link to = "/sales"><Button>매상 통계</Button></Link>
-                <Link to = "/menuavgtime"><Button>메뉴별 평균 시간 정보</Button></Link>
+                <Link to = "/restaurantSalesHome/menusales"><Button>메뉴 통계</Button></Link>
+                <Link to = "/restaurantSalesHome/sales"><Button>매상 통계</Button></Link>
+                <Link to = "/restaurantSalesHome/menuavgtime"><Button>메뉴별 평균 시간 정보</Button></Link>
             </InnerRightDiv>
             </RightDiv>
             <Routes>
-                <Route path="/menusales" element={<MenuAvgTimeTemplate/>} />
-                <Route path="/sales" element={<MenuSalesTemplate/>} />
-                <Route path="/menuavgtime" element={<SalesTemplate/>} />  
+                <Route path="/restaurantSalesHome/menusales" element={<MenuAvgTimeTemplate/>} />
+                <Route path="/restaurantSalesHome/sales" element={<MenuSalesTemplate/>} />
+                <Route path="/restaurantSalesHome/menuavgtime" element={<SalesTemplate/>} />  
             </Routes>
         </Div>
         </>

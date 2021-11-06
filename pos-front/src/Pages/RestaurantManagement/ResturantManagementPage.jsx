@@ -5,6 +5,8 @@ import { Route, Link, Routes } from 'react-router-dom';
 import MenuTemplate from './MenuManagement/MenuTemplate';
 import SeatTemplate from './SeatManangement/SeatTemplate';
 import StockTemplate from './StockManagement/StockTemplate';
+import Header from '../../Components/Header';
+
 
 const Div = styled.div`
     max-width: 1980px;
@@ -70,6 +72,7 @@ const Button = styled.button`
 const RestaurantManagementPage = () => {
     return (
         <>
+        <Header text ={"매장 관리"} restaurantName = {"혜민이네 돈까스"}/>
         <Div>
             <LeftDiv>
                 <LogoDiv>
@@ -78,15 +81,15 @@ const RestaurantManagementPage = () => {
             </LeftDiv>
             <RightDiv>
                 <InnerRightDiv>
-                    <Link to = "/menu"><Button>메뉴 관리</Button></Link>
-                    <Link to = "/stock"><Button>재고 관리</Button></Link>
-                    <Link to = "/seat"><Button>좌석 관리</Button></Link>
+                    <Link to = "/restaurantManagement/menu"><Button>메뉴 관리</Button></Link>
+                    <Link to = "/restaurantManagement/stock"><Button>재고 관리</Button></Link>
+                    <Link to = "/restaurantManagement/seat"><Button>좌석 관리</Button></Link>
                 </InnerRightDiv>
             </RightDiv>
             <Routes>
-                <Route path="/menu" element={<MenuTemplate/>} />
-                <Route path="/stock" element={<StockTemplate/>} />
-                <Route path="/seat" element={<SeatTemplate/>} />  
+                <Route path="/restaurantManagement/menu" element={<MenuTemplate/>} />
+                <Route path="/restaurantManagement/stock" element={<StockTemplate/>} />
+                <Route path="/restaurantManagement/seat" element={<SeatTemplate/>} />  
             </Routes>
         </Div>
         </>

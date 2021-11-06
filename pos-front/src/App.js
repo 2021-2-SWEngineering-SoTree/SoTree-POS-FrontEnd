@@ -12,6 +12,9 @@ import RestaurantSalesHomePage from './Pages/RestaurantSalesHome/RestaurantSales
 import MenuAvgTimeTemplate from './Pages/RestaurantSalesHome/MenuAvgTime/MenuAvgTimeTemplate';
 import MenuSalesTemplate from './Pages/RestaurantSalesHome/MenuSales/MenuSalesTemplate';
 import SalesTemplate from './Pages/RestaurantSalesHome/Sales/SalesTemplate';
+import ClosePage from './Pages/Close/ClosePage';
+import EmployeeManagementPage from './Pages/EmployeeManagement/EmployeeManagementPage';
+import SalePage from './Pages/Sale/SalePage';
 
 function App() {
   return (
@@ -21,16 +24,17 @@ function App() {
             <Route path="/signUp" element={<SignUp/>}/>
             <Route path="/findUserInfo" element={<FindUserInfo/>}/>
             <Route path="/homePage" element={<HomePage/>}/>
-            <Route path="/menu" element={<MenuTemplate/>} />
-            <Route path="/stock" element={<StockTemplate/>} />
-            <Route path="/seat" element={<SeatTemplate/>} />  
+            <Route path="/restaurantManagement/menu" element={<MenuTemplate/>} />
+            <Route path="/restaurantManagement/stock" element={<StockTemplate/>} />
+            <Route path="/restaurantManagement/seat" element={<SeatTemplate/>} />  
             <Route path="/restaurantManagement" element={<RestaurantManagementPage/>} />
             <Route path="/restaurantSalesHome" element={<RestaurantSalesHomePage/>} />
-            <Route path="/stock" element={<StockTemplate/>} />
-            <Route path="/seat" element={<SeatTemplate/>} /> 
-            <Route path="/menuavgtime" element={<MenuAvgTimeTemplate/>} />
-            <Route path="/menusales" element={<MenuSalesTemplate/>} />
-            <Route path="/sales" element={<SalesTemplate/>} /> 
+            <Route path="/restaurantSalesHome/menuavgtime" element={<MenuAvgTimeTemplate/>} />
+            <Route path="/restaurantSalesHome/menusales" element={<MenuSalesTemplate/>} />
+            <Route path="/restaurantSalesHome/sales" element={<SalesTemplate/>} /> 
+            <Route path="/sale" element={<SalePage/>}/>
+            <Route path="/close" element={<ClosePage/>}/>
+            <Route path="/employeeManagement" element={<EmployeeManagementPage/>}/>
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>
