@@ -4,6 +4,10 @@ import SoTree_Main_Logo from '../Assets/SoTree_Vector_Logo.svg'
 import UserInfo from '../Components/UserInfo';
 import ResturantManagementPage from './RestaurantManagement/ResturantManagementPage';
 import RestaurantSalesHomePage from './RestaurantSalesHome/RestaurantSalesHomePage';
+import ClosePage from './Close/ClosePage';
+import EmployeeManagementPage from './EmployeeManagement/EmployeeManagementPage';
+import SalePage from './Sale/SalePage';
+
 import { Link, Routes, Route } from 'react-router-dom';
 
 const Div = styled.div`
@@ -64,6 +68,9 @@ const HomePage = () => {
         <Routes>
             <Route path="/restaurantManagement" element={<ResturantManagementPage/>}/>
             <Route path="/restaurantSalesHome" element={<RestaurantSalesHomePage/>}/>
+            <Route path="/sale" element={<SalePage/>}/>
+            <Route path="/close" element={<ClosePage/>}/>
+            <Route path="/employeeManagement" element={<EmployeeManagementPage/>}/>
         </Routes>
         <LeftDiv>
             <LogoDiv>

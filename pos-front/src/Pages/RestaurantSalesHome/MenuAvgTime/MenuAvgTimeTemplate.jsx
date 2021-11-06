@@ -1,11 +1,11 @@
 import React from 'react';
-
+import Header from '../../../Components/Header';
 
 const MenuAvgTimeTemplate = () => {
     return (
-        <div>
-            메뉴시간
-        </div>
+        <>
+        <Header text ={"메뉴별 평균 시간 정보"} restaurantName = {"혜민이네 돈까스"}/>
+        </>
     );
 };
 

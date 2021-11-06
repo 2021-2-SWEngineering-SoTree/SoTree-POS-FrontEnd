@@ -1,11 +1,11 @@
 import React from 'react';
-
+import Header from '../../../Components/Header';
 
 const MenuSalesTemplate = () => {
     return (
-        <div>
-            메뉴
-        </div>
+        <>
+        <Header text ={"메뉴 통계"} restaurantName = {"혜민이네 돈까스"}/>
+        </>
     );
 };
 
