@@ -65,8 +65,8 @@ const Button = styled.button`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 0.8rem;
     font-size : 1.3rem;
-    margin-bottom : 1rem;
-    
+    margin-bottom : 3rem;
+    cursor : pointer;
 `;
 
 const RestaurantManagementPage = () => {
