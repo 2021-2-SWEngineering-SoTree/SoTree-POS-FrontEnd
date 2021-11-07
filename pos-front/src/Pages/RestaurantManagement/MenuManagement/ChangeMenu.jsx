@@ -94,12 +94,7 @@ const Title = styled.h1`
 
 const ChangeMenu = () =>{
 
-    const onClickPlus=(e)=>{
-        console.log(e.target);
-        e.preventDefault();
-    }
-
-    const onClickMinus=(e)=>{
+    const onClick=(e)=>{
         console.log(e.target);
         e.preventDefault();
     }
@@ -135,12 +130,12 @@ const ChangeMenu = () =>{
                             <StockySelector>
                             </StockySelector>
                             <SmallInput placeholder = {"수량(인분)"}/>
-                            <PlusMinusButton onClick={onClickPlus} name="+"/>
-                            <PlusMinusButton onClick={onClickMinus} name="-"/>
+                            <PlusMinusButton onClick={onClick} name="+"/>
+                            <PlusMinusButton onClick={onClick} name="-"/>
                         </div>
                     </WrapperDiv>
                     <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
-                        <CheckButton>수정</CheckButton>
+                        <CheckButton onClick={onClick}>수정</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>
                 </Form>
