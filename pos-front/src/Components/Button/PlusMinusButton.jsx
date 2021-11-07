@@ -15,9 +15,10 @@ const PlusMinusButtonTemplate = styled.button`
 `
 
 
-const PlusMinusButton = ({name}) => {
+const PlusMinusButton = ({name, onClick}) => {
+
     return (
-        <PlusMinusButtonTemplate>
+        <PlusMinusButtonTemplate onClick={onClick}>
            {name}
         </PlusMinusButtonTemplate>
     )
