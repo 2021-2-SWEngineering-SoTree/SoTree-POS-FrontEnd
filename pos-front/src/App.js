@@ -14,8 +14,8 @@ import MenuSalesTemplate from './Pages/RestaurantSalesHome/MenuSales/MenuSalesTe
 import SalesTemplate from './Pages/RestaurantSalesHome/Sales/SalesTemplate';
 import ClosePage from './Pages/Close/ClosePage';
 import EmployeeManagementPage from './Pages/EmployeeManagement/EmployeeManagementPage';
+import CurrentSeatInfoPage from './Pages/Sale/CurrentSeatInfoPage';
 import SalePage from './Pages/Sale/SalePage';
-
 function App() {
   return (
       <BrowserRouter>
@@ -32,6 +32,7 @@ function App() {
             <Route path="/restaurantSalesHome/menuavgtime" element={<MenuAvgTimeTemplate/>} />
             <Route path="/restaurantSalesHome/menusales" element={<MenuSalesTemplate/>} />
             <Route path="/restaurantSalesHome/sales" element={<SalesTemplate/>} /> 
+            <Route path="/CurrentSeatInfo" element={<CurrentSeatInfoPage/>}/>
             <Route path="/sale" element={<SalePage/>}/>
             <Route path="/close" element={<ClosePage/>}/>
             <Route path="/employeeManagement" element={<EmployeeManagementPage/>}/>
