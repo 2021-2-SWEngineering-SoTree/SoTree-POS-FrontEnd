@@ -18,9 +18,9 @@ const CategoryButtonTemplate = styled.button`
 
 
 
-const CategoryButton = ({name}) => {
+const CategoryButton = ({name, onClick}) => {
     return (
-        <CategoryButtonTemplate>
+        <CategoryButtonTemplate onClick={onClick} name={name}>
            {name}
         </CategoryButtonTemplate>
     )
