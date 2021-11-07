@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate  } from 'react-router-dom';
 import styled from 'styled-components';
 import SoTree_Main_Logo from '../Assets/SoTree_Vector_Logo.svg'
-
+import { AiOutlineArrowLeft } from "react-icons/ai";
 const HeaderDiv = styled.div`
     min-width : 810px;
-    height : 5.5rem;
+    height : 5.9rem;
     display : flex;
     background-color : #D7FAFF;
     padding : 0;
@@ -50,7 +51,21 @@ const LeftDiv = styled.div`
     width : 60%;
 `;
 
+const BackButton = styled.button`
+    width : 5rem;
+    height : 5rem;
+    background: #474D4E;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin : 0.3rem;
+    border-radius: 30px;
+`;
+
 const Header = ({text,restaurantName}) => {
+
+    const navigate = useNavigate();
+    const logoClickHandler = ()=>{
+        console.log("Logo Clicked");
+    }
 
     const [time, setTime] = useState(new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16));
 
@@ -65,12 +80,24 @@ const Header = ({text,restaurantName}) => {
     return (
         <HeaderDiv>
             <LeftDiv>
-                <LogoDiv src = {SoTree_Main_Logo}/>
+                <Link to="/homepage">
+                    <LogoDiv onClick= {logoClickHandler} src = {SoTree_Main_Logo}/>
+                </Link>
                 <PageName>{text}</PageName>
             </LeftDiv>
             <RightDiv>
-                <RestaurantNameDiv>{restaurantName}</RestaurantNameDiv><br/>
-                <TimeName>{time}</TimeName>
+                <div style={{display:'flex', flexDirection:'row', float : 'right'}}>
+                    <div>
+                        <BackButton onClick={() => navigate(-1)}>
+                            <AiOutlineArrowLeft style={{color:'white', fontSize:'2.5rem'}}/>
+                        </BackButton>
+                    </div>
+                    <div style={{display:'flex', flexDirection:'column', marginLeft:'2rem'}}>
+                        <RestaurantNameDiv>{restaurantName}</RestaurantNameDiv><br/>
+                        <TimeName>{time}</TimeName>
+                    </div>
+                </div>
+
             </RightDiv>
         </HeaderDiv>
     );

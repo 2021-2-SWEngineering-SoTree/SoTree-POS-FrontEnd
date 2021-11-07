@@ -12,15 +12,16 @@ import { Link, Routes, Route } from 'react-router-dom';
 
 const Div = styled.div`
     max-width: 1980px;
-    margin-top : 5rem;
+    margin-top : 7rem;
     padding : 1rem 10rem;
     flex-wrap: nowrap;
     display: flex;
     gap: 1em;
-    height : 680px;
+    height : 80vh;
+    max-height : 56rem;
 `;
 const LeftDiv = styled.div`
-    width : 200%;
+    width : 500rem;
     height : 100%;
     flex-grow : 1;
     margin-right : 15rem;
@@ -35,12 +36,17 @@ const LogoDiv = styled.div`
 `;
 
 const LoginDiv = styled.div`
-    width : 70%;
+    width : 230rem;
+    height : 100%;
+    display : flex;
+    flex-direction : column;
     justify-content: center;
+    align-items : center;
+    margin-top : -4rem;
 `;
 
 const LogoImg = styled.img`
-    width : 600px;
+    width : 800px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -59,7 +65,7 @@ const Button = styled.button`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 0.8rem;
     font-size : 1.3rem;
-    margin-bottom : 1rem;
+    margin : 1rem 0 1rem 0;
 `;
 
 const HomePage = () => {
@@ -78,7 +84,7 @@ const HomePage = () => {
             </LogoDiv>
         </LeftDiv>
         <LoginDiv>
-            <UserInfo/>
+            <UserInfo RestaurantName={"혜민이네 돈까스"} EmpolyeeName={"관리자"}/>
             <Link to = "/sale"><Button>판매</Button></Link>
             <Link to = "/restaurantManagement"><Button>매장관리</Button></Link>
             <Link to = "/restaurantSalesHome"><Button>매출현황</Button></Link>
