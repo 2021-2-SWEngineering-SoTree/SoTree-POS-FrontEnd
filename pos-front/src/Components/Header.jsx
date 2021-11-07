@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import styled from 'styled-components';
 import SoTree_Main_Logo from '../Assets/SoTree_Vector_Logo.svg'
@@ -60,7 +60,7 @@ const BackButton = styled.button`
     border-radius: 30px;
 `;
 
-const Header = ({text,restaurantName}) => {
+const Header = memo(({text,restaurantName}) => {
 
     const navigate = useNavigate();
     const logoClickHandler = ()=>{
@@ -101,6 +101,6 @@ const Header = ({text,restaurantName}) => {
             </RightDiv>
         </HeaderDiv>
     );
-};
+});
 
 export default Header;
