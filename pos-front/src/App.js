@@ -16,6 +16,8 @@ import ClosePage from './Pages/Close/ClosePage';
 import EmployeeManagementPage from './Pages/EmployeeManagement/EmployeeManagementPage';
 import CurrentSeatInfoPage from './Pages/Sale/CurrentSeatInfoPage';
 import SalePage from './Pages/Sale/SalePage';
+import StockDetail from './Pages/RestaurantManagement/StockManagement/StockDetail';
+
 function App() {
   return (
       <BrowserRouter>
@@ -36,6 +38,7 @@ function App() {
             <Route path="/sale" element={<SalePage/>}/>
             <Route path="/close" element={<ClosePage/>}/>
             <Route path="/employeeManagement" element={<EmployeeManagementPage/>}/>
+            <Route path="/restaurantManagement/stock/stockDetail" element={<StockDetail/>}/>
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>
