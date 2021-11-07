@@ -61,9 +61,9 @@ const Button = styled.button`
 
 const MenuTemplate = () => {
 
-    const [addMenu, setAddMenu] = useState(0);
-    const [changeMenu, setChangeMenu] = useState(0);
-    const [deleteMenu, setDeleteMenu] = useState(0);
+    const [addMenu, setAddMenu] = useState(false);
+    const [changeMenu, setChangeMenu] = useState(false);
+    const [deleteMenu, setDeleteMenu] = useState(false);
 
     const onClickAdd = () => {
         setAddMenu(!addMenu);

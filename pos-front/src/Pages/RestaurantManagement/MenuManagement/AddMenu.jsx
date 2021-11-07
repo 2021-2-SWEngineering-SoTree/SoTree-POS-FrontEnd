@@ -94,6 +94,12 @@ const Title = styled.h1`
 
 const AddMenu = () =>{
 
+    const handleClick = (e) =>{
+        e.preventDefault();
+        console.log("Click test : preventDefault");
+    }
+
+
     return (
         <>
         <PageWrapper>
@@ -130,7 +136,7 @@ const AddMenu = () =>{
                         </div>
                     </WrapperDiv>
                     <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
-                        <CheckButton>추가</CheckButton>
+                        <CheckButton onClick = {handleClick}>추가</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>
                 </Form>
