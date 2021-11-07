@@ -77,6 +77,10 @@ const MenuTemplate = () => {
         setDeleteMenu(!deleteMenu);
     }
 
+    const onClickEvent = () =>{
+
+    }
+
     return (
         <>
         <Modal visible={addMenu}>
@@ -89,6 +93,7 @@ const MenuTemplate = () => {
         <SmallModal visible={deleteMenu}>
             <DeleteMenu name={'돈까스'}/>
         </SmallModal>
+        
         <Header text ={"메뉴 관리"} restaurantName = {"혜민이네 돈까스"}/>
         <LeftDiv>
             <LeftTopDiv>

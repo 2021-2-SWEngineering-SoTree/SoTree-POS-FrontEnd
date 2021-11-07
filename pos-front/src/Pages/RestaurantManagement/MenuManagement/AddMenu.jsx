@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PlusMinusButton from '../../../Components/Button/PlusMinusButton';
+
 const PageWrapper = styled.div`
     margin : 2rem;
 `;
@@ -75,7 +76,7 @@ const CategorySelector = styled.select`
     margin-right : 0.5rem;
 `;
 
-const StockySelector = styled.select`
+const StockSelector = styled.select`
     height : 3.2rem;
     width : 10rem;
     background-color : #F2F0F0;
@@ -99,7 +100,6 @@ const AddMenu = () =>{
         console.log("Click test : preventDefault");
     }
 
-
     return (
         <>
         <PageWrapper>
@@ -113,7 +113,7 @@ const AddMenu = () =>{
                         <InputLable>분류</InputLable>
                         <CategorySelector>
                             <option value="세트메뉴" selected>세트메뉴</option>
-                            <option value="23인분메뉴" selected>2-3인분메뉴</option>
+                            <option value="2-3인분메뉴" selected>2-3인분메뉴</option>
                             <option value="식사메뉴" selected>식사메뉴</option>
                             <option value="사이드메뉴" selected>사이드메뉴</option>
                             <option value="후식메뉴" selected>후식메뉴</option>
@@ -128,11 +128,11 @@ const AddMenu = () =>{
                     <WrapperDiv>
                         <InputLable>식재료</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
-                            <StockySelector>
-                            </StockySelector>
+                            <StockSelector>
+                            </StockSelector>
                             <SmallInput placeholder = {"수량(인분)"}/>
-                            <PlusMinusButton name="+"/>
-                            <PlusMinusButton name="-"/>
+                            <PlusMinusButton onClick={handleClick} name="+"/>
+                            <PlusMinusButton onClick={handleClick} name="-"/>
                         </div>
                     </WrapperDiv>
                     <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
