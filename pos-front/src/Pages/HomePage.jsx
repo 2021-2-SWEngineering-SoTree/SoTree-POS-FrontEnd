@@ -36,13 +36,13 @@ const LogoDiv = styled.div`
 `;
 
 const LoginDiv = styled.div`
-    width : 200rem;
+    width : 230rem;
     height : 100%;
     display : flex;
     flex-direction : column;
     justify-content: center;
     align-items : center;
-    margin-top : -3rem;
+    margin-top : -4rem;
 `;
 
 const LogoImg = styled.img`

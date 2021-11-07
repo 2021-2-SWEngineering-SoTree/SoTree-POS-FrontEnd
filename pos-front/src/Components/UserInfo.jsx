@@ -54,7 +54,7 @@ const Button = styled.button`
     box-shadow : 0 1px;
 `;
 
-const Input = styled.text`
+const Input = styled.div`
     width : 100%;
     font-size: 1rem;
     text-align : center;

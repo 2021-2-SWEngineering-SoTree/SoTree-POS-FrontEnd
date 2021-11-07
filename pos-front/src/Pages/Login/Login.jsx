@@ -61,7 +61,7 @@ const ImageDiv = styled.div`
     width : 30px;
     font-size: 1.25rem;
     margin : 0.5rem 0 0.5rem 0.5rem;
-`;
+`
 
 const Login = () => {
 
@@ -87,10 +87,12 @@ const Login = () => {
                     <Input type ="text" value = {pwd} onChange={(e)=> SetPwd(e.target.value)} placeholder="password"/>
                 </InputDiv>
                 <ButtonDiv>
-                    <Link to="/homePage">
-                        <Button onClick={clickHandler}>로그인</Button>
-                    </Link>
-                    <div style={{display:'flex', justifyContent:'center'}}>
+                    <div style={{marginTop:'-2vh'}}>
+                        <Link to="/homePage">
+                            <Button onClick={clickHandler}>로그인</Button>
+                        </Link>
+                    </div>
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'1vh'}}>
                         <Link to="/findUserInfo">
                             <Button onClick={clickHandler}>ID/PW 찾기</Button>
                         </Link>
