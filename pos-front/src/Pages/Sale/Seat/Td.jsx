@@ -20,7 +20,7 @@ const Td = ({rowIndex, cellIndex, size, style}) => {
         <Seat onClick = {()=> seatOnClickHandler(rowIndex * cellIndex + cellIndex)}>
             <div style={{display : 'flex', flexDirection:'column'}}>
                 <div style={{verticalAlign:'top', textAlign:'left',fontWeight:'bold', marginBottom:'3rem', marginLeft:'0.3rem'}}>
-                    {rowIndex * cellIndex + cellIndex}
+                    {rowIndex * Math.sqrt(size) + cellIndex}
                 </div>
                 <div style={{}}>
                     <ul style={{listStyle:'none'}}>
