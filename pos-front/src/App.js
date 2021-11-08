@@ -17,12 +17,21 @@ import EmployeeManagementPage from './Pages/EmployeeManagement/EmployeeManagemen
 import CurrentSeatInfoPage from './Pages/Sale/CurrentSeatInfoPage';
 import SalePage from './Pages/Sale/SalePage';
 import StockDetail from './Pages/RestaurantManagement/StockManagement/StockDetail';
+import { useState } from 'react';
 
 function App() {
+
+  const [isLogin, setIsLogin] = useState(false);
+
+  const loginCallBack = (loginCheck)=>{
+    setIsLogin(loginCheck);
+    console.log("LoginCallback");
+  }
+
   return (
       <BrowserRouter>
           <Routes>
-            <Route path="/" element={<MainPage/>}/>
+            <Route path="/" element={<MainPage loginCallBack={loginCallBack}/>}/>
             <Route path="/signUp" element={<SignUp/>}/>
             <Route path="/findUserInfo" element={<FindUserInfo/>}/>
             <Route path="/homePage" element={<HomePage/>}/>
