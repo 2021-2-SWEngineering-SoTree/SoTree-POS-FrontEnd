@@ -1,7 +1,7 @@
 import Header from "../../Components/Header";
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
-
+import EmployeeManagementTable from "./Table/EmployeeManagementTable";
 
 const Div = styled.div`
   max-width: 1980px;
@@ -16,6 +16,7 @@ const LeftDiv = styled.div`
   width: 200%;
   height: 100%;
   flex-grow: 1;
+  overflow: scroll;
 `;
 
 const RightDiv = styled.div`
@@ -28,7 +29,7 @@ const RightDiv = styled.div`
 const InnerRightDiv = styled.div`
   vertical-align: middle;
   text-align: center;
-  margin-top: 0px;
+  margin-top: 0;
   align-items: center;
 `;
 
@@ -64,6 +65,7 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv>
+                    <EmployeeManagementTable/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
