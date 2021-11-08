@@ -61,6 +61,25 @@ const Button = styled.button`
     
 `;
 
+// const Table = styled.table`
+//     width : 77.5rem;
+//     height : 34.3rem;
+//     margin : 0.2rem 0.2rem;
+//     border : 5px solid #000000;
+// `;
+
+// const Tr = styled.tr`
+//     height : 4.5rem;
+// `;
+
+// const Td = styled.td`
+//     width : 14%;
+//     background-color: #ffffff;
+//     &: focus-within {
+//         background-color: #7D7272;
+//     };
+// `;
+
 const MenuTemplate = () => {
 
     const [menus, setMenus] = useState([]); //axios를 통해 메뉴가져옴.
