@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from '../../Components/Header';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const PageWrapper = styled.div`
     justify-content : center;
@@ -34,7 +36,7 @@ const Input = styled.input`
     margin-right : 0.5rem;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
     display : flex;
     justify-content : center;
     flex-direction : column;
@@ -79,36 +81,213 @@ const CheckboxInput = styled.input`
     margin-left : 1rem;
 `;
 
+const ErrorText = styled.div`
+    font-size : 1rem;
+    color : ${(props) => props.color ? props.color : "#FF0000"};
+    margin-top : 0.3rem;
+    margin-bottom : -0.7rem;
+    font-weight : bold;
+`;
+
 const SignUp = () => {
+
+    const [id, setId] = useState('');  const [idDuplicationCheck, setIdDuplicationCheck] = useState(false);
+    const [pwd, setPwd] = useState(''); const [pwdErrorMessage, setPwdErrorMessage] = useState("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+    const [pwdCheck, setPwdCheck] = useState(''); const [pwdCheckMessage, setPwdCheckMessage] = useState("비밀번호가 일치하지 않습니다.");
+    const [name, setName] = useState('');
+    const [birth, setBirth] = useState('');
+    const [month, setMonth] = useState('');
+    const [year, setYear] = useState('');
+    const [day, setDay] = useState('');
+    const [phoneNum , setPhoneNum] = useState('');
+    const [first, setFirst] = useState("010");
+    const [middle, setMiddle] = useState('');
+    const [last, setLast] = useState('');
+    const [email, setEmail] = useState('');
+    const [emailName, setEmailName] = useState('');
+    const [emailAddress, setEmailAddress] = useState('');
+    const [type, setType] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("에러메시지 위치");
+
+    const pwdRef = useRef();
+    const pwdCheckRef = useRef();
+    const nameRef = useRef();
+    const yearRef = useRef();
+    const monthRef = useRef();
+    const dayRef = useRef();
+    const firstRef = useRef();
+    const middleRef = useRef();
+    const lastRef = useRef();
+    const emailNameRef = useRef();
+    const EmailAddressRef = useRef();
+
+    const didMountRef = useRef();
+
+    const navigate = useNavigate();
+
+    const duplicateCheck = async (e, name) =>{
+        e.preventDefault();
+        if(name === ""){
+            alert("아이디를 적어주세요!");
+        }else{
+            await axios.post('http://localhost:8080/userIdPresent', name, {headers:{"Content-Type" : "text/plain"}}).then((res)=>{
+                console.log(res);
+                if(res.data === true){
+                    alert("사용가능한 아이디입니다.");
+                    setIdDuplicationCheck(true);
+                }else{
+                    alert("이미 존재하는 아이디 입니다.");
+                }
+            }).catch(error=>console.log(error));
+        }    
+    };
+
+    const clearButtonHandler = (e)=>{
+        e.preventDefault();
+        alert("초기화버튼");
+    }
+
+    const validatePwd = password =>{
+        const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
+        return reg.test(password);
+    }
+
+    const validateEmail = check =>{
+        const reg = /^[0-9?A-z0-9?]+(\.)?[0-9?A-z0-9?]+@[0-9?A-z]+\.[A-z]{2}.?[A-z]{0,3}$/;
+        return reg.test(check);
+    }
+
+    const validateDate = check =>{
+        const reg = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$/;
+        return reg.test(check);
+    }
+
+    const validatePhoneNum = check =>{
+        const reg = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/
+        return reg.test(check);
+    }
+
+
+    useEffect(()=>{
+        if(didMountRef.current){
+            let _errroMessage = "";
+            if(!name){
+                _errroMessage = "이름을 적어주세요";
+            }else if(!(validateEmail(emailName+"@"+emailAddress))){
+                _errroMessage = "이메일 주소가 양식에 맞지 않습니다.";
+            }else if(!(validateDate(year+"-"+month+"-"+day))){
+                _errroMessage = "유효한 생년월일이 아닙니다.";
+            }
+            if(!validatePhoneNum(first+"-"+middle+"-"+last)){
+                _errroMessage = "유효하지 않은 전화번호입니다.";
+            }
+            if(last.length > 4){
+                _errroMessage = "유효하지 않은 전화번호입니다.";
+            }
+            if(!idDuplicationCheck){
+                _errroMessage = "아이디 중복확인을 해주세요!";
+            }
+            setErrorMessage(_errroMessage);
+            if(pwd!==pwdCheck){
+                setPwdCheckMessage("비밀번호가 일치하지 않습니다.");
+            }else{
+                setPwdCheckMessage("일치");
+            }
+            
+            if((validatePwd(pwd))){
+                setPwdErrorMessage("올바른 비밀번호");
+            }else{
+                setPwdErrorMessage("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+            }
+        }else{
+            didMountRef.current = true;
+        }
+    },[name, pwd, pwdCheck, emailName, emailAddress, year, month, day, first, middle, last, idDuplicationCheck]);
+
+    useEffect(()=>{
+        if(didMountRef.current){
+            setIdDuplicationCheck(false);
+        }else{
+            didMountRef.current = true;
+        }
+    }, [id])
+
+    const handleSubmit = (e) =>{
+        let role = type === true ? "직원" : "관리자";
+        let data = {
+                loginId : id,
+                birthDay : year+"-"+month+"-"+day+ " 13:30",
+                userName : name,
+                email : emailName+"@"+emailAddress,
+                phoneNumber : first+"-"+middle+"-"+last,
+                password : pwd,
+                ROLE_USER : role
+        }
+        e.preventDefault();
+        alert("prevent check!");
+        axios.post('http://localhost:8080/addUser', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+            navigate('/');
+        }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
+    }
+
     return (
         <>
             <Header text ={"회원가입"} restaurantName = {"혜민이네 돈까스"}/>
             <PageWrapper>
-                <Form>
+                <Form onSubmit = {handleSubmit}>
                     <WrapperDiv>
                         <InputLable>ID</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>
-                            <Input placeholder = {"아이디"} style={{flexGrow:3}}/>
-                            <CheckButton style={{flexGrow:1}}>중복확인</CheckButton>
+                            <Input type = "text" placeholder = {"아이디"} style={{flexGrow:3}}
+                             value={id} 
+                             onChange={(e)=> {setId(e.target.value.trim());}}
+                             onKeyPress={(e)=> {if(e.key === 'Enter') pwdRef.current.focus();}}/>
+                            <CheckButton style={{flexGrow:1}} onClick={(e)=>duplicateCheck(e, id)}>중복확인</CheckButton>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>비밀번호</InputLable>
-                        <Input placeholder = {"비밀번호"}/>
+                        <Input type = "password" placeholder = {"비밀번호"}
+                         value={pwd}
+                         ref={pwdRef}
+                         onChange={(e)=>setPwd(e.target.value.trim())} 
+                         onKeyPress={(e)=> {if(e.key === 'Enter') pwdCheckRef.current.focus();}}/>
+                        <ErrorText color={pwdErrorMessage==="올바른 비밀번호" ? "#008000" : "#FF0000"}>{pwdErrorMessage}</ErrorText>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>비밀번호 확인</InputLable>
-                        <Input placeholder = {"비밀번호 확인"}/>
+                        <Input type = "password" placeholder = {"비밀번호 확인"} 
+                        value={pwdCheck}
+                        ref={pwdCheckRef}
+                        onChange={(e)=>setPwdCheck(e.target.value.trim())}
+                        onKeyPress={(e)=> {if(e.key === 'Enter') nameRef.current.focus();}}/>
+                        <ErrorText color={pwdCheckMessage==="일치" ? "#008000" : "#FF0000"}>{pwdCheckMessage}</ErrorText>
                     </WrapperDiv>
                     <WrapperDiv>
-                        <InputLable>성명</InputLable>
-                        <Input placeholder = {"성명"}/>
+                        <InputLable >성명</InputLable>
+                        <Input type = "text" placeholder = {"성명"}
+                        value={name}
+                        ref={nameRef}
+                        onChange={(e)=>setName(e.target.value.trim())}
+                        onKeyPress={(e)=> {if(e.key === 'Enter') yearRef.current.focus();}}/>
                     </WrapperDiv>
                     <WrapperDiv>
-                        <InputLable>생년월일</InputLable>
+                        <InputLable >생년월일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
-                            <Input placeholder = {"년(4자)"}/>
-                            <MonthSelector id="mm">
+                            <Input  type = "text" placeholder = {"년(4자)"}
+                            value={year}
+                            ref={yearRef}
+                            onChange={(e)=>setYear(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') monthRef.current.focus();}}/>
+                            <MonthSelector id="mm" 
+                            value={month}
+                            ref={monthRef}
+                            onChange={(e)=> {setMonth(e.target.value); dayRef.current.focus();}}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') dayRef.current.focus();}}>
                                     <option>월</option>
                                     <option value="01">1</option>
                                     <option value="02">2</option>
@@ -123,40 +302,63 @@ const SignUp = () => {
                                     <option value="11">11</option>
                                     <option value="12">12</option>
                                 </MonthSelector>
-                            <Input placeholder = {"일"}/>
+                            <Input type = "text" placeholder = {"일"}
+                            value={day}
+                            ref={dayRef}
+                            onChange={(e)=>setDay(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') firstRef.current.focus();}}/>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>전화번호</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
-                            <Input type = 'text' value = "010" style={{width:'11.5rem'}}/>
+                            <Input type = 'text' style={{width:'11.5rem'}}
+                            value = {first}
+                            ref = {firstRef}
+                            onChange={(e)=>setFirst(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') middleRef.current.focus();}}/>
                             <TextDiv>-</TextDiv>
-                            <Input placeholder = {"1234"} style={{width:'12rem'}}/>
+                            <Input type = "text" placeholder = {"1234"} style={{width:'12rem'}}
+                            value={middle}
+                            ref={middleRef}
+                            onChange={(e)=>setMiddle(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') lastRef.current.focus();}}/>
                             <TextDiv>-</TextDiv>
-                            <Input placeholder = {"5678"} style={{width:'12rem'}}/>
+                            <Input type = "text" placeholder = {"5678"} style={{width:'12rem'}} 
+                            value={last}
+                            ref={lastRef}
+                            onChange={(e)=>setLast(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') emailNameRef.current.focus();}}/>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>이메일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
-                            <Input placeholder = {"admin12"} style={{width:'19.2rem'}}/>
+                            <Input type = "text" placeholder = {"admin12"} style={{width:'19.2rem'}} 
+                            value={emailName}
+                            ref={emailNameRef}
+                            onChange={(e)=>setEmailName(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') EmailAddressRef.current.focus();}}/>
                             <TextDiv> @ </TextDiv>
-                            <Input placeholder = {"naver.com"} style={{width:'19.15rem'}}/>
+                            <Input type = "text" placeholder = {"naver.com"} style={{width:'19.15rem'}} 
+                            value={emailAddress}
+                            ref={EmailAddressRef}
+                            onChange={(e)=>setEmailAddress(e.target.value.trim())}/>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
                             <InputLable>직원여부</InputLable>
-                            <CheckboxInput type = 'checkbox' />
+                            <CheckboxInput type = 'checkbox' value={type} onChange={(e)=>setType(e.target.value)}/>
                         </div>
                     </WrapperDiv>
+                    <ErrorText style={{fontSize : '1.3rem', marginBottom:'-1.5rem'}}>{errorMessage}</ErrorText>
                     <div style={{display : 'flex', flexDirection : 'row', justifyContent:'space-around', marginTop:'2rem'}}>
-                        <CheckButton>초기화</CheckButton>
-                        <CheckButton>회원가입</CheckButton>
+                        <CheckButton onClick={clearButtonHandler}>초기화</CheckButton>
+                        <CheckButton type = "submit" onClick={handleSubmit}>회원가입</CheckButton>
                     </div>
                 </Form>
             </PageWrapper>
-
         </>
     );
 };
