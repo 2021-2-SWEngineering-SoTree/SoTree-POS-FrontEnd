@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import profile_Image from '../../Assets/profile.png'
 import {BsKey, BsPerson} from "react-icons/bs"
+import axios from 'axios';
 
 const Input = styled.input`
     font-size: 1.5rem;
@@ -63,13 +64,32 @@ const ImageDiv = styled.div`
     margin : 0.5rem 0 0.5rem 0.5rem;
 `
 
-const Login = () => {
+const Login = ({loginCallBack}) => {
 
     const [id, SetId] = useState('');
     const [pwd, SetPwd] = useState('');
 
-    const clickHandler = ()=>{
+    const navigate = useNavigate();
+
+    const clickHandler = async (e)=>{
         console.log("Login button cliecked;",id, pwd);
+        let data = {
+            id : id,
+            pw : pwd
+        }
+        await axios.post('http://localhost:8080/login', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+            if(res.data === ""){
+                alert("로그인실패");
+            }else{
+                alert("로그인 성공" + res.data);
+                loginCallBack(true);
+                navigate('/homePage');
+            }
+        }).catch(error => {console.log(error); alert("로그인실패");});
     };
 
     return (
@@ -84,20 +104,18 @@ const Login = () => {
                 </InputDiv>
                 <InputDiv>
                     <ImageDiv><BsPerson style={{marginTop:'0.2rem'}}/></ImageDiv>
-                    <Input type ="text" value = {pwd} onChange={(e)=> SetPwd(e.target.value)} placeholder="password"/>
+                    <Input type ="password" value = {pwd} onChange={(e)=> SetPwd(e.target.value)} placeholder="password"/>
                 </InputDiv>
                 <ButtonDiv>
                     <div style={{marginTop:'-2vh'}}>
-                        <Link to="/homePage">
-                            <Button onClick={clickHandler}>로그인</Button>
-                        </Link>
+                        <Button onClick={(e)=>clickHandler(e)}>로그인</Button>
                     </div>
                     <div style={{display:'flex', justifyContent:'center', marginTop:'1vh'}}>
                         <Link to="/findUserInfo">
-                            <Button onClick={clickHandler}>ID/PW 찾기</Button>
+                            <Button>ID/PW 찾기</Button>
                         </Link>
                         <Link to="/signUp">
-                            <Button onClick={clickHandler}>회원가입</Button>
+                            <Button>회원가입</Button>
                         </Link>
                     </div>
                 </ButtonDiv>

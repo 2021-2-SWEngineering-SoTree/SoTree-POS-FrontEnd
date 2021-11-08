@@ -47,7 +47,7 @@ const LogoImg = styled.img`
     -webkit-user-drag: none;
 `;
 
-const MainPage = () => {
+const MainPage = ({loginCallBack}) => {
     return (
         <Div>
             <LeftDiv>
@@ -56,7 +56,7 @@ const MainPage = () => {
                 </LogoDiv>
             </LeftDiv>
             <LoginDiv>
-                <Login/>
+                <Login loginCallBack={loginCallBack}/>
             </LoginDiv>
         </Div>
     );
