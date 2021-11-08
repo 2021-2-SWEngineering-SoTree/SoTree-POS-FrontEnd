@@ -8,7 +8,7 @@ import AddMenu from './AddMenu';
 import ChangeMenu from './ChangeMenu';
 import DeleteMenu from './DeleteMenu';
 import axios from 'axios';
-
+import SmallTable from '../../../Components/Table/SmallTable';
 
 const LeftDiv = styled.div`
     width : 78rem;
@@ -61,55 +61,70 @@ const Button = styled.button`
     
 `;
 
-const Table = styled.table`
-    width : 77.5rem;
-    height : 34.3rem;
-    margin : 0.2rem 0.2rem;
-    background-color: black;
-`;
+// const Table = styled.table`
+//     width : 77.5rem;
+//     height : 34.3rem;
+//     margin : 0.2rem 0.2rem;
+//     border : 5px solid #000000;
+// `;
 
-const Tr = styled.tr`
-    height : 4.5rem;
-`;
+// const Tr = styled.tr`
+//     height : 4.5rem;
+// `;
 
-const Td = styled.td`
-    width : 14%;
-    background-color: #ffffff;
-    &: focus-within {
-        background-color: #7D7272;
-    };
-`;
-
+// const Td = styled.td`
+//     width : 14%;
+//     background-color: #ffffff;
+//     &: focus-within {
+//         background-color: #7D7272;
+//     };
+// `;
 
 const MenuTemplate = () => {
 
     const [menus, setMenus] = useState([]); //axios를 통해 메뉴가져옴.
     const [categoryMenus,setCategoryMenus] = useState([]); //전체 메뉴중 선택된 카테고리의 메뉴. 카테고리 바뀔때마다 불러옴.
     const [category, setCategory] = useState(''); //선택된 카테고리
+
     const [addMenu, setAddMenu] = useState(false);
     const [changeMenu, setChangeMenu] = useState(false);
     const [deleteMenu, setDeleteMenu] = useState(false);
 
-
     const getMenus = async ()=>{
         await axios.post('http://localhost:8080/menu/getAll').then((res)=>{
-            console.log(res.data);
             setMenus(res.data);
         }).catch(e=>{
             console.log(e);
         })
     };
 
-
-    const getCategoryMenus = async (category) =>{
-        console.log(category);
-        await setCategoryMenus(menus.filter((menu)=>(menu.menuCategory===category)));
-        console.log({categoryMenus});
+    const getCategoryMenus = (category) =>{
+        setCategoryMenus(menus.filter((menu)=>(menu.menuCategory===category)));
     };
 
+    const makeCategoryMenusFull = () =>{
+        //setCategoryMenus(categoryMenus.concat(Array(49-categoryMenus.length).fill({id: '', menuName: '', price: '', menuCategory: ''})));
+    }
+
     useEffect(()=>{
+        console.log('change categoryMenus useeffect');
+        getCategoryMenus(category);
+        //makeCategoryMenusFull();
+        console.log(category,categoryMenus,categoryMenus.length);
+
+    },[category]);
+
+    useEffect(()=>{
+        console.log('get menu useeffect');
         getMenus();
+        console.log(menus);
     },[]);
+
+
+    const onClickCategoryButton = (e) =>{
+        setCategory(e.target.name);
+        getCategoryMenus(e.target.name);
+    }
 
     const onClickAdd = () => {
         setAddMenu(!addMenu);
@@ -123,14 +138,9 @@ const MenuTemplate = () => {
         setDeleteMenu(!deleteMenu);
     }
 
-    const onClickCategoryButton = async(e) =>{
-        console.log(e.target.name);
-        setCategory(e.target.name);
-        getCategoryMenus(category);
-    }
-
     return (
         <>
+        <h1>크기 : {categoryMenus.length} {menus.length}</h1>
         <Modal visible={addMenu}>
             <AddMenu/>
         </Modal>
@@ -154,78 +164,7 @@ const MenuTemplate = () => {
                 <CategoryButton name={"주류/음료"} onClick={onClickCategoryButton}/>
             </LeftTopDiv>
             <LeftBottomDiv>
-                <Table>
-                    <Tr>
-                        <Td>
-                            <div>
-                                대왕돈까스
-                            </div>
-                            <div>
-                                14000
-                            </div>
-                        </Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>돈까스 세트<br/>12,000</Td>
-                        <Td>대왕 돈까스<br/>14,000</Td>
-                        <Td>돈까스<br/>8,000</Td>
-                        <Td>튀김<br/>2,000</Td>
-                        <Td>아메리카노<br/>2,000</Td>
-                        <Td>우동 사리<br/>1,000</Td>
-                        <Td>콜라<br/>2,000</Td>
-                    </Tr>
-                </Table>
+                <SmallTable menu={categoryMenus}/> 
             </LeftBottomDiv>
         </LeftDiv>
 
