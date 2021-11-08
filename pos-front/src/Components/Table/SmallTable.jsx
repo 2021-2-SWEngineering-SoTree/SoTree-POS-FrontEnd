@@ -1,23 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import Tr from './Tr';
+import SmallTr from './SmallTr';
 
 const TableDiv = styled.table`
-    width : 100%;
+    width : 78rem;
     border-collapse : collapse;
-    height : 100%;
+    height : 35rem;
     border : 5px solid #000000;
 `;
 
-const Table = () => {
+const SmallTable = ({menu}) => {
     
     return (
+        <>
         <TableDiv>
-                {Array(7).fill().map((tr,i)=> 
-                <Tr rowIndex={i} />
+        {Array(7).fill().map((data,i)=> 
+                <SmallTr menu={menu} rowIndex={i} />
                 )}
         </TableDiv> 
+        </>
     );
 };
 
-export default Table;
+export default SmallTable;

@@ -1,0 +1,21 @@
+import React from 'react';
+import SmallTd from './SmallTd';
+import styled from 'styled-components';
+
+const Tr = styled.tr`
+height : 4.5rem;
+`;
+const SmallTr = ({menu, rowIndex}) => {
+    return (
+        <>
+        <Tr>
+            {Array(7).fill().map((td, i)=>
+            <SmallTd menu={menu} rowIndex={rowIndex} cellIndex={i} />
+            )}
+        </Tr>
+        </>
+        
+    );
+};
+
+export default SmallTr;
