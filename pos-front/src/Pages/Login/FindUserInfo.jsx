@@ -8,7 +8,7 @@ const FindUserInfo = () => {
 
     const testConnect = async ()=>{
 
-        await axios.post('http://localhost:8080/test').then((res)=>{
+        await axios.post('http://localhost:8080/connectionTest').then((res)=>{
             console.log(res.data);
             setResponse(res.data);
         }).catch((Error)=>{
