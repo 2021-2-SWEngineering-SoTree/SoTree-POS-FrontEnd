@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import profile_Image from '../Assets/profile.png'
 import {BsPerson} from "react-icons/bs"
+import { useNavigate } from 'react-router';
 
 
 const ContentDiv = styled.div`
@@ -82,6 +83,16 @@ const InputDiv = styled.div`
 `;
 
 const UserInfo = ({RestaurantName, EmpolyeeName}) => {
+
+    let navigate = useNavigate();
+
+    const logoutHandler = (e)=>{
+        e.preventDefault();
+        window.localStorage.clear();
+        alert("로그아웃 되었습니다.");
+        navigate('/');        
+    }
+
     return (
         <ContentDiv>
             <ProfileDiv>
@@ -95,7 +106,7 @@ const UserInfo = ({RestaurantName, EmpolyeeName}) => {
                 </InputDiv>
                 <ButtonDiv>
                     <Button>내정보</Button>
-                    <Button style={{width:'4.5rem'}}>로그아웃</Button>
+                    <Button style={{width:'4.5rem'}} onClick={logoutHandler}>로그아웃</Button>
                 </ButtonDiv>
             </InfoDiv>
         </ContentDiv>

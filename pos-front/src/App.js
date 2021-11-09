@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import {SignUp, FindUserInfo} from './Pages/Login';
 import MainPage from './Pages/MainPage';
 import HomePage from './Pages/HomePage';
@@ -19,6 +19,7 @@ import SalePage from './Pages/Sale/SalePage';
 import StockDetail from './Pages/RestaurantManagement/StockManagement/StockDetail';
 import { useState } from 'react';
 
+
 function App() {
 
   const [isLogin, setIsLogin] = useState(false);
@@ -34,20 +35,20 @@ function App() {
             <Route path="/" element={<MainPage loginCallBack={loginCallBack}/>}/>
             <Route path="/signUp" element={<SignUp/>}/>
             <Route path="/findUserInfo" element={<FindUserInfo/>}/>
-            <Route path="/homePage" element={<HomePage/>}/>
-            <Route path="/restaurantManagement/menu" element={<MenuTemplate/>} />
-            <Route path="/restaurantManagement/stock" element={<StockTemplate/>} />
-            <Route path="/restaurantManagement/seat" element={<SeatTemplate/>} />  
-            <Route path="/restaurantManagement" element={<RestaurantManagementPage/>} />
-            <Route path="/restaurantSalesHome" element={<RestaurantSalesHomePage/>} />
-            <Route path="/restaurantSalesHome/menuavgtime" element={<MenuAvgTimeTemplate/>} />
-            <Route path="/restaurantSalesHome/menusales" element={<MenuSalesTemplate/>} />
-            <Route path="/restaurantSalesHome/sales" element={<SalesTemplate/>} /> 
-            <Route path="/CurrentSeatInfo" element={<CurrentSeatInfoPage/>}/>
-            <Route path="/sale" element={<SalePage/>}/>
-            <Route path="/close" element={<ClosePage/>}/>
-            <Route path="/employeeManagement" element={<EmployeeManagementPage/>}/>
-            <Route path="/restaurantManagement/stock/stockDetail" element={<StockDetail/>}/>
+            <Route path="/homePage" element={localStorage.getItem('Token') ? <HomePage/> : <Navigate replace to='/'/> }/>
+            <Route path="/restaurantManagement/menu" element={localStorage.getItem('Token') ? <MenuTemplate/> : <Navigate replace to='/'/> } />
+            <Route path="/restaurantManagement/stock" element={localStorage.getItem('Token') ?  <StockTemplate/> : <Navigate replace to='/'/>} />
+            <Route path="/restaurantManagement/seat" element={localStorage.getItem('Token') ?  <SeatTemplate/> : <Navigate replace to='/'/>} />  
+            <Route path="/restaurantManagement" element={localStorage.getItem('Token') ? <RestaurantManagementPage/> : <Navigate replace to='/'/> } />
+            <Route path="/restaurantSalesHome" element={localStorage.getItem('Token') ? <RestaurantSalesHomePage/> : <Navigate replace to='/'/> } />
+            <Route path="/restaurantSalesHome/menuavgtime" element={localStorage.getItem('Token') ? <MenuAvgTimeTemplate/> : <Navigate replace to='/'/> } />
+            <Route path="/restaurantSalesHome/menusales" element={localStorage.getItem('Token') ? <MenuSalesTemplate/> : <Navigate replace to='/'/> } />
+            <Route path="/restaurantSalesHome/sales" element={localStorage.getItem('Token') ? <SalesTemplate/> : <Navigate replace to='/'/> } /> 
+            <Route path="/CurrentSeatInfo" element={localStorage.getItem('Token') ? <CurrentSeatInfoPage/> : <Navigate replace to='/'/> }/>
+            <Route path="/sale" element={localStorage.getItem('Token') ? <SalePage/> : <Navigate replace to='/'/> }/>
+            <Route path="/close" element={localStorage.getItem('Token') ? <ClosePage/>: <Navigate replace to='/'/> }/>
+            <Route path="/employeeManagement" element={localStorage.getItem('Token') ? <EmployeeManagementPage/>: <Navigate replace to='/'/> }/>
+            <Route path="/restaurantManagement/stock/stockDetail" element={localStorage.getItem('Token') ? <StockDetail/> : <Navigate replace to='/'/> }/>
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>
