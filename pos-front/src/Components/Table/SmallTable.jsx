@@ -9,13 +9,13 @@ const TableDiv = styled.table`
     border : 5px solid #000000;
 `;
 
-const SmallTable = ({menu}) => {
+const SmallTable = ({menu, getIndex}) => {
     
     return (
         <>
         <TableDiv>
         {Array(7).fill().map((data,i)=> 
-                <SmallTr menu={menu} rowIndex={i} />
+                <SmallTr menu={menu} rowIndex={i} getIndex={getIndex} />
                 )}
         </TableDiv> 
         </>

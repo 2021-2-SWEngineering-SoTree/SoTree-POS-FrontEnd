@@ -201,9 +201,11 @@ const AddMenu = () =>{
         const data = {
             menuName : name,
             price : price,
+            managerId:1,
             menuCategory : category,
             menuIngredientLists : finalIngredients
         };
+        
         !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', JSON.stringify(data), {
             headers : {
             "Content-Type" : `application/json`,

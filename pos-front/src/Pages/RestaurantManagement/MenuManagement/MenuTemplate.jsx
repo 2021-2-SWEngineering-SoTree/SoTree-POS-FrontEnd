@@ -61,25 +61,6 @@ const Button = styled.button`
     
 `;
 
-// const Table = styled.table`
-//     width : 77.5rem;
-//     height : 34.3rem;
-//     margin : 0.2rem 0.2rem;
-//     border : 5px solid #000000;
-// `;
-
-// const Tr = styled.tr`
-//     height : 4.5rem;
-// `;
-
-// const Td = styled.td`
-//     width : 14%;
-//     background-color: #ffffff;
-//     &: focus-within {
-//         background-color: #7D7272;
-//     };
-// `;
-
 const MenuTemplate = () => {
 
     const [menus, setMenus] = useState([]); //axios를 통해 메뉴가져옴.
@@ -90,9 +71,42 @@ const MenuTemplate = () => {
     const [changeMenu, setChangeMenu] = useState(false);
     const [deleteMenu, setDeleteMenu] = useState(false);
 
+    //테이블에서 선택한 메뉴의 인덱스
+    const [index, setIndex]=useState(-1);
+    const [selectedMenu, setSelectedMenu]=useState('');
+    const [selectedId, setSelectedId]=useState(-1);
+    const [selectedPrice,setSelectedPrice]=useState(0);
+    const [selectedCategory, setSelectedCategory]=useState('');
+
+
+    const getIndex=(index)=>{
+        setIndex(index);
+        console.log(typeof categoryMenus[index]);
+    }
+
+    useEffect(()=>{
+        console.log('index change!');
+        if(index>-1 && index<categoryMenus.length) {
+            setSelectedMenu(categoryMenus[index].menuName);
+            setSelectedId(categoryMenus[index].id);
+            setSelectedPrice(categoryMenus[index].price);
+            setSelectedCategory(categoryMenus[index].menuCategory);
+        }
+        else {
+            setSelectedMenu('');
+            setSelectedId(-1);
+            setSelectedPrice(0);
+            setSelectedCategory('');
+        }
+    },[index])
+
     const getMenus = async ()=>{
-        await axios.post('http://localhost:8080/menu/getAll').then((res)=>{
+        await axios.post('http://localhost:8080/menu/getAll','1',{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
             setMenus(res.data);
+            console.log('dd');
         }).catch(e=>{
             console.log(e);
         })
@@ -110,7 +124,7 @@ const MenuTemplate = () => {
         console.log('change categoryMenus useeffect');
         getCategoryMenus(category);
         //makeCategoryMenusFull();
-        console.log(category,categoryMenus,categoryMenus.length);
+        console.log(categoryMenus);
 
     },[category]);
 
@@ -140,7 +154,8 @@ const MenuTemplate = () => {
 
     return (
         <>
-        <h1>크기 : {categoryMenus.length} {menus.length}</h1>
+        
+        <h1>클릭 {index} {selectedMenu} {selectedId} {selectedPrice} {selectedCategory}</h1>
         <Modal visible={addMenu}>
             <AddMenu/>
         </Modal>
@@ -149,7 +164,7 @@ const MenuTemplate = () => {
         </Modal>
 
         <SmallModal visible={deleteMenu}>
-            <DeleteMenu name={'돈까스'}/>
+            <DeleteMenu menu={selectedMenu} id={selectedId} price={selectedPrice} category={selectedCategory}/>
         </SmallModal>
         
         <Header text ={"메뉴 관리"} restaurantName = {"혜민이네 돈까스"}/>
@@ -164,7 +179,7 @@ const MenuTemplate = () => {
                 <CategoryButton name={"주류/음료"} onClick={onClickCategoryButton}/>
             </LeftTopDiv>
             <LeftBottomDiv>
-                <SmallTable menu={categoryMenus}/> 
+                <SmallTable menu={categoryMenus} getIndex={getIndex}/> 
             </LeftBottomDiv>
         </LeftDiv>
 
