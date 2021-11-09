@@ -80,7 +80,7 @@ const Header = memo(({text,restaurantName}) => {
     return (
         <HeaderDiv>
             <LeftDiv>
-                <Link to="/homepage">
+                <Link to={window.localStorage.getItem('Token') ? "/homePage" : "/"}>
                     <LogoDiv onClick= {logoClickHandler} src = {SoTree_Main_Logo}/>
                 </Link>
                 <PageName>{text}</PageName>
