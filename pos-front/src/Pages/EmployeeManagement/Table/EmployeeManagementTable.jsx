@@ -5,7 +5,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 
-//  ji-hwan
 //  I'm going to write the code first,
 //  and then divide the file during the refactoring.
 
