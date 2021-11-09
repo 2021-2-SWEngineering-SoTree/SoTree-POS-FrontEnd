@@ -86,6 +86,9 @@ const Login = ({loginCallBack}) => {
                 alert("로그인실패");
             }else{
                 alert("로그인 성공" + res.data);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+                window.localStorage.setItem('Token', JSON.stringify(res.data));
+                window.localStorage.setItem('user', id);
                 loginCallBack(true);
                 navigate('/homePage');
             }
