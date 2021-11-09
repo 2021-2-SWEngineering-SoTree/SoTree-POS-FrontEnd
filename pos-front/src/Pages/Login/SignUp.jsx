@@ -213,25 +213,30 @@ const SignUp = () => {
     }, [id])
 
     const handleSubmit = (e) =>{
-        let role = type === true ? "직원" : "관리자";
-        let data = {
-                loginId : id,
-                birthDay : year+"-"+month+"-"+day+ " 13:30",
-                userName : name,
-                email : emailName+"@"+emailAddress,
-                phoneNumber : first+"-"+middle+"-"+last,
-                password : pwd,
-                ROLE_USER : role
+
+        if(pwdErrorMessage==="올바른 비밀번호" && pwdCheckMessage==="일치" && errorMessage===""&& idDuplicationCheck){
+            let role = type === true ? "직원" : "관리자";
+            let data = {
+                    loginId : id,
+                    birthDay : year+"-"+month+"-"+day+ " 13:30",
+                    userName : name,
+                    email : emailName+"@"+emailAddress,
+                    phoneNumber : first+"-"+middle+"-"+last,
+                    password : pwd,
+                    ROLE_USER : role
+            }
+            e.preventDefault();
+            alert("prevent check!");
+            axios.post('http://localhost:8080/addUser', JSON.stringify(data), {
+                headers : {
+                "Content-Type" : `application/json`,
+            }}).then((res)=>{
+                console.log(res);
+                navigate('/');
+            }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
+        }else{
+            alert("입력을 확인해주세요!");
         }
-        e.preventDefault();
-        alert("prevent check!");
-        axios.post('http://localhost:8080/addUser', JSON.stringify(data), {
-            headers : {
-            "Content-Type" : `application/json`,
-        }}).then((res)=>{
-            console.log(res);
-            navigate('/');
-        }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
     }
 
     return (
