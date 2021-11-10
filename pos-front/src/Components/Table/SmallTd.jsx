@@ -23,7 +23,7 @@ const SmallTd = ({rowIndex, cellIndex, menu, getIndex}) => {
     const showMenu = () =>{getIndex(index)};
 
     return (
-        <Cell onClick={showMenu}>
+        <Cell key={index} onClick={showMenu}>
             <Menu>
             <div style={{display: 'flex', flexDirection:'column'}}>
                 <div style={{marginBottom : '1.3rem'}}>

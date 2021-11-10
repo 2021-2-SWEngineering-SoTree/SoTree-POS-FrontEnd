@@ -1,6 +1,8 @@
 import React,{useState, useEffect} from 'react'
 import styled from 'styled-components'
 import ModalButton from '../../../Components/Button/ModalButton';
+import axios from 'axios';
+
 
 const Title = styled.h1`
     text-align:center;
@@ -34,31 +36,116 @@ const Form = styled.form`
     flex-direction : column;
 `;
 
+const Input = styled.input`
+    margin-left : 0.7rem;
+    margin-top : 0.5rem;
+    width : 1.4rem;
+    height : 1.4rem;
+`;
+
 //메뉴 이름과 아이디
 const DeleteMenu=({menu, id, price, category})=>{
 
-    const [menuData, setMenuData]=useState({});
+    const [ingredients,setIngredients]=useState([]);
+    const [check,setCheck]=useState(false);
 
-    const handleClick = (e) =>{
+    const getMenuInfos = async ()=>{
+        console.log('실행!');
+        menu && await axios.post('http://localhost:8080/menu/getByName',menu,{
+            headers : {
+            "Content-Type" : `application/json;charset=utf8`,
+        }}).then((res)=>{
+            console.log(menu, res.data);
+            setIngredients(res.data);
+        }).catch(e=>{
+            console.log(menu, e);
+        })
+    };
+
+    useEffect(()=>{
+        console.log('useeffect');
+        getMenuInfos();
+    },[]);
+
+    const success = (e)=>{
+        alert('메뉴가 삭제되었습니다');
+        window.location.replace("/restaurantManagement/menu")
+    }
+
+    const fail = () =>{
+        alert('메뉴를 삭제할 수 없습니다');
+    }
+
+    const handleCheck = async(e)=>{
         e.preventDefault();
+        setCheck(!check);
+        getMenuInfos();
+    }
+
+    const handleClick = async (e) =>{
+        e.preventDefault();
+        getMenuInfos();
+
         const data = {
             menuName : menu,
             price : price,
             menuCategory : category,
+            managerId : 1,
+            menuIngredientLists : ingredients
         };
-    }
+
+        console.log(id, data, ingredients);
+
+        const data2=JSON.stringify(data);
+        console.log(data2);
+        check ? axios.delete(`http://localhost:8080/menu/${id}`,
+            {
+                data : data2,
+                headers : {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+            }
+    
+        ).then((res)=>{
+                console.log('id='+id,res);
+                check && success();
+            }).catch((error)=>{if (error.response){
+
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+                console.log(error.response.request._response );
+
+                }else if(error.request){
+                
+                    console.log(error.request)
+                
+                }else if(error.message){
+                
+                    console.log(error.message);
+                
+                }
+                fail();
+                console.log(error);
+                console.log(data)
+            })
+            :menu ? alert('체크 버튼을 눌러주세요'):alert('메뉴를 선택해주세요');
+        }
 
 
     return(
         <>
         <Form>
-        <Title>{id} 메뉴 삭제{price} {category}</Title>
+        <Title>메뉴 삭제</Title>
         <Text>
-        <Menu>{menu ? menu : '메뉴 선택 필수!'}</Menu><TextByMenu>메뉴를</TextByMenu>
+        <Menu>{menu ? menu : '메뉴선택 필수!'}</Menu><TextByMenu>{menu?'메뉴를':''}</TextByMenu>
         </Text>
-        <UnderText>삭제하시겠습니까?</UnderText>
+        <UnderText>
+            {menu?'선택하신 게 맞습니까':'삭제할 메뉴를 선택해주세요!'}
+            {menu && <Input type="checkbox" checked={check} onChange={handleCheck} />}
+        </UnderText>
         <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
-            <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>
+            {menu && <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>}
             <ModalButton name={'닫기'}></ModalButton>
         </div>
         </Form>
