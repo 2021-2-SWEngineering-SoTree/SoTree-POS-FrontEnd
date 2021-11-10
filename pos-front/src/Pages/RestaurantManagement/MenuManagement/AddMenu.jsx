@@ -234,7 +234,7 @@ const AddMenu = () =>{
                             <option value="사이드메뉴">사이드메뉴</option>
                             <option value="후식메뉴">후식메뉴</option>
                             <option value="추가메뉴">추가메뉴</option>
-                            <option value="주류음료">주류/음료</option>
+                            <option value="주류/음료">주류/음료</option>
                         </CategorySelector>
                     </WrapperDiv>
                     <WrapperDiv>
@@ -245,6 +245,9 @@ const AddMenu = () =>{
                         <InputLable>식재료</InputLable>
                         <div className={0} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[0].ingredientName} onChange={handleSelectStock}>
+                            <option value={''}>{''}</option>
+                            <option value={'돼지고기'}>{'돼지고기'}</option>
+                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -255,6 +258,9 @@ const AddMenu = () =>{
 
                          <div className={1} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[1].ingredientName} onChange={handleSelectStock}>
+                            <option value={''}>{''}</option>
+                            <option value={'돼지고기'}>{'돼지고기'}</option>
+                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -265,6 +271,9 @@ const AddMenu = () =>{
 
                          <div className={2} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[2].ingredientName} onChange={handleSelectStock}>
+                            <option value={''}>{''}</option>
+                            <option value={'돼지고기'}>{'돼지고기'}</option>
+                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -275,6 +284,9 @@ const AddMenu = () =>{
 
                          <div className={3} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[3].ingredientName} onChange={handleSelectStock}>
+                            <option value={''}>{''}</option>
+                            <option value={'돼지고기'}>{'돼지고기'}</option>
+                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}

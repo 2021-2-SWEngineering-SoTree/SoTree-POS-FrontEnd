@@ -16,7 +16,6 @@ const LeftDiv = styled.div`
     padding : 1rem 1rem;
     gap : 1em;
     height : 44rem;
-    border : 1px solid black;
     float : left;
     text-align:center; //중앙정렬
 `;
@@ -24,7 +23,6 @@ const LeftDiv = styled.div`
 const LeftTopDiv = styled.div`
     display : flex;
     width : 78rem;
-    border : 1px solid black;
     display: inline-block; //중앙정렬
 `;
 
@@ -32,7 +30,6 @@ const LeftBottomDiv = styled.div`
     margin : 2rem 0rem;
     height : 35rem;
     width : 78rem;
-    border : 1px solid black;
     display: inline-block;
 `;
 
@@ -43,7 +40,6 @@ const RightDiv = styled.div`
     flex-wrap: nowrap;
     gap: 1em;
     height : 35rem;
-    border:1px solid black;
     float:right;
 `;
 
@@ -77,7 +73,6 @@ const MenuTemplate = () => {
     const [selectedId, setSelectedId]=useState(-1);
     const [selectedPrice,setSelectedPrice]=useState(0);
     const [selectedCategory, setSelectedCategory]=useState('');
-
 
     const getIndex=(index)=>{
         setIndex(index);
@@ -155,12 +150,11 @@ const MenuTemplate = () => {
     return (
         <>
         
-        <h1>클릭 {index} {selectedMenu} {selectedId} {selectedPrice} {selectedCategory}</h1>
         <Modal visible={addMenu}>
             <AddMenu/>
         </Modal>
         <Modal visible={changeMenu}>
-            <ChangeMenu/>
+            <ChangeMenu menu={selectedMenu} id={selectedId} menuprice={selectedPrice} menucategory={selectedCategory}/>
         </Modal>
 
         <SmallModal visible={deleteMenu}>
