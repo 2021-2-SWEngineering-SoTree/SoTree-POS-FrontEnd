@@ -152,7 +152,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
         console.log('get menu useeffect');
         getStocks();
         console.log(allStock);
-        console.log(ingredients);
+        
     },[]);
 
     //이름 입력
@@ -168,6 +168,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
 
     //카테고리 선택
     const handleSelect =(e)=>{
+        console.log(e.target.value);
         setCategory(e.target.value);
     };
 
@@ -200,8 +201,8 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
         console.log(name);
         console.log(category);
         console.log(price);
-        console.log(finalIngredients);
-        if(!name || !category || !price || finalIngredients.length===0) return false;
+        //finalIngredients.length===0
+        if(!name || !category || !price) return false;
         return true;
     }
 
@@ -216,11 +217,16 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
         };
         console.log(data);
 
-        !nullCheck() ? fail() : axios.put(`http://localhost:8080/${id}`, JSON.stringify(data), {
-            headers : {
-            "Content-Type" : `application/json`,
-        }}).then((res)=>{
-            console.log(res);
+        const data2 = JSON.stringify(data);
+        console.log(data2);
+        !nullCheck() ? fail() : axios.put(`http://localhost:8080/menu/${id}`,
+            data2,
+            {    
+                headers : {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then((res)=>{
+             console.log(res);
             success();
         }).catch(e=>{fail(); console.log(e, data)});
     };
@@ -232,11 +238,11 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                 <Form>
                     <WrapperDiv>
                         <InputLable>메뉴명</InputLable>
-                        <Input placeholder = {'메뉴이름'} style={{flexGrow:3}} onChange={onChangeName} value={name}/>
+                        <Input placeholder = {'메뉴이름'} style={{flexGrow:3}} value={name} disabled/>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>분류</InputLable>
-                        <CategorySelector value={menucategory} onChange={handleSelect}>
+                        <CategorySelector value={category} onChange={handleSelect}>
                             <option value="">------</option>
                             <option value="세트메뉴">세트메뉴</option>
                             <option value="2~3인분메뉴">2-3인분메뉴</option>
@@ -249,9 +255,9 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>가격</InputLable>
-                        <Input placeholder = {menuprice} onChange={onChangePrice} value={price}/>
+                        <Input placeholder = {price} onChange={onChangePrice} value={price}/>
                     </WrapperDiv>
-                    <WrapperDiv>
+                    {/* <WrapperDiv>
                         <InputLable>식재료</InputLable>
                         <div className={0} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[0].ingredientName} onChange={handleSelectStock}>
@@ -303,9 +309,9 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                             </StockSelector>
                             <SmallInput onChange={onChangeCount} value={ingredients[3].count}/><h2>인분</h2>
                          </div>
-                    </WrapperDiv>
+                    </WrapperDiv> */}
 
-                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '10em', marginBottom : '1em'}}>
+                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '10em', marginTop:'10em'}}>
                         <CheckButton onClick={load}>Load</CheckButton>
                         <CheckButton onClick = {changeMenu}>수정</CheckButton>
                         <CheckButton>닫기</CheckButton>
