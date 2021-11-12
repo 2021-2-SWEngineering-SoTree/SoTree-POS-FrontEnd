@@ -11,6 +11,10 @@ import { BsFillCreditCard2BackFill,  } from "react-icons/bs";
 import { GiMoneyStack } from "react-icons/gi";
 import { MdOutlineInput } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import SmallTable from "../../Components/Table/SmallTable";
+
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
@@ -59,6 +63,7 @@ const RightTopDiv = styled.div`
 const RightTopTopDiv = styled.div`
     height : 15%;
     border : 1px solid black;
+    text-align:center;
 `;
 
 const RightTopBottomDiv = styled.div`
@@ -108,8 +113,11 @@ const OrderRow = styled.tr`
     background-color: #555555;
 `;
 
+const ResultRow = styled.tr`
+    background-color : #474D4E;
+`
 // table style
-const OrderTableStyle = styled.table`
+const TableStyle = styled.table`
     min-width: 700px;
     width: 100%;
 `;
@@ -184,9 +192,9 @@ const CategoryButton = styled.button`
     background-color : #474D4E;
     border-radius : 15px;
     color : #FFFFFF;
-    height : 4.7rem;
-    width : 8.8rem;
-    margin : 0.3rem;
+    height : 5.3rem;
+    width : 13.9%;
+    margin : 0.1rem;
     text-align : center;
     font-size : 1.3rem;
     cursor : pointer;
@@ -194,6 +202,13 @@ const CategoryButton = styled.button`
         background: #8DDEE9;
     }
 `
+
+const UnderTableDiv = styled.div`
+    width : 100%;
+    height : 12%;
+`
+
+
 
 const CreateRowData = (no,name,price,count,sale,allprice,ex) => {
     return ({no,name,price,count,sale,allprice,ex});
@@ -203,10 +218,57 @@ const cells = [
     CreateRowData('1','치즈돈까스','11,000','1','0','11,000','')
 ];
 
-
 const SalePage = () => {
     
     //let params = useLocation();
+    const [index, setIndex]=useState(-1);
+    const [menus, setMenus] = useState([]); //axios를 통해 메뉴가져옴.
+    const [categoryMenus,setCategoryMenus] = useState([]); //전체 메뉴중 선택된 카테고리의 메뉴. 카테고리 바뀔때마다 불러옴.
+    const [category, setCategory] = useState(''); //선택된 카테고리
+
+    const [calculNum, setCalculNum] = useState(0);
+
+
+    const getMenus = async ()=>{
+        await axios.post('http://localhost:8080/menu/getAll','1',{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            setMenus(res.data);
+            console.log('dd');
+        }).catch(e=>{
+            console.log(e);
+        })
+    };
+
+    const getCategoryMenus = (category) =>{
+        setCategoryMenus(menus.filter((menu)=>(menu.menuCategory===category)));
+    };
+    
+    const getIndex=(index)=>{
+        setIndex(index);
+        console.log(typeof categoryMenus[index]);
+    }
+
+    useEffect(()=>{
+        console.log('change categoryMenus useeffect');
+        getCategoryMenus(category);
+        //makeCategoryMenusFull();
+        console.log(categoryMenus);
+
+    },[category]);
+
+    useEffect(()=>{
+        console.log('get menu useeffect');
+        getMenus();
+        console.log(menus);
+    },[]);
+
+    const onClickCategoryButton = (e) =>{
+        console.log(e.target.name);
+        setCategory(e.target.name);
+        getCategoryMenus(e.target.name);
+    }
 
     return (
         <>
@@ -225,8 +287,8 @@ const SalePage = () => {
 
                 <LeftDiv>
                     <LeftTopDiv>
-                    <TableContainer component={Paper} margin='10px' style={{overflow: 'hidden',}}>
-                            <OrderTableStyle>
+                        <TableContainer component={Paper} margin='10px' style={{height : '90%',overflow: 'hidden',}}>
+                            <TableStyle>
                                 <TableHead>
                                     <OrderRow>
                                         <ColumnCell>번호</ColumnCell>
@@ -248,11 +310,24 @@ const SalePage = () => {
                                             <OrderCell>{cell.sale}</OrderCell>
                                             <OrderCell>{cell.allprice}</OrderCell>
                                             <OrderCell>{cell.ex}</OrderCell>
-                                        </OrderRow>
+                                            </OrderRow>
                                     ))}
                                 </TableBody>
-                            </OrderTableStyle>
+                            </TableStyle>                
                         </TableContainer>
+                        <UnderTableDiv>
+                            <TableStyle>
+                                <TableHead>
+                                    <ResultRow>
+                                        <th style ={{width:'53%', color:'white'}}>합계</th>
+                                        <th style ={{width:'10%', color:'white'}}>수량</th>
+                                        <th style ={{width:'10%', color:'white'}}>할인금액</th>
+                                        <th style ={{width:'16%', color:'white'}}>전체금액</th>
+                                        <th></th>
+                                    </ResultRow>
+                                </TableHead>
+                            </TableStyle>
+                        </UnderTableDiv>
                     </LeftTopDiv>
 
                     <LeftBottomDiv>
@@ -292,16 +367,16 @@ const SalePage = () => {
                             
                         <LeftBottomInDiv>
                             <LeftBottomTopDiv>
-                                <CircledRectButton name={'-'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'+'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'△'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'▽'} size={'5rem'} size2={'5rem'}radius={'30px'}/>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={1}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={2}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={3}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'}radius={'30px'} kind={4}></CircledRectButton>
                             </LeftBottomTopDiv>
                             
                             <LeftBottomTwoDiv>
                                 <BottomBottomLeftDiv>
-                                    <NumberDiv>{'12345'}</NumberDiv>
-                                    <Calculator num={'2.6em'} num2={'5.3em'}/>
+                                    <NumberDiv>{calculNum}&nbsp;</NumberDiv>
+                                    <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}/>
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
                                     <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
@@ -319,16 +394,16 @@ const SalePage = () => {
                 <RightDiv>
                     <RightTopDiv>
                         <RightTopTopDiv>
-                            <CategoryButton>세트메뉴</CategoryButton>
-                            <CategoryButton>2~3인분메뉴</CategoryButton>
-                            <CategoryButton>식사메뉴</CategoryButton>
-                            <CategoryButton>사이드메뉴</CategoryButton>
-                            <CategoryButton>후식메뉴</CategoryButton>
-                            <CategoryButton>추가메뉴</CategoryButton>
-                            <CategoryButton>주류/음료</CategoryButton>
+                            <CategoryButton name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
+                            <CategoryButton name={'2~3인분메뉴'} onClick={onClickCategoryButton}>2~3인분메뉴</CategoryButton>
+                            <CategoryButton name={'식사메뉴'} onClick={onClickCategoryButton}>식사메뉴</CategoryButton>
+                            <CategoryButton name={'사이드메뉴'} onClick={onClickCategoryButton}>사이드메뉴</CategoryButton>
+                            <CategoryButton name={'후식메뉴'} onClick={onClickCategoryButton}>후식메뉴</CategoryButton>
+                            <CategoryButton name={'추가메뉴'} onClick={onClickCategoryButton}>추가메뉴</CategoryButton>
+                            <CategoryButton name={'주류/음료'} onClick={onClickCategoryButton}>주류/음료</CategoryButton>
                         </RightTopTopDiv>
                         <RightTopBottomDiv>
-                            
+                            <SmallTable menu={categoryMenus} getIndex={getIndex} width={'100%'} height={'100%'}/>
                         </RightTopBottomDiv>
                     </RightTopDiv>
                     <RightBottomDiv>

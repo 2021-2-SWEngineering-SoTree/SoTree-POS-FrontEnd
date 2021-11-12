@@ -3,17 +3,15 @@ import styled from 'styled-components';
 import SmallTr from './SmallTr';
 
 const TableDiv = styled.table`
-    width : 78rem;
     border-collapse : collapse;
-    height : 35rem;
     border : 5px solid #000000;
 `;
 
-const SmallTable = ({menu, getIndex}) => {
+const SmallTable = ({menu, getIndex, width, height}) => {
     
     return (
         <>
-        <TableDiv>
+        <TableDiv style={{width:width, height:height}}>
         {Array(7).fill().map((data,i)=> 
                 <SmallTr menu={menu} rowIndex={i} getIndex={getIndex} />
                 )}
