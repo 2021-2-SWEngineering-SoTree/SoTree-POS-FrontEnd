@@ -14,7 +14,7 @@ const CurrentSeatInfoPage = () => {
 
     return (
         <div>
-            <Header text ={"판매"} restaurantName = {"혜민이네 돈까스"}/>
+            <Header text ={"판매"} restaurantName = {localStorage.getItem('storeName')}/>
             <div style= {{display : 'flex', width:'99%', margin:'0.5rem -0.5rem 0.5rem 0.5rem', height:'100%'}}>
                 <div style={{width:'80%'}}>
                     <SeatTable size = {size}/>

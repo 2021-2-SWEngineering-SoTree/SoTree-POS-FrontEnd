@@ -72,7 +72,7 @@ const Button = styled.button`
 const RestaurantManagementPage = () => {
     return (
         <>
-        <Header text ={"매장 관리"} restaurantName = {"혜민이네 돈까스"}/>
+        <Header text ={"매장 관리"} restaurantName = {localStorage.getItem('storeName')}/>
         <Div>
             <LeftDiv>
                 <LogoDiv>

@@ -328,7 +328,7 @@ const SignUp = () => {
 
     return (
         <>
-            <Header text ={"회원가입"} restaurantName = {"혜민이네 돈까스"}/>
+            <Header text ={"회원가입"} restaurantName = {""}/>
             <PageWrapper>
                 <Form onSubmit = {handleSubmit}>
                     <WrapperDiv>

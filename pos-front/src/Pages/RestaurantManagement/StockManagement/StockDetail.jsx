@@ -100,7 +100,7 @@ const cells = [
 const StockDetail = () => {
     return (
         <>
-            <Header text ={"재고 관리"} restaurantName = {"혜민이네 돈까스"}/>
+            <Header text ={"재고 관리"} restaurantName = {localStorage.getItem('storeName')}/>
             <PageWrapper>
                 <Form>
                     <WrapperDiv>
