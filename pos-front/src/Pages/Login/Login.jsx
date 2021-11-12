@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import profile_Image from '../../Assets/profile.png'
 import {BsKey, BsPerson} from "react-icons/bs"
 import axios from 'axios';

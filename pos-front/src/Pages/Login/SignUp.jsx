@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Header from '../../Components/Header';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const PageWrapper = styled.div`
     justify-content : center;

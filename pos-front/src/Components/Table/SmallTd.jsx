@@ -15,7 +15,6 @@ const Menu = styled.button`
     &:focus {
     background: #7D7272;
     }
-
 `;
 const SmallTd = ({rowIndex, cellIndex, menu, getIndex}) => {
 

@@ -10,12 +10,12 @@ const TableDiv = styled.table`
 `;
 
 
-const Table = () => {
+const Table = ({stock, clickedIndex}) => {
 
     return (
         <TableDiv>
             {Array(7).fill().map((tr,i)=>
-                <Tr rowIndex={i} />
+                <Tr rowIndex={i} stock={stock} clickedIndex={clickedIndex}/>
             )}
         </TableDiv>
     );
