@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import profile_Image from '../../Assets/profile.png'
 import {BsKey, BsPerson} from "react-icons/bs"
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
 const Input = styled.input`
     font-size: 1.5rem;
@@ -81,16 +82,26 @@ const Login = ({loginCallBack}) => {
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
-            console.log(res);
+            console.log(res.data);
             if(res.data === ""){
-                alert("로그인실패");
+                alert("로그인실패zz");
             }else{
-                //alert("로그인 성공" + res.data);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
-                window.localStorage.setItem('Token', JSON.stringify(res.data));
-                window.localStorage.setItem('user', id);
-                loginCallBack(true);
-                navigate('/homePage');
+                const token = res.data;
+                const user = jwt.verify(token, "webfirewood");
+                if(user.userName === undefined){
+                    alert("로그인 실패 포스기 실행 로그인은 관리자만 로그인 가능합니다");
+
+                }else{
+                    alert("로그인 성공");
+                    axios.defaults.headers.common['Authorization'] = `webfirewood ${res.data}`;
+                    window.localStorage.setItem('Token', JSON.stringify(res.data));
+                    window.localStorage.setItem('userName', user.userName);
+                    window.localStorage.setItem('storeName', user.storeName);
+                    window.localStorage.setItem('storePhonenumber', user.storePhoneNumber);
+                    loginCallBack(true);
+                    navigate('/homePage');
+                }
+               
             }
         }).catch(error => {console.log(error); alert("로그인실패");});
     };

@@ -49,6 +49,7 @@ function App() {
             <Route path="/close" element={localStorage.getItem('Token') ? <ClosePage/>: <Navigate replace to='/'/> }/>
             <Route path="/employeeManagement" element={localStorage.getItem('Token') ? <EmployeeManagementPage/>: <Navigate replace to='/'/> }/>
             <Route path="/restaurantManagement/stock/stockDetail" element={localStorage.getItem('Token') ? <StockDetail/> : <Navigate replace to='/'/> }/>
+            
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>

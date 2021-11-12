@@ -103,10 +103,18 @@ const SignUp = () => {
     const [first, setFirst] = useState("010");
     const [middle, setMiddle] = useState('');
     const [last, setLast] = useState('');
+    const [firstStore, setFirstStore] = useState("02");
+    const [middleStore, setMiddleStore] = useState('');
+    const [lastStore, setLastStore] = useState('');
     const [email, setEmail] = useState('');
     const [emailName, setEmailName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
     const [type, setType] = useState(false);
+    const [storeName, setStoreName] = useState('');
+    const [workStoreName, setWorkStoreName] = useState('');
+    const [checkWorkStore, setCheckWorkStore] = useState('');
+    const [managerId, setManagerId] = useState('');
+
     const [errorMessage, setErrorMessage] = useState("에러메시지 위치");
 
     const pwdRef = useRef();
@@ -118,8 +126,11 @@ const SignUp = () => {
     const firstRef = useRef();
     const middleRef = useRef();
     const lastRef = useRef();
+    const middleStoreRef = useRef();
+    const lastStoreRef = useRef();
     const emailNameRef = useRef();
     const EmailAddressRef = useRef();
+    const storePhoneNumberRef = useRef();
 
     const didMountRef = useRef();
 
@@ -142,13 +153,32 @@ const SignUp = () => {
         }    
     };
 
+    const storeNameCheck = async (e, workStoreName) =>{
+        e.preventDefault();
+        if(workStoreName === ""){
+            alert("가게이름을 넣어주세요");
+        }else{
+            await axios.post('http://localhost:8080/findBranchName', workStoreName, {headers:{"Content-Type" : "text/plain"}}).then((res)=>{
+                console.log(res);
+                if(res.data !== -1){
+                    alert("존재하는 가게입니다. 회원가입을 진행해주세요~");
+                    setCheckWorkStore(true);
+                    console.log(res.data);
+                    setManagerId(res.data);
+                }else{
+                    alert("존재하지 않는 가게입니다.");
+                }
+            }).catch(error=>console.log(error));
+        }    
+    };
+
     const clearButtonHandler = (e)=>{
         e.preventDefault();
         alert("초기화버튼");
     }
 
     const validatePwd = password =>{
-        const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/;
+        const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,16}$/;
         return reg.test(password);
     }
 
@@ -187,8 +217,25 @@ const SignUp = () => {
             if(!idDuplicationCheck){
                 _errroMessage = "아이디 중복확인을 해주세요!";
             }
+
+            if(!type){
+                if(!storeName){
+                    _errroMessage = "가게명을 적어주세요";
+                }else if(!validatePhoneNum(firstStore+"-"+middleStore+"-"+lastStore)){
+                    _errroMessage = "유효하지 않은 가게 전화번호입니다.";
+                }
+                if(lastStore.length > 4){
+                    _errroMessage = "유효하지 않은 전화번호입니다.";
+                }
+            }else{
+                if(!workStoreName){
+                    _errroMessage = "근무 가게명을 적어주세요";
+                }else if(!checkWorkStore){
+                    _errroMessage = "입력한 근무 가게명이 존재하는지 해주세요!";
+                }
+            }
             setErrorMessage(_errroMessage);
-            if(pwd!==pwdCheck){
+            if(pwdCheck.length>0 && pwd!==pwdCheck){
                 setPwdCheckMessage("비밀번호가 일치하지 않습니다.");
             }else{
                 setPwdCheckMessage("일치");
@@ -198,11 +245,12 @@ const SignUp = () => {
                 setPwdErrorMessage("올바른 비밀번호");
             }else{
                 setPwdErrorMessage("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
-            }
+            }            
+
         }else{
             didMountRef.current = true;
         }
-    },[name, pwd, pwdCheck, emailName, emailAddress, year, month, day, first, middle, last, idDuplicationCheck]);
+    },[name, pwd, pwdCheck, emailName, emailAddress, year, month, day, first, middle, last, idDuplicationCheck, workStoreName, storeName, firstStore, middleStore, lastStore, checkWorkStore, type]);
 
     useEffect(()=>{
         if(didMountRef.current){
@@ -212,31 +260,70 @@ const SignUp = () => {
         }
     }, [id])
 
-    const handleSubmit = (e) =>{
+    useEffect(()=>{
 
-        if(pwdErrorMessage==="올바른 비밀번호" && pwdCheckMessage==="일치" && errorMessage===""&& idDuplicationCheck){
-            let role = type === true ? "직원" : "관리자";
-            let data = {
-                    loginId : id,
-                    birthDay : year+"-"+month+"-"+day+ " 13:30",
-                    userName : name,
-                    email : emailName+"@"+emailAddress,
-                    phoneNumber : first+"-"+middle+"-"+last,
-                    password : pwd,
-                    ROLE_USER : role
+    },[type])
+
+    const handleSubmit = async(e) =>{
+        if(!type){
+            // 관리자 회원가입
+            if(pwdErrorMessage==="올바른 비밀번호" && pwdCheckMessage==="일치" && errorMessage===""&& idDuplicationCheck){
+                let changeday = day;
+                if(day.length===1){
+                    changeday = "0"+changeday;
+                }
+                let data = {
+                        loginId : id,
+                        birthDay : year+"-"+month+"-"+changeday+ " 13:30",
+                        userName : name,
+                        email : emailName+"@"+emailAddress,
+                        phoneNumber : first+"-"+middle+"-"+last,
+                        password : pwd,
+                        storeName : storeName,
+                        branchPhoneNumber : firstStore+"-"+middleStore+"-"+lastStore
+                }
+                e.preventDefault();
+                alert("prevent check!");
+                await axios.post('http://localhost:8080/addManager', JSON.stringify(data), {
+                    headers : {
+                    "Content-Type" : `application/json`,
+                }}).then((res)=>{
+                    console.log(res);
+                    navigate('/');
+                }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
+            }else{
+                alert("입력을 확인해주세요!");
             }
-            e.preventDefault();
-            alert("prevent check!");
-            axios.post('http://localhost:8080/addUser', JSON.stringify(data), {
-                headers : {
-                "Content-Type" : `application/json`,
-            }}).then((res)=>{
-                console.log(res);
-                navigate('/');
-            }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
         }else{
-            alert("입력을 확인해주세요!");
+            // 직원회원가입
+            if(pwdErrorMessage==="올바른 비밀번호" && pwdCheckMessage==="일치" && errorMessage===""&& idDuplicationCheck){
+                let changeday = day;
+                if(day.length===1){
+                    changeday = "0"+changeday;
+                }
+                let data = {
+                        loginId : id,
+                        birthDay : year+"-"+month+"-"+changeday+ " 13:30",
+                        userName : name,
+                        email : emailName+"@"+emailAddress,
+                        phoneNumber : first+"-"+middle+"-"+last,
+                        password : pwd,
+                        managerId : managerId
+                }
+                e.preventDefault();
+                alert("prevent check!");
+                await axios.post('http://localhost:8080/addUser', JSON.stringify(data), {
+                    headers : {
+                    "Content-Type" : `application/json`,
+                }}).then((res)=>{
+                    console.log(res);
+                    navigate('/');
+                }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
+            }else{
+                alert("입력을 확인해주세요!");
+            }
         }
+        
     }
 
     return (
@@ -354,9 +441,56 @@ const SignUp = () => {
                     <WrapperDiv>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
                             <InputLable>직원여부</InputLable>
-                            <CheckboxInput type = 'checkbox' value={type} onChange={(e)=>setType(e.target.value)}/>
+                            <CheckboxInput type = 'checkbox' value={type} onChange={()=>{setType((prev)=>!prev)}}/>
                         </div>
                     </WrapperDiv>
+                    {type === false ?
+                        <>
+                            <WrapperDiv>
+                                <InputLable>가게명</InputLable>
+                                <div style={{display : 'flex', flexDirection : 'row'}}>
+                                    <Input type = "text" placeholder = {"가게명"}
+                                    value={storeName}
+                                    onChange={(e)=>setStoreName(e.target.value.trim())}
+                                    onKeyPress={(e)=> {if(e.key === 'Enter') storePhoneNumberRef.current.focus();}}/>
+                                </div> 
+                            </WrapperDiv>
+                            <WrapperDiv>
+                            <InputLable>가게 전화번호</InputLable>
+                            <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
+                                <Input type = 'text' style={{width:'11.5rem'}}
+                                value = {firstStore}
+                                onChange={(e)=>setFirstStore(e.target.value.trim())}
+                                onKeyPress={(e)=> {if(e.key === 'Enter') middleStoreRef.current.focus();}}/>
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"1234"} style={{width:'12rem'}}
+                                value={middleStore}
+                                ref={middleStoreRef}
+                                onChange={(e)=>setMiddleStore(e.target.value.trim())}
+                                onKeyPress={(e)=> {if(e.key === 'Enter') lastStoreRef.current.focus();}}/>
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"5678"} style={{width:'12rem'}} 
+                                value={lastStore}
+                                ref={lastStoreRef}
+                                onChange={(e)=>setLastStore(e.target.value.trim())}
+                                />
+                            </div>
+                            </WrapperDiv>
+                        </>
+                        :
+                        <>
+                            <WrapperDiv>
+                                <InputLable>근무가게명</InputLable>
+                                <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>
+                                    <Input type = "text" placeholder = {"아이디"} style={{flexGrow:3}}
+                                    value={workStoreName} 
+                                    onChange={(e)=> {setWorkStoreName(e.target.value.trim());}}
+                                    />
+                                    <CheckButton style={{flexGrow:1}} onClick={(e)=>storeNameCheck(e, workStoreName)}>가게확인</CheckButton>
+                                </div>
+                            </WrapperDiv>
+                        </>
+                    }
                     <ErrorText style={{fontSize : '1.3rem', marginBottom:'-1.5rem'}}>{errorMessage}</ErrorText>
                     <div style={{display : 'flex', flexDirection : 'row', justifyContent:'space-around', marginTop:'2rem'}}>
                         <CheckButton onClick={clearButtonHandler}>초기화</CheckButton>

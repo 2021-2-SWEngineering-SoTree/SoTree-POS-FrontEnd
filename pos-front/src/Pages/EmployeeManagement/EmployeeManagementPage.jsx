@@ -5,6 +5,9 @@ import EmployeeManagementTable from "./Table/EmployeeManagementTable";
 import React, {useState} from "react";
 import EmployeeAddPage from "./EmployeeAddPage";
 import {Modal} from "../../Components/Modal";
+import EmployeeCommutingPage from "./EmployeeCommutingPage";
+import EmployeeModifyPage from "./EmployeeModifyPage";
+import EmployeeDeletePage from "./EmployeeDeletePage";
 
 const Div = styled.div`
   max-width: 1980px;
@@ -86,16 +89,16 @@ const EmployeeManagementPage = () => {
     return (
         <>
             <Modal visible={commute} >
-                <EmployeeAddPage/>
+                <EmployeeCommutingPage/>
             </Modal>
             <Modal visible={addEmployee}>
                 <EmployeeAddPage/>
             </Modal>
             <Modal visible={changeEmployee}>
-                <EmployeeAddPage/>
+                <EmployeeModifyPage />
             </Modal>
             <Modal visible={deleteEmployee}>
-                <EmployeeAddPage/>
+                <EmployeeDeletePage/>
             </Modal>
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>

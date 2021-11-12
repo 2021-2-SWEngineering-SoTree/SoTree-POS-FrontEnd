@@ -70,7 +70,8 @@ const Button = styled.button`
 
 const HomePage = () => {
 
-    let name = window.localStorage.getItem('user');
+    let name = window.localStorage.getItem('userName');
+    let storeName = window.localStorage.getItem('storeName');
     
     return (
         <Div>
@@ -87,7 +88,7 @@ const HomePage = () => {
             </LogoDiv>
         </LeftDiv>
         <LoginDiv>
-            <UserInfo RestaurantName={"혜민이네 돈까스"} EmpolyeeName={name}/>
+            <UserInfo RestaurantName={storeName} EmpolyeeName={name}/>
             <Link to = "/CurrentSeatInfo"><Button>판매</Button></Link>
             <Link to = "/restaurantManagement"><Button>매장관리</Button></Link>
             <Link to = "/restaurantSalesHome"><Button>매출현황</Button></Link>
