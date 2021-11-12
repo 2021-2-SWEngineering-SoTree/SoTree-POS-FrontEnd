@@ -19,7 +19,7 @@ const DateButtonTemplate = styled.button`
 
 
 
-const DateButton = ({name}) => {
+const DateButton = ({name, onClick}) => {
     return (
         <DateButtonTemplate>
            {name}
