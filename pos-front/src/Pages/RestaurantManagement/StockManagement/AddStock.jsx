@@ -73,6 +73,7 @@ const Title = styled.h1`
 const AddStock = () => {
 
     const [quantity , setQuantity] = useState('');
+    const [stockName, setStockName] = useState('');
 
     const handleClick = (e) =>{
         e.preventDefault();
@@ -85,18 +86,24 @@ const AddStock = () => {
     const changeQuantity = (change) =>{
         setQuantity(change);
     }
+
+
     return (
         <>
             <PageWrapper>
                 <Title>재고 추가</Title>
                 <Form>
                     <WrapperDiv>
-                        <InputLable>재고 이름<Input placeholder = {"재고명"} style={{flexGrow:3}}/></InputLable>
+                        <InputLable>재고 이름
+                            <Input placeholder = {"재고명"} style={{flexGrow:3}} 
+                            value={stockName} 
+                            onChange={(e)=>setStockName(e.target.value)}/>
+                        </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>수&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;량
                             <Input placeholder = {"0"} style={{flexGrow:3}}
-                                   value = {quantity} />인분
+                                   value = {quantity} onChange={(e)=> setQuantity(e.target.value)}/>인분
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>

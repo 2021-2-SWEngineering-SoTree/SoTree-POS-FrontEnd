@@ -12,13 +12,14 @@ const CheckButton = styled.button`
     padding : 0;
 `;
 
-const EmployeeCommutingPage = () => {
+const EmployeeDeletePage = () => {
     return (
         <div>
-            <b> 직원출퇴근 </b> 
+            <b>직원삭제</b>
             <CheckButton>닫기</CheckButton>
+
         </div>
     );
 };
 
-export default EmployeeCommutingPage;
+export default EmployeeDeletePage;
