@@ -11,7 +11,7 @@ const CalculatorTable = styled.table`
 const CalculatorButton = styled.button`
     font-size : 1.5rem;
     background-color : #D7FAFF;
-    border-radius : 1.0rem;
+    border-radius : 30px;
     padding : 0;
 `
 

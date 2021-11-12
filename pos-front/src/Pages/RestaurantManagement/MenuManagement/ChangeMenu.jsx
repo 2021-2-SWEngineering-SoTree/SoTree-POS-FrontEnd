@@ -134,7 +134,10 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
     }
 
     const getStocks = async ()=>{
-        await axios.post('http://localhost:8080/stock/getAll').then((res)=>{
+        await axios.post('http://localhost:8080/stock/getAll','1',{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
             const menus=[{stockName:'없음'}];
             setAllStock(menus.concat(res.data));
             console.log(allStock);
