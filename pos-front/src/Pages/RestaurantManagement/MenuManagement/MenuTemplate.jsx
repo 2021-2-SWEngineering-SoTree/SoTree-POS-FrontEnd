@@ -173,7 +173,7 @@ const MenuTemplate = () => {
                 <CategoryButton name={"주류/음료"} onClick={onClickCategoryButton}/>
             </LeftTopDiv>
             <LeftBottomDiv>
-                <SmallTable menu={categoryMenus} getIndex={getIndex}/> 
+                <SmallTable menu={categoryMenus} getIndex={getIndex} width={'78rem'} height={'35rem'}/> 
             </LeftBottomDiv>
         </LeftDiv>
 
