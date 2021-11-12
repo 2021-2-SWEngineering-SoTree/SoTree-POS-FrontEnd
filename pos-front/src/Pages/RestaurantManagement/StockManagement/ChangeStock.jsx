@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styled from "styled-components";
 import Calculator from "../../../Components/Calculator/Calculator";
 import MessageStock from "./MessageStock";
-
+import { SmallModal } from '../../../Components/Modal';
 
 const PageWrapper = styled.div`
     margin : 2rem;
@@ -74,7 +74,7 @@ const Title = styled.h1`
 `;
 
 
-const ChangeStock = ({name, visible}) => {
+const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
 
     const [quantity , setQuantity] = useState('');
 
@@ -82,7 +82,7 @@ const ChangeStock = ({name, visible}) => {
         e.preventDefault();
         if(window.confirm("정말로 수정하시겠습니까?")){
             console.log("ok");
-            <MessageStock name={name} visible={visible}/>
+            onClickChange();
         }
         console.log("Click test : preventDefault");
     }
@@ -94,18 +94,19 @@ const ChangeStock = ({name, visible}) => {
     return (
         <>
             <PageWrapper>
-                <Title> 가져온 값. </Title>
+                <Title> {clickedIndex && stock[clickedIndex].stockName}</Title>
                 <Form>
                     <WrapperDiv>
                         <InputLable>현재수량
                         <Input placeholder = {"0"} style={{flexGrow:3}}
-                               value = {"가져온 값."} />인분
+                               value = {clickedIndex && stock[clickedIndex].quantity} />인분
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>변경수량
                         <Input placeholder = {"0"} style={{flexGrow:3}}
-                               value = {quantity} />인분
+                               value = {quantity}
+                               onChange={(e)=>setQuantity(e.target.value)} />인분
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>

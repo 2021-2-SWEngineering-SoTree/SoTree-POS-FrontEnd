@@ -98,6 +98,7 @@ const Login = ({loginCallBack}) => {
                     window.localStorage.setItem('userName', user.userName);
                     window.localStorage.setItem('storeName', user.storeName);
                     window.localStorage.setItem('storePhonenumber', user.storePhoneNumber);
+                    window.localStorage.setItem('managerId', user.managerId);
                     loginCallBack(true);
                     navigate('/homePage');
                 }

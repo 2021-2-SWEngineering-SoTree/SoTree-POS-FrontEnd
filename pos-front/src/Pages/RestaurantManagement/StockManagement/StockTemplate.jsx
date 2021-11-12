@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import {Modal, SmallModal} from '../../../Components/Modal';
@@ -8,6 +8,7 @@ import AddStock from "./AddStock";
 import StockTable from "./StockTable/StockTable";
 import ChangeStock from "./ChangeStock";
 import axios from 'axios';
+import MessageStock from './MessageStock';
 
 const LeftDiv = styled.div`
     width : 70%;
@@ -47,10 +48,13 @@ const StockTemplate = () => {
     const [addStock, setAddStock] = useState(false);
     const [changeStock, setChangeStock] = useState(false);
     const [deleteStock, setDeleteStock] = useState(false);
+    const [isChanged, setIsChanged] = useState(false);
 
     const [clickedIndex, setClickedIndex] = useState('');
 
     const [stock, setStock] = useState([]);
+
+    const didMountRef = useRef();
 
     const getClickedIndex = (index) => {
         console.log("cell clicked", index);
@@ -65,12 +69,22 @@ const StockTemplate = () => {
         setChangeStock(!changeStock);
     }
 
+    const onClickChangeAfter = () => {
+        setChangeStock(!changeStock);
+        setIsChanged(!isChanged);
+    }
+
     const onClickDelete = () => {
         setDeleteStock(!deleteStock);
     }
 
+    const onClickIsChanged = ()=>{
+        setIsChanged((prev) => !prev);
+    }
+
     const getStocks =  async() =>{
-        await axios.post('http://localhost:8080/stock/getAll','1',{
+        let managerId = window.localStorage.getItem('managerId');
+        await axios.post('http://localhost:8080/stock/getAll',managerId,{
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
@@ -89,18 +103,22 @@ const StockTemplate = () => {
             getStocks();
         },[addStock, changeStock, deleteStock])
         
-
     return (
         <>
             <Modal visible={addStock}>
                 <AddStock onClickAdd={onClickAdd}/>
             </Modal>
             <Modal visible={changeStock}>
-                <ChangeStock/>
+                <ChangeStock onClickChange={onClickChangeAfter} stock={stock} clickedIndex={clickedIndex}/>
             </Modal>
             <SmallModal visible={deleteStock}>
-                <DeleteStock name={'example'} visible = {deleteStock}/>
+                <DeleteStock name={clickedIndex? stock[clickedIndex].stockName:""} visible = {deleteStock}/>
             </SmallModal>
+            {clickedIndex ? 
+                <SmallModal visible={isChanged}>
+                    <MessageStock stockName={clickedIndex? stock[clickedIndex].stockName:""} onClickIsChanged={onClickIsChanged} quantity={clickedIndex? stock[clickedIndex].quantity:""}/>
+                </SmallModal>
+             : null}
             <Header text ={"재고 관리"} restaurantName = {localStorage.getItem('storeName')}/>
             <div style={{width:"100%"}}>
                 <LeftDiv>
