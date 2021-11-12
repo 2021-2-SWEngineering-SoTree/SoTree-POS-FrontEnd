@@ -13,14 +13,18 @@ npm install axios
 
 - 11.09
 npm i @material-ui/core 
+
+- 11.12
+npm i jsonwebtoken
+npm i jwt-decode
 ```
 
 # Installation
 ```
-※ node version : 14.16.1
-1. git init https://github.com/2021-2-SWEngineering-SoTree/SoTree-POS-FrontEnd.git
-2. git clone
-3. npm install
-4. cd pos-front/
+※ node version : 14.16.1 (node 버전확인 필요)
+1. git init 
+2. git clone https://github.com/2021-2-SWEngineering-SoTree/SoTree-POS-FrontEnd.git
+3. cd pos-front/
+4. npm install
 5. npm start ( x => npm run start )
 ```
