@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
 import Calculator from "../../../Components/Calculator/Calculator"
+import axios from 'axios';
 
 const PageWrapper = styled.div`
   margin : 2rem;
@@ -70,15 +71,17 @@ const Title = styled.h1`
   text-align:center;
 `
 
-const AddStock = () => {
+const AddStock = ({onClickAdd}) => {
 
     const [quantity , setQuantity] = useState('');
     const [stockName, setStockName] = useState('');
 
-    const handleClick = (e) =>{
+    const handleClick = async (e) =>{
         e.preventDefault();
         if(window.confirm("정말로 추가하시겠습니까?")){
+            await addStockHandler();
             alert("추가되었습니다.");
+            onClickAdd();
         }
         console.log("Click test : preventDefault");
     }
@@ -86,6 +89,28 @@ const AddStock = () => {
     const changeQuantity = (change) =>{
         setQuantity(change);
     }
+
+    const addStockHandler = async () =>{
+        // let managerId = window.localStorage.getItem('')
+        const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
+        const ingredients = [{
+            time : time,
+            quantityChanged : +quantity,
+        }];
+        const data = {
+            stockName : stockName,
+            managerId : 1,
+            quantity : quantity,
+            stockDetailList : ingredients,
+        };
+        console.log(data.stockDetailList);
+        await axios.post('http://localhost:8080/stock/add', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+        }).catch(e=>console.log(e));
+    };
 
 
     return (
