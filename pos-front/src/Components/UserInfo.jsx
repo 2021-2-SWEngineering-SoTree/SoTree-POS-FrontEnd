@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import profile_Image from '../Assets/profile.png'
 import {BsPerson} from "react-icons/bs"
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 
 const ContentDiv = styled.div`

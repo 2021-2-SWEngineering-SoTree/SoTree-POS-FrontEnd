@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import {Modal, SmallModal} from '../../../Components/Modal';
@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import AddStock from "./AddStock";
 import StockTable from "./StockTable/StockTable";
 import ChangeStock from "./ChangeStock";
+import axios from 'axios';
 
 const LeftDiv = styled.div`
     width : 70%;
@@ -47,6 +48,15 @@ const StockTemplate = () => {
     const [changeStock, setChangeStock] = useState(false);
     const [deleteStock, setDeleteStock] = useState(false);
 
+    const [clickedIndex, setClickedIndex] = useState('');
+
+    const [stock, setStock] = useState([]);
+
+    const getClickedIndex = (index) => {
+        console.log("cell clicked", index);
+        setClickedIndex(index);
+    }
+
     const onClickAdd = () => {
         setAddStock(!addStock);
     }
@@ -58,6 +68,24 @@ const StockTemplate = () => {
     const onClickDelete = () => {
         setDeleteStock(!deleteStock);
     }
+
+    const getStocks =  async() =>{
+        await axios.post('http://localhost:8080/stock/getAll','1',{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            setStock(res.data);
+            console.log(res.data);
+        }).catch(e=>{
+            console.log(e);
+        })
+    }
+        useEffect(()=>{
+            getStocks();
+            console.log("getStocks", stock);
+        }, [])
+
+        
 
     return (
         <>
@@ -74,7 +102,7 @@ const StockTemplate = () => {
             <div style={{width:"100%"}}>
                 <LeftDiv>
                     <div style={{width:'100%'}}>
-                        <StockTable/>
+                        <StockTable stock = {stock} clickedIndex={getClickedIndex}/>
                     </div>
                 </LeftDiv>
                 <RightDiv>
