@@ -97,9 +97,10 @@ const AddStock = ({onClickAdd}) => {
             time : time,
             quantityChanged : +quantity,
         }];
+        let managerId = window.localStorage.getItem('managerId');
         const data = {
             stockName : stockName,
-            managerId : 1,
+            managerId : managerId,
             quantity : quantity,
             stockDetailList : ingredients,
         };
@@ -109,6 +110,8 @@ const AddStock = ({onClickAdd}) => {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
             console.log(res);
+            setQuantity('');
+            setStockName('');
         }).catch(e=>console.log(e));
     };
 

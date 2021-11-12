@@ -51,7 +51,13 @@ const DeleteMenu=({menu, id, price, category})=>{
 
     const getMenuInfos = async ()=>{
         console.log('실행!');
-        menu && await axios.post('http://localhost:8080/menu/getByName',menu,{
+        let managerId = window.localStorage.getItem('managerId');
+        const data = {
+            menuName : menu,
+            managerId : managerId
+        }
+
+        menu && await axios.post('http://localhost:8080/menu/getByName',JSON.stringify(data),{
             headers : {
             "Content-Type" : `application/json;charset=utf8`,
         }}).then((res)=>{
@@ -85,12 +91,12 @@ const DeleteMenu=({menu, id, price, category})=>{
     const handleClick = async (e) =>{
         e.preventDefault();
         getMenuInfos();
-
+        let managerId = window.localStorage.getItem('managerId');
         const data = {
             menuName : menu,
             price : price,
             menuCategory : category,
-            managerId : 1,
+            managerId : managerId,
             menuIngredientLists : ingredients
         };
 

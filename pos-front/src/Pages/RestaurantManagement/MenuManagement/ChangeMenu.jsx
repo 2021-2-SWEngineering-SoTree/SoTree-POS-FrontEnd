@@ -134,7 +134,8 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
     }
 
     const getStocks = async ()=>{
-        await axios.post('http://localhost:8080/stock/getAll','1',{
+        let managerId = window.localStorage.getItem('managerId');
+        await axios.post('http://localhost:8080/stock/getAll', managerId,{
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{

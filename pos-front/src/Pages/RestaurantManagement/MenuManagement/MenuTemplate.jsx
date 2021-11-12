@@ -96,7 +96,8 @@ const MenuTemplate = () => {
     },[index])
 
     const getMenus = async ()=>{
-        await axios.post('http://localhost:8080/menu/getAll','1',{
+        const managerId = window.localStorage.getItem('managerId');
+        await axios.post('http://localhost:8080/menu/getAll',managerId,{
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
