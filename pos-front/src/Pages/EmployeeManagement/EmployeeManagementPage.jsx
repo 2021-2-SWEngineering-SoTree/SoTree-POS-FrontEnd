@@ -116,7 +116,7 @@ const EmployeeManagementPage = () => {
             <Modal visible={deleteEmployee}>
                 <EmployeeDeletePage/>
             </Modal>
-            <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
+            <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>
                 <LeftDiv>
                     <EmployeeManagementTable columnName={columnName} cells={cells} isCheckBox={true}/>

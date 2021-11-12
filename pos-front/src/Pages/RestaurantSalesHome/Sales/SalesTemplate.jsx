@@ -4,7 +4,7 @@ import Header from '../../../Components/Header';
 const SalesTemplate = () => {
     return (
         <>
-        <Header text ={"매상 통계"} restaurantName = {"혜민이네 돈까스"}/>
+        <Header text ={"매상 통계"} restaurantName = {localStorage.getItem('storeName')}/>
         </>
     );
 };
