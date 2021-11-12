@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import {Modal, SmallModal} from '../../../Components/Modal';
-import AddMenu from '../MenuManagement/AddMenu';
-import ChangeMenu from '../MenuManagement/ChangeMenu';
 import DeleteStock from './DeleteStock';
 import { Link } from 'react-router-dom';
-import Table from '../../../Components/Table/Table';
+import AddStock from "./AddStock";
+import StockTable from "./StockTable/StockTable";
+import ChangeStock from "./ChangeStock";
 
 const LeftDiv = styled.div`
     width : 70%;
@@ -43,7 +43,6 @@ const Button = styled.button`
   
 const StockTemplate = () => {
 
-    
     const [addStock, setAddStock] = useState(false);
     const [changeStock, setChangeStock] = useState(false);
     const [deleteStock, setDeleteStock] = useState(false);
@@ -63,10 +62,10 @@ const StockTemplate = () => {
     return (
         <>
             <Modal visible={addStock}>
-                <AddMenu/>
+                <AddStock/>
             </Modal>
             <Modal visible={changeStock}>
-                <ChangeMenu/>
+                <ChangeStock/>
             </Modal>
             <SmallModal visible={deleteStock}>
                 <DeleteStock name={'example'} visible = {deleteStock}/>
@@ -75,7 +74,7 @@ const StockTemplate = () => {
             <div style={{width:"100%"}}>
                 <LeftDiv>
                     <div style={{width:'100%'}}>
-                        <Table/>
+                        <StockTable/>
                     </div>
                 </LeftDiv>
                 <RightDiv>
