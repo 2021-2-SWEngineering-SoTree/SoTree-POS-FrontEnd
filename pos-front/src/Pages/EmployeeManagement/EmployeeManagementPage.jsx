@@ -85,7 +85,7 @@ const EmployeeManagementPage = () => {
 
     return (
         <>
-            <Modal visible={commute}>
+            <Modal visible={commute} >
                 <EmployeeAddPage/>
             </Modal>
             <Modal visible={addEmployee}>
