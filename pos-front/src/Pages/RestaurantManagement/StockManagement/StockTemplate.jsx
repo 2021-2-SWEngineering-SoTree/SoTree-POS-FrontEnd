@@ -85,12 +85,15 @@ const StockTemplate = () => {
             console.log("getStocks", stock);
         }, [])
 
+        useEffect(()=>{
+            getStocks();
+        },[addStock, changeStock, deleteStock])
         
 
     return (
         <>
             <Modal visible={addStock}>
-                <AddStock/>
+                <AddStock onClickAdd={onClickAdd}/>
             </Modal>
             <Modal visible={changeStock}>
                 <ChangeStock/>
@@ -98,7 +101,7 @@ const StockTemplate = () => {
             <SmallModal visible={deleteStock}>
                 <DeleteStock name={'example'} visible = {deleteStock}/>
             </SmallModal>
-            <Header text ={"재고 관리"} restaurantName = {"혜민이네 돈까스"}/>
+            <Header text ={"재고 관리"} restaurantName = {localStorage.getItem('storeName')}/>
             <div style={{width:"100%"}}>
                 <LeftDiv>
                     <div style={{width:'100%'}}>
