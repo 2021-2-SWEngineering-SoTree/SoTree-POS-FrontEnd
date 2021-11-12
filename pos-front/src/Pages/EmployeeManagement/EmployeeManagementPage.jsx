@@ -1,9 +1,10 @@
 import Header from "../../Components/Header";
 import {Link, Route, Routes} from 'react-router-dom';
 import styled from 'styled-components';
-import EmployeeManagementTable from "./Table/EmployeeManagementTable";
+import EmployeeManagementTable from "../../Components/Table/EmployeeManagementTable";
 import React, {useState} from "react";
 import EmployeeAddPage from "./EmployeeAddPage";
+import EmployeeActivitiesListPage from "./EmployeeActivitiesListPage";
 import {Modal} from "../../Components/Modal";
 import EmployeeCommutingPage from "./EmployeeCommutingPage";
 import EmployeeModifyPage from "./EmployeeModifyPage";
@@ -65,6 +66,20 @@ const Button2 = styled.button`
   margin-bottom: 3rem;
 `;
 
+
+// input data format
+const CreateRowData = (choice, number, name, id, pw, latestData, pos) => {
+    return ({choice, number, name, id, pw, latestData, pos });
+}
+
+//---------------------- input rows information(back-end)---------------------
+const cells = [
+    CreateRowData('blink', '1', '이호준',
+        'hello', '1234', '2021-11-03 13:00', '사장'),
+    CreateRowData('blink', '2', '최지환',
+        'world', '2345', '2021-11-03 13:00', '직원'),
+]
+
 const EmployeeManagementPage = () => {
 
     const [commute, setCommute] = useState(false);
@@ -85,6 +100,7 @@ const EmployeeManagementPage = () => {
         setDeleteEmployee(!deleteEmployee);
     }
 
+    const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
 
     return (
         <>
@@ -103,7 +119,7 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv>
-                    <EmployeeManagementTable/>
+                    <EmployeeManagementTable columnName={columnName} cells={cells} isCheckBox={true}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
@@ -118,7 +134,7 @@ const EmployeeManagementPage = () => {
                 </RightDiv>
                 <Routes>
                     <Route path="/employeeManagement/workSchedule" element={<EmployeeAddPage/>} />
-                    <Route path="/employeeManagement/employeeActivity" element={<EmployeeAddPage/>} />
+                    <Route path="/employeeManagement/employeeActivity" element={<EmployeeActivitiesListPage/>} />
                     <Route path="/employeeManagement/employeeApproval" element={<EmployeeAddPage/>} />
                 </Routes>
             </Div>
