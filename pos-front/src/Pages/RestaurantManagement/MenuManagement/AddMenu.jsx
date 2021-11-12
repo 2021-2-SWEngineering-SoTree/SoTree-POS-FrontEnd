@@ -106,19 +106,19 @@ const AddMenu = () =>{
     const [ingredients,setIngredients]=useState([
         {
             ingredientName:'',
-            count:null,
+            count:0,
         },
         {
             ingredientName:'',
-            count:null,
+            count:0,
         },
         {
             ingredientName:'',
-            count:null,
+            count:0,
         },
         {
             ingredientName:'',
-            count:null,
+            count:0,
         }
     ]);
     const [finalIngredients, setFinalIngredients]=useState([]);
@@ -126,7 +126,10 @@ const AddMenu = () =>{
     const [register,setRegister]=useState(false);
 
     const getStocks = async ()=>{
-        await axios.post('http://localhost:8080/stock/getAll').then((res)=>{
+        await axios.post('http://localhost:8080/stock/getAll','1',{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
             const menus=[{stockName:'없음'}];
             setAllStock(menus.concat(res.data));
             console.log(allStock);
@@ -135,9 +138,14 @@ const AddMenu = () =>{
         })
     };
 
+    const checkNull = () =>{
+        
+    }
+
     useEffect(()=>{
         setFinalIngredients(ingredients.filter(stock=>stock.count!==null && stock.ingredientName!=='없음' &&stock.ingredientName!==''))
         console.log(ingredients, finalIngredients);
+        console.log(finalIngredients.length);
     },[ingredients]);
 
     useEffect(()=>{
@@ -192,7 +200,7 @@ const AddMenu = () =>{
         console.log(category);
         console.log(price);
         console.log(finalIngredients);
-        if(!name || !category || !price || finalIngredients.length===0) return false;
+        if(!name || !category || !price) return false;
         return true;
     }
 
@@ -205,7 +213,7 @@ const AddMenu = () =>{
             menuCategory : category,
             menuIngredientLists : finalIngredients
         };
-        
+        console.log(data);
         !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', JSON.stringify(data), {
             headers : {
             "Content-Type" : `application/json`,
