@@ -2,82 +2,84 @@ import Header from "../../Components/Header";
 import {Link, Route, Routes} from 'react-router-dom';
 import styled from 'styled-components';
 import EmployeeManagementTable from "../../Components/Table/EmployeeManagementTable";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import EmployeeAddPage from "./EmployeeAddPage";
 import EmployeeActivitiesListPage from "./EmployeeActivitiesListPage";
 import {Modal} from "../../Components/Modal";
 import RectangleModal from "../../Components/Modal/RectangleModal";
 import EmployeeCommutingPage from "./EmployeeCommutingPage";
+import axios from "axios";
+
 
 const Div = styled.div`
-  max-width: 1980px;
-  padding: 20px;
-  flex-wrap: nowrap;
-  display: flex;
-  gap: 1em;
-  height: 680px;
+    max-width: 1980px;
+    padding: 20px;
+    flex-wrap: nowrap;
+    display: flex;
+    gap: 1em;
+    height: 680px;
 `;
+
 
 const LeftDiv = styled.div`
-  width: 200%;
-  height: 100%;
-  flex-grow: 1;
-  overflow: scroll;
+    width: 200%;
+    height: 100%;
+    flex-grow: 1;
+    overflow: scroll;
 `;
+
 
 const RightDiv = styled.div`
-  width: 70%;
-  margin-top: 3%;
-  margin-bottom: 3%;
-  align-items: center;
+    width: 70%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    align-items: center;
 `;
+
 
 const InnerRightDiv = styled.div`
-  vertical-align: middle;
-  text-align: center;
-  margin-top: 0;
-  align-items: center;
+    vertical-align: middle;
+    text-align: center;
+    margin-top: 0;
+    align-items: center;
 `;
+
 
 const Button = styled.button`
-  top: 50%;
-  width: 20rem;
-  height: 4rem;
-  background: #EBE7E7;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 0.8rem;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+    top: 50%;
+    width: 20rem;
+    height: 4rem;
+    background: #EBE7E7;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
 `;
 
+
 const Button2 = styled.button`
-  top: 50%;
-  width: 20rem;
-  height: 4rem;
-  background: #EBE7E7;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 0.8rem;
-  font-size: 1.3rem;
-  margin-bottom: 3rem;
+    top: 50%;
+    width: 20rem;
+    height: 4rem;
+    background: #EBE7E7;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
 `;
 
 
 // input data format
-const CreateRowData = (choice, number, name, id, pw, latestData, pos) => {
-    return ({choice, number, name, id, pw, latestData, pos });
+const CreateRowData = (choice, number, name, id, pw, latestDate, pos) => {
+    return ({choice, number, name, id, pw, latestDate, pos });
 }
 
 //---------------------- input rows information(back-end)---------------------
-const cells = [
-    CreateRowData('blink', '1', '이호준',
-        'hello', '1234', '2021-11-03 13:00', '사장'),
-    CreateRowData('blink', '2', '최지환',
-        'world', '2345', '2021-11-03 13:00', '직원'),
-]
+
 
 const EmployeeManagementPage = () => {
 
@@ -99,6 +101,31 @@ const EmployeeManagementPage = () => {
         setDeleteEmployee(!deleteEmployee);
     }
 
+    const cells = []
+
+    const [cello, setCells] = useState([{ }]);
+
+    useEffect(async () => {
+        try {
+            // 데이터를 받아오는 동안 시간 소모. await 대기
+            const res = await axios.post('http://localhost:8080/getAllPersonName')
+            //console.log(res);
+            // 받아온 데이터로 다음 일을 진행하려고 await 로 대기
+            // 받아온 데이터를 map 해주어 rowData 별 data 선언
+            console.log(res.data);
+
+            for (let i = 0; i < res.data.length; i++) {
+                cells.push(CreateRowData('blink', i+1, res.data[i],
+                    'hello', '1234', '2021-11-03 13:00', '사장'))
+
+            }
+            setCells(cells);
+            console.log(cello);
+        } catch (e) {
+            console.error(e.message)
+        }
+    }, []);
+
     const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
 
     return (
@@ -107,7 +134,7 @@ const EmployeeManagementPage = () => {
                 <EmployeeCommutingPage visible={commute} setCommute={setCommute}/>
             </RectangleModal>
             <RectangleModal visible={addEmployee}>
-                <EmployeeAddPage/>
+                <EmployeeAddPage visible={addEmployee}/>
             </RectangleModal>
             <Modal visible={changeEmployee}>
                 <EmployeeAddPage/>
@@ -118,7 +145,7 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv>
-                    <EmployeeManagementTable columnName={columnName} cells={cells} isCheckBox={true}/>
+                    <EmployeeManagementTable columnName={columnName} cells={cello} isCheckBox={true}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>

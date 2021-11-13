@@ -94,7 +94,7 @@ const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
                             <EmployeeManagementCell>{cell.name}</EmployeeManagementCell>
                             <EmployeeManagementCell>{cell.id}</EmployeeManagementCell>
                             <EmployeeManagementCell>{cell.pw}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.latestData}</EmployeeManagementCell>
+                            <EmployeeManagementCell>{cell.latestDate}</EmployeeManagementCell>
                             <EmployeeManagementCell>{cell.pos}</EmployeeManagementCell>
                         </EmployeeManagementRow>
                     ))}
