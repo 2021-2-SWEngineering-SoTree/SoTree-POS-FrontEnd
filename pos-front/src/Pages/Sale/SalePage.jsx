@@ -252,19 +252,22 @@ const SalePage = () => {
         console.log(typeof categoryMenus[index]);
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async ()=>{
+        console.log('get menu useeffect');
+        await getMenus();
+        console.log(menus);
+        setCategory('세트메뉴')
+        document.getElementById('defaultMenu').focus();
+    },[]);
+
     useEffect(()=>{
         console.log('change categoryMenus useeffect');
         getCategoryMenus(category);
         //makeCategoryMenusFull();
         console.log(categoryMenus);
-
     },[category]);
 
-    useEffect(()=>{
-        console.log('get menu useeffect');
-        getMenus();
-        console.log(menus);
-    },[]);
 
     const onClickCategoryButton = (e) =>{
         console.log(e.target.name);
@@ -396,7 +399,7 @@ const SalePage = () => {
                 <RightDiv>
                     <RightTopDiv>
                         <RightTopTopDiv>
-                            <CategoryButton name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
+                            <CategoryButton id = 'defaultMenu' name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
                             <CategoryButton name={'2~3인분메뉴'} onClick={onClickCategoryButton}>2~3인분메뉴</CategoryButton>
                             <CategoryButton name={'식사메뉴'} onClick={onClickCategoryButton}>식사메뉴</CategoryButton>
                             <CategoryButton name={'사이드메뉴'} onClick={onClickCategoryButton}>사이드메뉴</CategoryButton>
