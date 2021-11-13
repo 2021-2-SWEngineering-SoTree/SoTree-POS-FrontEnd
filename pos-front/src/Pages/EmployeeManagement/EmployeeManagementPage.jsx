@@ -6,7 +6,6 @@ import React, {useState} from "react";
 import EmployeeAddPage from "./EmployeeAddPage";
 import EmployeeActivitiesListPage from "./EmployeeActivitiesListPage";
 import {Modal} from "../../Components/Modal";
-import RectangleModalContainer from "../../Components/Modal/RectangleModalContainer";
 import RectangleModal from "../../Components/Modal/RectangleModal";
 import EmployeeCommutingPage from "./EmployeeCommutingPage";
 
