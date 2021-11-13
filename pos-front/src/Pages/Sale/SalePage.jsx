@@ -14,7 +14,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import SmallTable from "../../Components/Table/SmallTable";
-
+import {CardPay, MultiPay, CashPay} from './Pay';
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
