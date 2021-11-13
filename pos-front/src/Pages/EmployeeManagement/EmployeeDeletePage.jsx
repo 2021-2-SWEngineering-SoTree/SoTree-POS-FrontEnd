@@ -17,7 +17,6 @@ const EmployeeDeletePage = () => {
         <div>
             <b>직원삭제</b>
             <CheckButton>닫기</CheckButton>
-
         </div>
     );
 };
