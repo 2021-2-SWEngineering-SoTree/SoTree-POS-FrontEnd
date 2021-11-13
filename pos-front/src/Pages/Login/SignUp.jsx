@@ -188,7 +188,7 @@ const SignUp = () => {
     }
 
     const validateDate = check =>{
-        const reg = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$/;
+        const reg = /^(19|20)\d{2}-(0[1-9]|1[012])-([1-9]|[12][0-9]|3[0-1])$/;
         return reg.test(check);
     }
 
@@ -206,7 +206,7 @@ const SignUp = () => {
             }else if(!(validateEmail(emailName+"@"+emailAddress))){
                 _errroMessage = "이메일 주소가 양식에 맞지 않습니다.";
             }else if(!(validateDate(year+"-"+month+"-"+day))){
-                _errroMessage = "유효한 생년월일이 아닙니다.";
+                _errroMessage = "유효한 생년월일이 아닙니다.(YYYY-MM-DD)";
             }
             if(!validatePhoneNum(first+"-"+middle+"-"+last)){
                 _errroMessage = "유효하지 않은 전화번호입니다.";
@@ -235,18 +235,22 @@ const SignUp = () => {
                 }
             }
             setErrorMessage(_errroMessage);
-            if(pwdCheck.length>0 && pwd!==pwdCheck){
+            if(pwd!==pwdCheck){
                 setPwdCheckMessage("비밀번호가 일치하지 않습니다.");
+                _errroMessage = "비밀번호가 일치하지 않습니다."
             }else{
-                setPwdCheckMessage("일치");
+                if(pwdCheck.length>0){
+                    setPwdCheckMessage("일치");
+                }
             }
             
             if((validatePwd(pwd))){
                 setPwdErrorMessage("올바른 비밀번호");
             }else{
                 setPwdErrorMessage("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+                _errroMessage = "8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."
             }            
-
+            setErrorMessage(_errroMessage);
         }else{
             didMountRef.current = true;
         }
@@ -289,6 +293,7 @@ const SignUp = () => {
                     "Content-Type" : `application/json`,
                 }}).then((res)=>{
                     console.log(res);
+                    alert("회원가입이 완료되었습니다!");
                     navigate('/');
                 }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
             }else{

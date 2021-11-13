@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import SoTree_Main_Logo from '../Assets/SoTree_Main_Logo.png';
 import { Login } from './Login';
@@ -48,6 +48,12 @@ const LogoImg = styled.img`
 `;
 
 const MainPage = ({loginCallBack}) => {
+
+    useEffect(()=>{
+        window.localStorage.clear();
+        console.log("clear?", window.localStorage.length)
+    },[])
+
     return (
         <Div>
             <LeftDiv>
