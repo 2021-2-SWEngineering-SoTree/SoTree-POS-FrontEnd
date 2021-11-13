@@ -148,7 +148,6 @@ const EmployeeCommutingPage = ({commute, setCommute}) => {
                         <CheckButton onClick={CancelClick}>닫기</CheckButton>
                     </div>
                 </Form>
-
         </>
     );
 }
