@@ -230,18 +230,20 @@ const SalePage = () => {
 
 
     const getMenus = async ()=>{
-        await axios.post('http://localhost:8080/menu/getAll','1',{
+        let managerId = localStorage.getItem('managerId')
+        await axios.post('http://localhost:8080/menu/getAll',managerId,{
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
-            setMenus(res.data);
-            console.log('dd');
+            setMenus(()=>res.data);
+            console.log('menu', menus);
         }).catch(e=>{
             console.log(e);
         })
     };
 
     const getCategoryMenus = (category) =>{
+        console.log(menus);
         setCategoryMenus(menus.filter((menu)=>(menu.menuCategory===category)));
     };
     
