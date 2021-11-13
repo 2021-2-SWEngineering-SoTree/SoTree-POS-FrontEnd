@@ -104,11 +104,11 @@ const EmployeeManagementPage = () => {
     return (
         <>
             <RectangleModal visible={commute}>
-                <EmployeeCommutingPage/>
+                <EmployeeCommutingPage visible={commute} setCommute={setCommute}/>
             </RectangleModal>
-            <Modal visible={addEmployee}>
+            <RectangleModal visible={addEmployee}>
                 <EmployeeAddPage/>
-            </Modal>
+            </RectangleModal>
             <Modal visible={changeEmployee}>
                 <EmployeeAddPage/>
             </Modal>
