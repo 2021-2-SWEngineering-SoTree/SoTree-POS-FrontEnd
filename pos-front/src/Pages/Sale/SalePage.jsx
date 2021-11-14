@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router";
+import { Navigate, useLocation, useNavigate, useParams, Routes, Route, Link } from "react-router-dom";
 import Header from "../../Components/Header";
 import styled from 'styled-components';
 import Calculator from "../../Components/Calculator/Calculator";
@@ -11,10 +11,11 @@ import { BsFillCreditCard2BackFill,  } from "react-icons/bs";
 import { GiMoneyStack } from "react-icons/gi";
 import { MdOutlineInput } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import SmallTable from "../../Components/Table/SmallTable";
 import {CardPay, MultiPay, CashPay} from './Pay';
+import SaleDefaultMenuPage from "./RightDivComponents/SaleDefaultMenuPage";
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
@@ -101,16 +102,17 @@ const ColumnCell = styled.td`
 
 // td style
 const OrderCell = styled.td`
-    background-color: #F2F8F9;
     color: #000000;
     font-size: 20px;
     text-align: center;
-    
 `;
 
 // tr style
 const OrderRow = styled.tr`
-    background-color: #555555;
+    background-color: ${props => props.checked ? '#E4E6E7': '#F2F8F9'};
+    &:focus {
+        background: #FF0000;
+    }
 `;
 
 const ResultRow = styled.tr`
@@ -208,26 +210,46 @@ const UnderTableDiv = styled.div`
     height : 12%;
 `
 
-
-
-const CreateRowData = (no,name,price,count,sale,allprice,ex) => {
-    return ({no,name,price,count,sale,allprice,ex});
-}
-
-const cells = [
-    CreateRowData('1','치즈돈까스','11,000','1','0','11,000','')
-];
-
 const SalePage = () => {
     
-    //let params = useLocation();
+    let params = useLocation();
     const [index, setIndex]=useState(-1);
     const [menus, setMenus] = useState([]); //axios를 통해 메뉴가져옴.
     const [categoryMenus,setCategoryMenus] = useState([]); //전체 메뉴중 선택된 카테고리의 메뉴. 카테고리 바뀔때마다 불러옴.
     const [category, setCategory] = useState(''); //선택된 카테고리
 
-    const [calculNum, setCalculNum] = useState(0);
+    const [newOrders, setNewOrders] = useState([]);
+    const [currentOrders, setCurrentOrders] = useState([]);
+    const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
+    
+    // {name : '왕돈까스',
+    // price : 12000,
+    // quantity : 1,
+    // discount : 0,
+    // totalprice : 12000,
+    // message : '',},
+    // {name : '치즈돈까스',
+    // price : 12000,
+    // quantity : 1,
+    // discount : 0,
+    // totalprice : 12000,
+    // message : '',}
 
+    // 오더 states
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalPrice, setToltalPrce] = useState(0);
+    const [totalDiscount, setTotalDiscount] = useState(0)
+
+    const [calculNum, setCalculNum] = useState(0);
+    const [orderSelection, setOrderSelection] = useState(-1);
+
+
+    // 결제 states
+
+    const [payedPrice, setPayedPrice] = useState(0);
+
+
+    let navigation = useNavigate();
 
     const getMenus = async ()=>{
         let managerId = localStorage.getItem('managerId')
@@ -250,6 +272,8 @@ const SalePage = () => {
     const getIndex=(index)=>{
         setIndex(index);
         console.log(typeof categoryMenus[index]);
+        if(categoryMenus[index])
+            updateNewOrders(categoryMenus[index]);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -258,7 +282,7 @@ const SalePage = () => {
         await getMenus();
         console.log(menus);
         setCategory('세트메뉴')
-        document.getElementById('defaultMenu').focus();
+        document.getElementById('세트메뉴').focus();
     },[]);
 
     useEffect(()=>{
@@ -273,6 +297,232 @@ const SalePage = () => {
         console.log(e.target.name);
         setCategory(e.target.name);
         getCategoryMenus(e.target.name);
+    }
+
+    const updateNewOrders = (selected) => {
+        const index = newOrders.findIndex((key)=> key.name === selected.menuName);
+        // console.log("new", newOrders)
+        // console.log("find", index);
+        // console.log("current", currentOrders)
+
+        if(index>=0){
+            let temp = newOrders.filter(arr => arr.name !== selected.menuName);
+            const data = {
+                name : selected.menuName,
+                price : selected.price,
+                quantity : newOrders[index].quantity+1,
+                discount : newOrders[index].discount,
+                totalprice : newOrders[index].totalprice+selected.price,
+                message : newOrders[index].message,
+            }
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
+        }else{
+            setNewOrders((prev)=>[...prev, {
+                name : selected.menuName,
+                price : selected.price,
+                quantity : 1,
+                discount : 0,
+                totalprice : selected.price,
+                message : '',  
+            }])
+        }
+
+        const index2 = currentOrders.findIndex((key)=> key.name === selected.menuName);
+        if(index2>=0){
+            let temp = currentOrders.filter(arr => arr.name !== selected.menuName);
+            console.log(temp);
+            console.log("current order ", currentOrders[index2])
+            let data = {
+                name : selected.menuName,
+                price : selected.price,
+                quantity : currentOrders[index2].quantity + 1,
+                discount : currentOrders[index2].discount,
+                totalprice : currentOrders[index2].totalprice + selected.price,
+                message : currentOrders[index2].message,
+            }
+            setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);
+        }else{
+            setCurrentOrders((prev)=>[...prev, {
+                name : selected.menuName,
+                price : selected.price,
+                quantity : 1,
+                discount : 0,
+                totalprice : selected.price,
+                message : '',  
+            }])
+        }
+        setToltalPrce((prev)=> prev + selected.price);
+        setTotalAmount((prev)=> prev + 1);
+        setTotalDiscount((prev) => prev + 0);
+    };
+
+    useEffect(()=>{
+        console.log("change check")
+    },[newOrders,currentOrders])
+//
+    const orderInfoClickHandler = (index, e) =>{
+        e.preventDefault();
+        console.log(index);
+        document.getElementById("order"+String(index)).focus();
+        setOrderSelection(index);
+    }
+
+    const allCancleHandler = (e)=>{
+        e.preventDefault();
+        setNewOrders([]);
+        setCurrentOrders([]);
+    }
+
+    const selectCancleHander = (e) =>{
+        e.preventDefault();
+        if(orderSelection >= 0){
+            const temp = newOrders.filter((arr,index) => index!==orderSelection);
+            const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
+            setNewOrders(temp);
+            setCurrentOrders(temp2);
+            setOrderSelection(-1);
+        }
+    }
+
+    const minus = (a,b) => a-b;
+
+    const makeOrderHandler = (e) =>{
+        e.preventDefault();
+        makeOrder();
+    }
+
+    const makeOrder = () =>{
+        let managerId = window.localStorage.getItem('managerId');
+        const orderDetails = makeOrdetailMap();
+        const data = {
+            totalPrice : totalPrice,
+            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            endTime : new Date(+new Date() + 3240 * 20000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            orderType : "TABLE_ORDER",
+            seatNumber : seatNum,
+            isSeated : "True",
+            managerId: managerId,
+            employeeId : 1,
+            orderDetails : orderDetails,
+        };
+        console.log(data);
+        axios.post('http://localhost:8080/order/addTableOrder', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+            navigation('/CurrentSeatInfo');
+        }).catch(e=>console.log(e));
+    }
+
+    const makeOrdetailMap = () =>{
+        let orderdetails = [];
+        newOrders.forEach(function(item, index){
+            let temp = {};
+            temp[item.name] = item.price;
+            console.log("temp", temp)
+            orderdetails.push(temp);
+        })
+        console.log("오더디테일 만들기", orderdetails)
+        return orderdetails;
+    };
+
+    const plusButtonHandler = (index, e) =>{
+        e.preventDefault();
+        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, 1);}        
+    }
+
+    const minusButtonHandler = (index, e) =>{
+        e.preventDefault();
+        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, -1);}
+    }
+
+    const changeSelectionOrderQuantity = (i, count) =>{
+        const index = newOrders.findIndex((key)=> key.name === currentOrders[i].name);
+        if(index>=0){
+            let temp = newOrders.filter(arr => arr.name !== currentOrders[i].name);
+            const data = {
+                name : currentOrders[i].name,
+                price : currentOrders[i].price,
+                quantity : newOrders[index].quantity + count,
+                discount : newOrders[index].discount,
+                totalprice : count * currentOrders[i].price + newOrders[index].totalprice,
+                message : newOrders[index].message,
+            }
+            if(data.quantity <= 0 ){
+                setNewOrders([...temp]);
+            }else{
+                setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
+            }
+        }
+        const index2 = currentOrders.findIndex((key)=> key.name === currentOrders[i].name);
+        if(index2>=0){
+            let temp = currentOrders.filter(arr => arr.name !== currentOrders[i].name);
+            console.log(temp);
+            console.log("current order ", currentOrders[index])
+            let data = {
+                name : currentOrders[i].name,
+                price : currentOrders[i].price,
+                quantity : currentOrders[i].quantity + count,
+                discount : currentOrders[i].discount,
+                totalprice : count * currentOrders[i].price + newOrders[index].totalprice,
+                message : currentOrders[i].message,
+            }
+            if(data.quantity <= 0 ){
+                setCurrentOrders([...temp]);
+            }else{
+                setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);
+            }        
+        }
+        setToltalPrce((prev)=> count * currentOrders[i].price + prev);
+        setTotalAmount((prev)=> prev + count);
+        setTotalDiscount((prev) => prev + 0);
+    }
+
+    const downSelectionHandler = (e) =>{
+        e.preventDefault();
+        let next = orderSelection+1 !== currentOrders.length ? orderSelection+1 : 0;
+        setOrderSelection(next);
+    }
+    
+    const upSelectionHandler = (e) =>{
+        e.preventDefault();
+        let next = orderSelection-1 >= 0 ? orderSelection-1 : currentOrders.length-1;
+        setOrderSelection(next);
+    }
+
+    const backClickHandler = (e)=>{
+        e.preventDefault();
+        navigation('/CurrentSeatInfo');
+    }
+
+    
+
+    const makeTakeOutOrder = () =>{
+        let managerId = window.localStorage.getItem('managerId');
+        const orderDetails = makeOrdetailMap();
+        const data = {
+            totalPrice : totalPrice,
+            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            endTime : new Date(+new Date() + 3240 * 20000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            orderType : "TAKEOUT_ORDER",
+            takeoutTickNumber : seatNum,
+            managerId: managerId,
+            employeeId : 1,
+            orderDetails : orderDetails,
+        };
+        console.log(data);
+        axios.post('http://localhost:8080/order/addTakeoutOrder', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+        }).catch(e=>console.log(e));
+    }
+
+    const changeDiv = (e)=>{
+        e.preventDefault();
+        navigation('/sale/cashPay');
     }
 
     return (
@@ -299,22 +549,22 @@ const SalePage = () => {
                                         <ColumnCell>번호</ColumnCell>
                                         <ColumnCell>메뉴명</ColumnCell>
                                         <ColumnCell>단가</ColumnCell>
-                                        <ColumnCell>수량</ColumnCell>
+                                        <ColumnCell>수량</ColumnCell> 
                                         <ColumnCell>할인</ColumnCell>
                                         <ColumnCell>금액</ColumnCell>
                                         <ColumnCell>비고</ColumnCell>
                                     </OrderRow>
                                 </TableHead>
                                 <TableBody>
-                                    {cells.map((cell) => (
-                                        <OrderRow>
-                                            <OrderCell component="th" scope="cell">{cell.no}</OrderCell>
+                                    {currentOrders.length>0 && currentOrders.map((cell, index) => (
+                                        <OrderRow  id = {"order"+String(index)} onClick={(e)=>{orderInfoClickHandler(index, e)}} checked={index===orderSelection ? true: false}>
+                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.name}</OrderCell>
-                                            <OrderCell>{cell.price}</OrderCell>
-                                            <OrderCell>{cell.count}</OrderCell>
-                                            <OrderCell>{cell.sale}</OrderCell>
-                                            <OrderCell>{cell.allprice}</OrderCell>
-                                            <OrderCell>{cell.ex}</OrderCell>
+                                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
+                                            <OrderCell>{cell.quantity}</OrderCell>
+                                            <OrderCell>{cell.discount}</OrderCell>
+                                            <OrderCell>{cell.totalprice}</OrderCell>
+                                            <OrderCell>{cell.message}</OrderCell>
                                             </OrderRow>
                                     ))}
                                 </TableBody>
@@ -325,9 +575,9 @@ const SalePage = () => {
                                 <TableHead>
                                     <ResultRow>
                                         <th style ={{width:'53%', color:'white'}}>합계</th>
-                                        <th style ={{width:'10%', color:'white'}}>수량</th>
-                                        <th style ={{width:'10%', color:'white'}}>할인금액</th>
-                                        <th style ={{width:'16%', color:'white'}}>전체금액</th>
+                                        <th style ={{width:'10%', color:'white'}}>{totalAmount}</th>
+                                        <th style ={{width:'10%', color:'white'}}>{totalDiscount}</th>
+                                        <th style ={{width:'16%', color:'white'}}>{totalPrice}</th>
                                         <th></th>
                                     </ResultRow>
                                 </TableHead>
@@ -338,8 +588,8 @@ const SalePage = () => {
                     <LeftBottomDiv>
                         <LeftBottomInDiv>
                             <LeftBottomTopDiv>
-                                <CircledRectButton name={'전체\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'선택\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
+                                <CircledRectButton name={'전체\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={allCancleHandler}/>
+                                <CircledRectButton name={'선택\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={selectCancleHander}/>
                                 <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
                                 <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
                             </LeftBottomTopDiv>
@@ -349,10 +599,10 @@ const SalePage = () => {
                                 <b>Payment Requirement</b>
                             </InfoContent>
                             {/* 결제내역선택/담당자 정보 선택 시 나오는거 구분 */}
-                            <InfoSpace name={'총 금 액'} value={35000} color={'white'}/>
-                            <InfoSpace name={'할인금액'} value={3500} color={'white'}/>
-                            <InfoSpace name={'받을금액'} value={31500} color={'yellow'}/>
-                            <InfoSpace name={'받은금액'} value={0} color={'white'}/>
+                            <InfoSpace name={'총 금 액'} value={totalPrice} color={'white'}/>
+                            <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
+                            <InfoSpace name={'받을금액'} value={minus(totalPrice,payedPrice)} color={'yellow'}/>
+                            <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
                             <InfoSpace name={'거스름돈'} value={0} color={'yellow'}/>
 
                             {/* 담당자 선택시 아래꺼 나옴 */}
@@ -372,10 +622,10 @@ const SalePage = () => {
                             
                         <LeftBottomInDiv>
                             <LeftBottomTopDiv>
-                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={1}></CircledRectButton>
-                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={2}></CircledRectButton>
-                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={3}></CircledRectButton>
-                                <CircledRectButton size={'5rem'} size2={'5rem'}radius={'30px'} kind={4}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={1} onClick={(e)=>{minusButtonHandler(orderSelection,e)}}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={2} onClick={(e)=>{plusButtonHandler(orderSelection,e)}}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={3} onClick={upSelectionHandler}></CircledRectButton>
+                                <CircledRectButton size={'5rem'} size2={'5rem'} radius={'30px'} kind={4} onClick={downSelectionHandler}></CircledRectButton>
                             </LeftBottomTopDiv>
                             
                             <LeftBottomTwoDiv>
@@ -384,8 +634,9 @@ const SalePage = () => {
                                     <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}/>
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
+                                    
                                     <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
-                                    <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
+                                    <Link to="/sale/cashPay"><CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/></Link>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={'기타'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
@@ -397,29 +648,37 @@ const SalePage = () => {
                 </LeftDiv>
 
                 <RightDiv>
-                    <RightTopDiv>
+                    <>
+                    <Routes>
+                        <Route path = "" element={<SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton}
+                        categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
+                        changeDiv={changeDiv}/>}/>
+                        <Route path = "/sale/cashPay" element={<CashPay/>}/>
+                    </Routes>
+                    </>
+                    {/* <RightTopDiv>
                         <RightTopTopDiv>
-                            <CategoryButton id = 'defaultMenu' name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
-                            <CategoryButton name={'2~3인분메뉴'} onClick={onClickCategoryButton}>2~3인분메뉴</CategoryButton>
-                            <CategoryButton name={'식사메뉴'} onClick={onClickCategoryButton}>식사메뉴</CategoryButton>
-                            <CategoryButton name={'사이드메뉴'} onClick={onClickCategoryButton}>사이드메뉴</CategoryButton>
-                            <CategoryButton name={'후식메뉴'} onClick={onClickCategoryButton}>후식메뉴</CategoryButton>
-                            <CategoryButton name={'추가메뉴'} onClick={onClickCategoryButton}>추가메뉴</CategoryButton>
-                            <CategoryButton name={'주류/음료'} onClick={onClickCategoryButton}>주류/음료</CategoryButton>
+                            <CategoryButton id = '세트메뉴' name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
+                            <CategoryButton id = '2~3인분메뉴' name={'2~3인분메뉴'} onClick={onClickCategoryButton}>2~3인분메뉴</CategoryButton>
+                            <CategoryButton id = '식사메뉴' name={'식사메뉴'} onClick={onClickCategoryButton}>식사메뉴</CategoryButton>
+                            <CategoryButton id = '사이드메뉴' name={'사이드메뉴'} onClick={onClickCategoryButton}>사이드메뉴</CategoryButton>
+                            <CategoryButton id = '후식메뉴' name={'후식메뉴'} onClick={onClickCategoryButton}>후식메뉴</CategoryButton>
+                            <CategoryButton id = '추가메뉴' name={'추가메뉴'} onClick={onClickCategoryButton}>추가메뉴</CategoryButton>
+                            <CategoryButton id = '주류/음료' name={'주류/음료'} onClick={onClickCategoryButton}>주류/음료</CategoryButton>
                         </RightTopTopDiv>
                         <RightTopBottomDiv>
                             <SmallTable menu={categoryMenus} getIndex={getIndex} width={'100%'} height={'100%'}/>
                         </RightTopBottomDiv>
                     </RightTopDiv>
                     <RightBottomDiv>
-                        <BottomButton><MdOutlineInput/>주문</BottomButton>
+                        <BottomButton onClick={makeOrderHandler}><MdOutlineInput/>주문</BottomButton>
                         <BottomButton><BsFillCreditCard2BackFill/>현금</BottomButton>
                         <BottomButton><GiMoneyStack/>신용카드</BottomButton>
                         <BottomButton>복합결제</BottomButton>
-                        <BottomButton><IoMdArrowRoundBack/>돌아가기</BottomButton>
+                        <BottomButton onClick={backClickHandler}><IoMdArrowRoundBack/>돌아가기</BottomButton>
                         <BottomButton>영수증관리</BottomButton>
                         <BottomButton>음식완성알림</BottomButton>
-                    </RightBottomDiv>
+                    </RightBottomDiv> */}
                 </RightDiv>
 
             </Div>
