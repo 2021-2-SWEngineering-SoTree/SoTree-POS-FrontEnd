@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -134,6 +134,9 @@ const MidBtn = styled.button`
     background-color : #D7FAFF;
     border-radius : 10px;
     font-size : 1.2rem;
+    &:hover {
+        background: #8DDEE9;
+    }
 `
 
 const BottomBottomDiv = styled.div`
@@ -183,13 +186,48 @@ function doOpenCheck(e){
     }
 }
 
-const CashPay = ({price}) => {
+const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
+
+    const [price, setPrice]=useState(0);
+    const [backPrice, setBackPrice]=useState(totalPrice);
+
+    const wonBtn = (i) =>{
+        setPrice(price+i);
+    }
+
+    useEffect(async ()=>{
+        setBackPrice(totalPrice-price);
+    },[price]);
+
+    const getPaid = async()=>{
+        await
+        alert('결제가 완료되었습니다');
+    }
+
+    const [cardNum,setCardNum]=useState();
+    const [checkCard, setCheckCard]=useState(false);
+    const [apNum,setApnum]=useState();
+    const [checkApprove,setCheckApprove]=useState(false);
+
+    const onChangeCard = (e) =>{
+        checkCard && setCardNum(e.target.value);
+        !checkCard && alert('입력을 요청하세요!');
+    }
+
+    const inputBtnClick=()=>{
+        checkApprove && setCheckCard(true);
+    }
+
+    const appBtnClick=()=>{
+        setCheckApprove(true);
+        setApnum(new Date().getTime())
+    }
 
     return (
         <>
             <Templet>
                 <Header>&nbsp;현금 결제
-                    <ExitBtn>X</ExitBtn>
+                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
                 </Header>
                 <Center>
                     <Content>
@@ -197,27 +235,28 @@ const CashPay = ({price}) => {
                             <TopLeft>
                                 <TopLeftWrapper>
                                 <h3>+ 받을 금액</h3>
-                                <CostDiv>{price}원</CostDiv>
+                                <CostDiv>{totalPrice}</CostDiv>
                                 </TopLeftWrapper>
                                 <TopLeftWrapper>
                                 <h3>+ <span style={{color:'red'}}>받은 </span>금액</h3>
-                                <CostDiv><span style={{color:'red'}}>19000</span></CostDiv>
+                                <CostDiv><span style={{color:'red'}}>{price}</span></CostDiv>
                                 </TopLeftWrapper>
                                 <TopLeftWrapper>
                                 <h3>+ <span style={{color:'red'}}>거스름 돈</span></h3>
-                                <CostDiv>19000</CostDiv>
+                                <CostDiv>{backPrice}</CostDiv>
                                 </TopLeftWrapper>
                             </TopLeft>
                             <TopRightBtn>현금 결제<br/>완료</TopRightBtn>
                         </TopContent>
 
                         <MidContent>
-                            <MidBtn>천 원</MidBtn>
-                            <MidBtn>오천원</MidBtn>
-                            <MidBtn>만 원</MidBtn>
-                            <MidBtn>오만원</MidBtn>
-                            <MidBtn>십만원</MidBtn>
+                            <MidBtn onClick={()=>wonBtn(1000)}>천 원</MidBtn>
+                            <MidBtn onClick={()=>wonBtn(5000)}>오천원</MidBtn>
+                            <MidBtn onClick={()=>wonBtn(10000)}>만 원</MidBtn>
+                            <MidBtn onClick={()=>wonBtn(50000)}>오만원</MidBtn>
+                            <MidBtn onClick={()=>wonBtn(100000)}>십만원</MidBtn>
                         </MidContent>
+
                         <BottomContent>
                             <BottomInContent>
                                 <h2>+ 현금 영수증</h2>
@@ -225,7 +264,7 @@ const CashPay = ({price}) => {
                                     <BottomBottomLeftDiv>
                                         <InputDiv>
                                             <InputLabel>카드 번호</InputLabel>
-                                            <InputNumber></InputNumber>
+                                            <InputNumber placeholder={'16자리 '}>{cardNum}</InputNumber>
                                         </InputDiv>
                                         <InputDiv>
                                             <InputLabel>사업 구분</InputLabel>
@@ -238,8 +277,8 @@ const CashPay = ({price}) => {
                                         </InputDiv>
                                     </BottomBottomLeftDiv>
                                     <BottomBottomRightDiv>
-                                        <BottomRightBtn style={{backgroundColor:'#474D4E', color:'white'}}>승인 요청</BottomRightBtn>
-                                        <BottomRightBtn style={{backgroundColor:'#D7FAFF', color:'black'}}>입력 요청</BottomRightBtn>
+                                        <BottomRightBtn onClick={inputBtnClick} style={{backgroundColor:'#474D4E', color:'white'}}>입력 요청</BottomRightBtn>
+                                        <BottomRightBtn onClick={appBtnClick} style={{backgroundColor:'#D7FAFF', color:'black'}}>승인 요청</BottomRightBtn>
                                     </BottomBottomRightDiv>
                                 </BottomBottomDiv>
                             </BottomInContent>
