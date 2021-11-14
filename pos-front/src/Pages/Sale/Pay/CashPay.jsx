@@ -183,7 +183,7 @@ function doOpenCheck(e){
     }
 }
 
-const CashPay = ({cost}) => {
+const CashPay = ({price}) => {
 
     return (
         <>
@@ -197,7 +197,7 @@ const CashPay = ({cost}) => {
                             <TopLeft>
                                 <TopLeftWrapper>
                                 <h3>+ 받을 금액</h3>
-                                <CostDiv>19000</CostDiv>
+                                <CostDiv>{price}원</CostDiv>
                                 </TopLeftWrapper>
                                 <TopLeftWrapper>
                                 <h3>+ <span style={{color:'red'}}>받은 </span>금액</h3>
