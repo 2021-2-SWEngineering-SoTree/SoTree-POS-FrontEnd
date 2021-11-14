@@ -5,6 +5,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import Tr from "./Tr";
+import {findAllByDisplayValue} from "@testing-library/react";
 
 //  I'm going to write the code first,
 //  and then divide the file during the refactoring.
@@ -12,7 +13,7 @@ import Tr from "./Tr";
 // td column style
 const ColumnCell = styled.td`
     background-color: #8DDEE9;
-    font-size: 30px;
+    font-size: 25px;
     text-align: center;
 `;
 
@@ -35,42 +36,26 @@ const EmployeeManagementTableStyle = styled.table`
     width: 100%;
 `;
 
-//-----------------------------------------------------------------------------
-
-const CheckBox = () => {
-    return (
-        <input type="checkbox" style={{width: 30, height: 30,}}/>
-    );
-};
-
-//--------------------------------------------------------------------------------
 
 const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
 
-    // check box    -> 나중에 해결.
-    const [checkedInputs, setCheckedInputs] = useState(new Set());
-    const [cChecked, setChecked] = useState(false);
+    //----------------- check box ---------------------------------------------------
+    const [inputs, setInputs] = useState(0);
 
-    const changeHandler = (checked, checkNumber) => {
-        if (checked) {
-            checkedInputs.add(checkNumber);
-            setCheckedInputs(checkedInputs);
-            console.log("check it");
-        }
-        else {
-            // check cancel
-            checkedInputs.delete(checkNumber);
-            setCheckedInputs(checkedInputs);
-            console.log("check cancel");
-        }
+    const onChange = (e) => {
+        const name = e.target.value; // 우선 e.target 에서 name 과 value 를 추출
+        setInputs(name);
+        console.log(name);
     };
-
-    const checkHandler = ({target}) => {
-        setChecked(!cChecked);
-        changeHandler(target.checked, target.number);
+    //--------------------------------------------------------------------------------
+    const showRow = (cells, ele) => {
+        return (
+            Array(cells.length).fill().map((obj, j)=>
+                <EmployeeManagementCell>
+                    {cells[j]==='blink' ? <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/> : cells[j]}
+                </EmployeeManagementCell>)
+        )
     }
-
-    const length = {isCheckBox} ? {columnName}.length-1 : {columnName}.length;
 
     // choice 봐야됨.
     return (
@@ -78,26 +63,16 @@ const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
             <EmployeeManagementTableStyle>
                 <TableHead>
                     <EmployeeManagementRow>
-                        {Array(columnName.length).fill().map((tr,i)=>
+                        {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>
                             <ColumnCell>{columnName[i]}</ColumnCell>)}
-
                     </EmployeeManagementRow>
                 </TableHead>
                 <TableBody>
-                    {cells.map((cell) => (
-                        <EmployeeManagementRow key={cell.number}>
-                            <EmployeeManagementCell component="th" scope="cell">
-                                {isCheckBox && <CheckBox id={cell.number} checked={cChecked}
-                                                          onChange={e => checkHandler(e)}/>}
-                            </EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.number}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.name}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.id}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.pw}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.latestDate}</EmployeeManagementCell>
-                            <EmployeeManagementCell>{cell.pos}</EmployeeManagementCell>
-                        </EmployeeManagementRow>
-                    ))}
+                    {Array(cells.length).fill(undefined, undefined, undefined).map((td, i)=>
+                        <EmployeeManagementRow>
+                            {showRow(cells[i], i)}
+                        </EmployeeManagementRow>)
+                    }
                 </TableBody>
             </EmployeeManagementTableStyle>
         </TableContainer>
