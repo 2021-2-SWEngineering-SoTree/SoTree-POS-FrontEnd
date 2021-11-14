@@ -540,9 +540,13 @@ const SalePage = () => {
             categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
             changeDiv={changeDiv}/>
         }
-        else if(num===1) return <CashPay/>
-        else if(num===2) return <CardPay/>
-        else if(num===3) return <MultiPay/>
+        else if(num===1) return <CashPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
+        else if(num===2) return <CardPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
+        else if(num===3) return <MultiPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
+    }
+
+    const setpayedPrice = (i)=>{
+        setPayedPrice(i);
     }
 
     return (
