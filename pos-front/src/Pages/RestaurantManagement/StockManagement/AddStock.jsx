@@ -82,6 +82,8 @@ const AddStock = ({onClickAdd}) => {
             await addStockHandler();
             alert("추가되었습니다.");
             onClickAdd();
+            setQuantity('');
+            setStockName('');
         }
         console.log("Click test : preventDefault");
     }
@@ -96,6 +98,7 @@ const AddStock = ({onClickAdd}) => {
         const ingredients = [{
             time : time,
             quantityChanged : +quantity,
+            employeeId : 1,
         }];
         let managerId = window.localStorage.getItem('managerId');
         const data = {

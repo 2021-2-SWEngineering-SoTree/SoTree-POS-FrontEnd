@@ -126,9 +126,10 @@ const AddMenu = () =>{
     const [register,setRegister]=useState(false);
 
     const getStocks = async ()=>{
-        await axios.post('http://localhost:8080/stock/getAll','1',{
+        let managerId = window.localStorage.getItem('managerId');
+        await axios.post('http://localhost:8080/stock/getAll',managerId,{
             headers : {
-            "Content-Type" : `application/json`,
+            "Content-Type" : "application/json",
         }}).then((res)=>{
             const menus=[{stockName:'없음'}];
             setAllStock(menus.concat(res.data));
@@ -207,21 +208,21 @@ const AddMenu = () =>{
     const addMenu = (e) =>{
         e.preventDefault();
         let managerId = window.localStorage.getItem('managerId');
-        const data = {
+        const data = JSON.stringify({
             menuName : name,
             price : price,
             managerId: managerId,
             menuCategory : category,
             menuIngredientLists : finalIngredients
-        };
+        });
         console.log(data);
-        !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', JSON.stringify(data), {
+        !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', data, {
             headers : {
-            "Content-Type" : `application/json`,
+            'Content-Type' : 'application/json',
         }}).then((res)=>{
             console.log(res);
             success();
-        }).catch(e=>fail());
+        }).catch(e=>console.log(e));
     };
 
     return (

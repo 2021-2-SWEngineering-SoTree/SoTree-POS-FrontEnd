@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsDisplay } from 'react-icons/bs';
 import Header from '../../Components/Header';
 import SeatTable from './Seat/SeatTable';
 import Td from './Seat/Td';
+import axios from 'axios';
 
 const CurrentSeatInfoPage = () => {
     
@@ -12,6 +13,24 @@ const CurrentSeatInfoPage = () => {
 
     let size = 16;
 
+
+    const getCurrentTableInfo = async ()=>{
+        let managerId = localStorage.getItem('managerId')
+        await axios.post(`http://localhost:8080/order/getTableNumber/${managerId}/16`,{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            setTableData(()=>res.data);
+            console.log('menu', tableData);
+        }).catch(e=>{
+            console.log(e);
+        })
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        await getCurrentTableInfo();
+    },[])
     return (
         <div>
             <Header text ={"판매"} restaurantName = {localStorage.getItem('storeName')}/>

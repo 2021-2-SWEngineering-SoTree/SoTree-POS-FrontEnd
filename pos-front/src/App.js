@@ -18,6 +18,7 @@ import CurrentSeatInfoPage from './Pages/Sale/CurrentSeatInfoPage';
 import SalePage from './Pages/Sale/SalePage';
 import StockDetail from './Pages/RestaurantManagement/StockManagement/StockDetail';
 import { useState } from 'react';
+import { CashPay } from './Pages/Sale/Pay';
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="/close" element={localStorage.getItem('Token') ? <ClosePage/>: <Navigate replace to='/'/> }/>
             <Route path="/employeeManagement" element={localStorage.getItem('Token') ? <EmployeeManagementPage/>: <Navigate replace to='/'/> }/>
             <Route path="/restaurantManagement/stock/stockDetail" element={localStorage.getItem('Token') ? <StockDetail/> : <Navigate replace to='/'/> }/>
+            <Route path="/sale/cashPay" element={localStorage.getItem('Token') ? <CashPay/>: <Navigate replace to='/'/> }/>
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>

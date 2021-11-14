@@ -17,7 +17,7 @@ const Td = ({rowIndex, cellIndex, size, style}) => {
     };
 
     return (
-        <Seat onClick = {()=> seatOnClickHandler(rowIndex * cellIndex + cellIndex)}>
+        <Seat onClick = {()=> seatOnClickHandler(rowIndex * 4 + cellIndex)}>
             <div style={{display : 'flex', flexDirection:'column'}}>
                 <div style={{verticalAlign:'top', textAlign:'left',fontWeight:'bold', marginBottom:'3rem', marginLeft:'0.3rem'}}>
                     {rowIndex * Math.sqrt(size) + cellIndex}
