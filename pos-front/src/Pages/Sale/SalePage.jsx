@@ -222,6 +222,9 @@ const SalePage = () => {
     const [currentOrders, setCurrentOrders] = useState([]);
     const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
     
+    const [click,setClick]=useState(0);
+
+
     // {name : '왕돈까스',
     // price : 12000,
     // quantity : 1,
@@ -525,6 +528,23 @@ const SalePage = () => {
         navigation('/sale/cashPay');
     }
 
+    const btnClick = (i)=>{
+        console.log(i);
+        setClick(i);
+    }
+
+    const RightComponent=(props)=>{
+        const num = props.number;
+        if(num===0){
+            return <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
+            categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
+            changeDiv={changeDiv}/>
+        }
+        else if(num===1) return <CashPay/>
+        else if(num===2) return <CardPay/>
+        else if(num===3) return <MultiPay/>
+    }
+
     return (
         <>
             
@@ -636,7 +656,7 @@ const SalePage = () => {
                                 <BottomBottomRightDiv>
                                     
                                     <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
-                                    <Link to="/sale/cashPay"><CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/></Link>
+                                    <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={'기타'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
@@ -648,14 +668,7 @@ const SalePage = () => {
                 </LeftDiv>
 
                 <RightDiv>
-                    <>
-                    <Routes>
-                        <Route path = "" element={<SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton}
-                        categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
-                        changeDiv={changeDiv}/>}/>
-                        <Route path = "/sale/cashPay" element={<CashPay/>}/>
-                    </Routes>
-                    </>
+                    <RightComponent number={click}/>
                     {/* <RightTopDiv>
                         <RightTopTopDiv>
                             <CategoryButton id = '세트메뉴' name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
