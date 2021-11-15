@@ -7,7 +7,7 @@ const Seat = styled.td`
     border : 2px solid #000000;
 `;
 
-const Td = ({rowIndex, cellIndex, size, style}) => {
+const Td = ({rowIndex, cellIndex, size, style, data}) => {
 
     let navigate = useNavigate();
 
@@ -15,6 +15,8 @@ const Td = ({rowIndex, cellIndex, size, style}) => {
         console.log("Click Seat : ", index);
         navigate('/sale', {state : [{seatNum : index , test : "Test 성공"}]});
     };
+    
+    let index = rowIndex * 4 + cellIndex;
 
     return (
         <Seat onClick = {()=> seatOnClickHandler(rowIndex * 4 + cellIndex)}>

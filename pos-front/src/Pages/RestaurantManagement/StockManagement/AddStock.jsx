@@ -106,6 +106,7 @@ const AddStock = ({onClickAdd}) => {
             managerId : managerId,
             quantity : quantity,
             stockDetailList : ingredients,
+            employeeId : 1,
         };
         console.log(data.stockDetailList);
         await axios.post('http://localhost:8080/stock/add', JSON.stringify(data), {
