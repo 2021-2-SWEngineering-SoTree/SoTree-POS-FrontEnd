@@ -1,5 +1,6 @@
+/* eslint-disable no-lone-blocks */
 import styled from 'styled-components';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, memo} from 'react';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -173,38 +174,42 @@ const Input = styled.input`
         margin-left : 1.4rem;
     }
 `
-
-function doOpenCheck(e){
-    console.log(e);
-    console.log(e.target);
-    var obj = document.getElementsByName("check");
-    console.log(obj[0],obj[1]);
-    for(var i=0; i<obj.length; i++){
-        if(obj[i] !== e.target){
-            obj[i].checked = false;
-        }
+function generateRandomCode(n) {
+    let str = ''
+    for (let i = 0; i < n; i++) {
+      str += Math.floor(Math.random() * 10)
     }
+    return str
 }
 
-const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
+const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
     const [price, setPrice]=useState(0);
-    const [backPrice, setBackPrice]=useState(totalPrice);
+    const [backPrice, setBackPrice]=useState(0);
+
+    const setpayprice = (i) =>{
+        console.log('i='+i);
+        setpayPrice(i);
+    }
 
     const wonBtn = (i) =>{
+        console.log(setpayPrice);
         setPrice(price+i);
+        //setpayprice(price+i);
+        console.log('price='+price);
     }
 
     useEffect(()=>{
-        console.log('가격 설정');
-        price && setBackPrice(totalPrice-price);
+        console.log('가격 설정',price);
+        price && price>totalPrice && setBackPrice(price-totalPrice);
     },[price]);
 
-    const getPaid = async()=>{
+    const getPaid = ()=>{
         setTotalprice(0);
         setPrice(0);
         setBackPrice(0);
+        //결제api
         alert('결제가 완료되었습니다');
     }
 
@@ -212,19 +217,42 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
     const [checkCard, setCheckCard]=useState(false);
     const [apNum,setApnum]=useState();
     const [checkApprove,setCheckApprove]=useState(false);
+    const [checkMan,setCheckMan]=useState(false);
 
-    const onClickBtn = () =>{setCheckCard(true);};
-
-    const onChange = (e)=>{
-        console.log(e.target.value);
-        !checkCard && alert('먼저 입력 요청을 해주세요');
-        checkCard && setCardNum(e.target.value);
+    const doOpenCheck=(index)=>{
+        setCheckMan(true);
+        console.log(index);
+        const obj = document.getElementsByName("check");
+        console.log(obj[0],obj[1]);
+        for(let i=0; i<obj.length; i++){
+            if(i === index){
+                obj[i].checked = true;
+            }
+            else obj[i].checked=false;
+        }
+        console.log(obj[0],obj[1]);
     }
+    
+    const onClickBtn = () =>{
+        {
+            !checkCard && alert('카드번호를 입력받습니다');
+            setTimeout(() => {
+                setCheckCard(true);
+                const num = generateRandomCode(16);
+                num.replace('0','1');
+                setCardNum(+num);
+                const rand = Math.floor(Math.random()*2);
+                doOpenCheck(rand);
+            }, 1000);
+        }
+        {
+            checkCard && alert('이미 카드번호를 입력받았습니다')
+        };
+    };
 
     useEffect(()=>{
-        
-        console.log(checkCard, cardNum, apNum, checkApprove);
-        checkCard && cardNum && apNum && checkApprove && alert('영수증이 출력되었습니다');
+        console.log(checkCard, cardNum, apNum, checkApprove, checkMan);
+        checkCard && cardNum && apNum && checkApprove && checkMan && alert('영수증이 출력되었습니다');
     },[checkApprove])
 
     return (
@@ -268,16 +296,16 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
                                     <BottomBottomLeftDiv>
                                         <InputDiv>
                                             <InputLabel>카드 번호</InputLabel>
-                                            <InputNumber placeholder={'16자리 '} onChange={onChange} value={cardNum}></InputNumber>
+                                            <InputNumber value={cardNum} disabled></InputNumber>
                                         </InputDiv>
                                         <InputDiv>
                                             <InputLabel>사업 구분</InputLabel>
-                                            <Input name="check" type="checkbox" value="개인" onClick={doOpenCheck}/>개인
-                                            <Input name="check" type="checkbox" value="사업자" onClick={doOpenCheck}/>사업자
+                                            <Input name="check" type="checkbox" value="개인" disabled/>개인
+                                            <Input name="check" type="checkbox" value="사업자"  disabled/>사업자
                                         </InputDiv>
                                         <InputDiv>
                                             <InputLabel>승인 번호</InputLabel>
-                                            <InputNumber value={apNum}></InputNumber>
+                                            <InputNumber value={apNum} disabled></InputNumber>
                                         </InputDiv>
                                     </BottomBottomLeftDiv>
                                     <BottomBottomRightDiv>
@@ -293,6 +321,6 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
             </Templet>
         </>
     )
-};
+});
 
 export default CashPay;

@@ -254,6 +254,20 @@ const SalePage = () => {
 
     // 결제내역/ 담당자 정보 구분
     const [leftBot,setLeftBot]=useState(true);
+    
+    //담당자
+    const [pickEmployee,setPickEmployee]=useState();
+    //선택된 담당자
+    const [employee,setEmployee]=useState();
+    const [employeeId, setEmployeeId]=useState();
+
+    const onChangeEmployee=(e)=>{
+        setPickEmployee(e.target.value);
+    };
+
+    const changeEmployee=()=>{
+        setEmployee(pickEmployee)
+    };
 
     let navigation = useNavigate();
 
@@ -536,6 +550,11 @@ const SalePage = () => {
         setClick(i);
     }
 
+    const calcPayedPrice = (i)=>{
+        console.log(i);
+        setPayedPrice(i);
+    }
+
     const RightComponent=(props)=>{
         const num = props.number;
         if(num===0){
@@ -543,13 +562,9 @@ const SalePage = () => {
             categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
             changeDiv={changeDiv}/>
         }
-        else if(num===1) return <CashPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
-        else if(num===2) return <CardPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
-        else if(num===3) return <MultiPay totalPrice={totalPrice} setpayedPrice={setpayedPrice} setClick={setClick}/>
-    }
-
-    const setpayedPrice = (i)=>{
-        setPayedPrice(i);
+        else if(num===1) return <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
+        else if(num===2) return <CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
+        else if(num===3) return <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
     }
 
     return (
@@ -632,7 +647,7 @@ const SalePage = () => {
                                 <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
                                 <InfoSpace name={'받을금액'} value={minus(totalPrice,payedPrice)} color={'yellow'}/>
                                 <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
-                                <InfoSpace name={'거스름돈'} value={0} color={'yellow'}/> 
+                                <InfoSpace name={'거스름돈'} value={minus(payedPrice,minus(totalPrice,payedPrice))>0 && minus(payedPrice,minus(totalPrice,payedPrice))} color={'yellow'}/> 
                                 </>
                             )}
 
@@ -641,16 +656,16 @@ const SalePage = () => {
                                 <InfoContent>
                                     <b>Information about the person<br/>in charge</b>
                                 </InfoContent>
-                                <InfoSpace name={'직원번호'} value={'직원번호'} color={'white'}/>
-                                <InfoSpace name={'직 원 명'} value={'직원명'} color={'white'}/>
+                                <InfoSpace name={'직원번호'} value={employeeId} color={'white'}/>
+                                <InfoSpace name={'직 원 명'} value={employee} color={'white'}/>
                                 
                                 <LeftBottomBottomDiv>
-                                    <StaffSelector onChange={''}>
+                                    <StaffSelector onChange={onChangeEmployee}>
                                         <option value={''}>{''}</option> 
                                         <option value={'홍길동'}>{'홍길동'}</option> 
                                         <option value={'서혜민'}>{'서혜민'}</option> 
                                     </StaffSelector>
-                                    <ChangeButton>담당자 변경</ChangeButton>
+                                    <ChangeButton onClick={changeEmployee}>담당자 변경</ChangeButton>
                                 </LeftBottomBottomDiv>
                                 </>
                             )}
@@ -686,29 +701,6 @@ const SalePage = () => {
 
                 <RightDiv>
                     <RightComponent number={click}/>
-                    {/* <RightTopDiv>
-                        <RightTopTopDiv>
-                            <CategoryButton id = '세트메뉴' name={'세트메뉴'} onClick={onClickCategoryButton}>세트메뉴</CategoryButton>
-                            <CategoryButton id = '2~3인분메뉴' name={'2~3인분메뉴'} onClick={onClickCategoryButton}>2~3인분메뉴</CategoryButton>
-                            <CategoryButton id = '식사메뉴' name={'식사메뉴'} onClick={onClickCategoryButton}>식사메뉴</CategoryButton>
-                            <CategoryButton id = '사이드메뉴' name={'사이드메뉴'} onClick={onClickCategoryButton}>사이드메뉴</CategoryButton>
-                            <CategoryButton id = '후식메뉴' name={'후식메뉴'} onClick={onClickCategoryButton}>후식메뉴</CategoryButton>
-                            <CategoryButton id = '추가메뉴' name={'추가메뉴'} onClick={onClickCategoryButton}>추가메뉴</CategoryButton>
-                            <CategoryButton id = '주류/음료' name={'주류/음료'} onClick={onClickCategoryButton}>주류/음료</CategoryButton>
-                        </RightTopTopDiv>
-                        <RightTopBottomDiv>
-                            <SmallTable menu={categoryMenus} getIndex={getIndex} width={'100%'} height={'100%'}/>
-                        </RightTopBottomDiv>
-                    </RightTopDiv>
-                    <RightBottomDiv>
-                        <BottomButton onClick={makeOrderHandler}><MdOutlineInput/>주문</BottomButton>
-                        <BottomButton><BsFillCreditCard2BackFill/>현금</BottomButton>
-                        <BottomButton><GiMoneyStack/>신용카드</BottomButton>
-                        <BottomButton>복합결제</BottomButton>
-                        <BottomButton onClick={backClickHandler}><IoMdArrowRoundBack/>돌아가기</BottomButton>
-                        <BottomButton>영수증관리</BottomButton>
-                        <BottomButton>음식완성알림</BottomButton>
-                    </RightBottomDiv> */}
                 </RightDiv>
 
             </Div>

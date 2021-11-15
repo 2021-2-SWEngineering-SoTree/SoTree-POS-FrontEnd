@@ -99,29 +99,41 @@ const InputNumber = styled.input`
 `;
 
 
-const MultiPay = ({cost}) => {
+const MultiPay = ({totalPrice, setpayPrice, setClick}) => {
+
+    const [totalprice,setTotalprice]=useState(totalPrice);
+    const [cash,setCash]=useState();
+    const [card,setCard]=useState();
+
+    const onChangeCash=(e)=>{
+        setCash(e.target.value);
+    }
+
+    const onChangeCard=(e)=>{
+        setCard(e.target.value);
+    }
 
     return (
         <>
             <Templet>
                 <Header>&nbsp;복합 결제
-                    <ExitBtn>X</ExitBtn>
+                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
                 </Header>
                 <Center>
                     <Content>
                         <TopContent>
                             <h1>+ <span style={{color:'red'}}>남은 금액</span></h1>
-                            <CostDiv>19000</CostDiv>
+                            <CostDiv>{totalPrice}</CostDiv>
                         </TopContent>
                         <BottomContent>
                             <BottomInContent>
                                 <InputDiv>
                                     <InputLabel>현 금</InputLabel>
-                                    <InputNumber></InputNumber>
+                                    <InputNumber onChange={onChangeCash} value={cash}></InputNumber>
                                 </InputDiv>
                                 <InputDiv>
                                     <InputLabel>신용카드</InputLabel>
-                                    <InputNumber></InputNumber>
+                                    <InputNumber onChange={onChangeCard} value={card}></InputNumber>
                                 </InputDiv>
                                 
 
