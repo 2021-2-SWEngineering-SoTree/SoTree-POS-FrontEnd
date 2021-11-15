@@ -160,9 +160,9 @@ const LeftBottomBottomDiv = styled.div`
 
 const StaffSelector = styled.select`
     height : 2rem;
-    width : 6rem;
+    width : 6.2rem;
     background-color : #F2F0F0;
-    font-size : 1.5rem;
+    font-size : 1.3rem;
     line-height : 2.5rem;
     padding-left : 0.5rem;
     padding-right : 0.5rem;
@@ -174,7 +174,7 @@ const StaffSelector = styled.select`
 const ChangeButton = styled.button`
     background-color : #474D4E;
     color : white;
-    height : 4rem;
+    height : 3.3rem;
     font-size:1.3rem;
     cursor : pointer;
 `
@@ -251,6 +251,9 @@ const SalePage = () => {
 
     const [payedPrice, setPayedPrice] = useState(0);
 
+
+    // 결제내역/ 담당자 정보 구분
+    const [leftBot,setLeftBot]=useState(true);
 
     let navigation = useNavigate();
 
@@ -617,30 +620,40 @@ const SalePage = () => {
                                 <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
                                 <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
                             </LeftBottomTopDiv>
-                            <Button>결제 내역</Button>
-                            <Button>담당자 정보</Button>
-                            <InfoContent>
-                                <b>Payment Requirement</b>
-                            </InfoContent>
-                            {/* 결제내역선택/담당자 정보 선택 시 나오는거 구분 */}
-                            <InfoSpace name={'총 금 액'} value={totalPrice} color={'white'}/>
-                            <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
-                            <InfoSpace name={'받을금액'} value={minus(totalPrice,payedPrice)} color={'yellow'}/>
-                            <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
-                            <InfoSpace name={'거스름돈'} value={0} color={'yellow'}/>
+                            <Button onClick={()=>setLeftBot(true)}>결제 내역</Button>
+                            <Button onClick={()=>setLeftBot(false)}>담당자 정보</Button>
 
-                            {/* 담당자 선택시 아래꺼 나옴 */}
-                            {/* <InfoSpace name={'직원번호'} value={'직원번호'} color={'white'}/>
-                            <InfoSpace name={'직 원 명'} value={'직원명'} color={'white'}/>
-                            
-                            <LeftBottomBottomDiv>
-                                <StaffSelector onChange={''}>
-                                    <option value={''}>{''}</option> 
-                                    <option value={'홍길동'}>{'홍길동'}</option> 
-                                    <option value={'서혜민'}>{'서혜민'}</option> 
-                                </StaffSelector>
-                                <ChangeButton>담당자 변경</ChangeButton>
-                            </LeftBottomBottomDiv> */}
+                            {leftBot && (
+                                <>
+                                <InfoContent>
+                                    <b>Payment Requirement</b>
+                                </InfoContent>
+                                <InfoSpace name={'총 금 액'} value={totalPrice} color={'white'}/>
+                                <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
+                                <InfoSpace name={'받을금액'} value={minus(totalPrice,payedPrice)} color={'yellow'}/>
+                                <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
+                                <InfoSpace name={'거스름돈'} value={0} color={'yellow'}/> 
+                                </>
+                            )}
+
+                            {!leftBot && (
+                                <>
+                                <InfoContent>
+                                    <b>Information about the person<br/>in charge</b>
+                                </InfoContent>
+                                <InfoSpace name={'직원번호'} value={'직원번호'} color={'white'}/>
+                                <InfoSpace name={'직 원 명'} value={'직원명'} color={'white'}/>
+                                
+                                <LeftBottomBottomDiv>
+                                    <StaffSelector onChange={''}>
+                                        <option value={''}>{''}</option> 
+                                        <option value={'홍길동'}>{'홍길동'}</option> 
+                                        <option value={'서혜민'}>{'서혜민'}</option> 
+                                    </StaffSelector>
+                                    <ChangeButton>담당자 변경</ChangeButton>
+                                </LeftBottomBottomDiv>
+                                </>
+                            )}
 
                         </LeftBottomInDiv>
                             

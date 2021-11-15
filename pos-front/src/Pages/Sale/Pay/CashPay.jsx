@@ -188,6 +188,7 @@ function doOpenCheck(e){
 
 const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
 
+    const [totalprice,setTotalprice]=useState(totalPrice);
     const [price, setPrice]=useState(0);
     const [backPrice, setBackPrice]=useState(totalPrice);
 
@@ -195,12 +196,15 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
         setPrice(price+i);
     }
 
-    useEffect(async ()=>{
-        setBackPrice(totalPrice-price);
+    useEffect(()=>{
+        console.log('가격 설정');
+        price && setBackPrice(totalPrice-price);
     },[price]);
 
     const getPaid = async()=>{
-        await
+        setTotalprice(0);
+        setPrice(0);
+        setBackPrice(0);
         alert('결제가 완료되었습니다');
     }
 
@@ -209,19 +213,19 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
     const [apNum,setApnum]=useState();
     const [checkApprove,setCheckApprove]=useState(false);
 
-    const onChangeCard = (e) =>{
+    const onClickBtn = () =>{setCheckCard(true);};
+
+    const onChange = (e)=>{
+        console.log(e.target.value);
+        !checkCard && alert('먼저 입력 요청을 해주세요');
         checkCard && setCardNum(e.target.value);
-        !checkCard && alert('입력을 요청하세요!');
     }
 
-    const inputBtnClick=()=>{
-        checkApprove && setCheckCard(true);
-    }
-
-    const appBtnClick=()=>{
-        setCheckApprove(true);
-        setApnum(new Date().getTime())
-    }
+    useEffect(()=>{
+        
+        console.log(checkCard, cardNum, apNum, checkApprove);
+        checkCard && cardNum && apNum && checkApprove && alert('영수증이 출력되었습니다');
+    },[checkApprove])
 
     return (
         <>
@@ -235,7 +239,7 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
                             <TopLeft>
                                 <TopLeftWrapper>
                                 <h3>+ 받을 금액</h3>
-                                <CostDiv>{totalPrice}</CostDiv>
+                                <CostDiv>{totalprice}</CostDiv>
                                 </TopLeftWrapper>
                                 <TopLeftWrapper>
                                 <h3>+ <span style={{color:'red'}}>받은 </span>금액</h3>
@@ -246,7 +250,7 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
                                 <CostDiv>{backPrice}</CostDiv>
                                 </TopLeftWrapper>
                             </TopLeft>
-                            <TopRightBtn>현금 결제<br/>완료</TopRightBtn>
+                            <TopRightBtn onClick={getPaid}>현금 결제<br/>완료</TopRightBtn>
                         </TopContent>
 
                         <MidContent>
@@ -264,7 +268,7 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
                                     <BottomBottomLeftDiv>
                                         <InputDiv>
                                             <InputLabel>카드 번호</InputLabel>
-                                            <InputNumber placeholder={'16자리 '}>{cardNum}</InputNumber>
+                                            <InputNumber placeholder={'16자리 '} onChange={onChange} value={cardNum}></InputNumber>
                                         </InputDiv>
                                         <InputDiv>
                                             <InputLabel>사업 구분</InputLabel>
@@ -273,12 +277,12 @@ const CashPay = ({totalPrice, setpayedPrice, setClick}) => {
                                         </InputDiv>
                                         <InputDiv>
                                             <InputLabel>승인 번호</InputLabel>
-                                            <InputNumber></InputNumber>
+                                            <InputNumber value={apNum}></InputNumber>
                                         </InputDiv>
                                     </BottomBottomLeftDiv>
                                     <BottomBottomRightDiv>
-                                        <BottomRightBtn onClick={inputBtnClick} style={{backgroundColor:'#474D4E', color:'white'}}>입력 요청</BottomRightBtn>
-                                        <BottomRightBtn onClick={appBtnClick} style={{backgroundColor:'#D7FAFF', color:'black'}}>승인 요청</BottomRightBtn>
+                                        <BottomRightBtn onClick={onClickBtn} style={{backgroundColor:'#474D4E', color:'white'}}>입력 요청</BottomRightBtn>
+                                        <BottomRightBtn onClick={()=>{setApnum(new Date().getTime());setCheckApprove(true)}} style={{backgroundColor:'#D7FAFF', color:'black'}}>승인 요청</BottomRightBtn>
                                     </BottomBottomRightDiv>
                                 </BottomBottomDiv>
                             </BottomInContent>
