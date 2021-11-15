@@ -132,7 +132,7 @@ const AddStock = ({onClickAdd}) => {
             const res = await axios.get('http://localhost:8080/getAllPersonName')
             console.log('가져온 직원 값들' + res.data);
             for (let i = 0 ; i < res.data.length; i++) {
-                getEmployee.push(res.data[i]);
+                getEmployee.push(res.data[i].personName);
             }
             setCells(getEmployee);
             console.log(cello);

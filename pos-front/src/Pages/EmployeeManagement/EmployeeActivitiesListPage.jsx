@@ -14,11 +14,11 @@ const CreateLeaveRowData = (number, name, id, leaveDate, pos) => {
 const CreatePaymentRowData = (number, name, orderNum, type, totalPrice, payDate, positionNum) => {
     return [number, name, orderNum, type, totalPrice, payDate, positionNum];
 }
-const CreateOrderRowData = (number, name, type, totalPrice, amount, orderDate, positionNum) => {
-    return [number, name, type, totalPrice, amount, orderDate, positionNum];
+const CreateOrderRowData = (number, name, type, totalPrice, orderDate, positionNum) => {
+    return [number, name, type, totalPrice, orderDate, positionNum];
 }
-const CreateStockRowData = (number, name, stockNum, stockName, beforeAmount, afterAmount, changeDate) => {
-    return [number, name, stockNum, stockName, beforeAmount, afterAmount, changeDate];
+const CreateStockRowData = (number, name, stockNum, stockName, changeAmount, afterAmount, changeDate) => {
+    return [number, name, stockNum, stockName, changeAmount, afterAmount, changeDate];
 }
 
 
@@ -28,8 +28,8 @@ const EmployeeActivitiesListPage = () => {
     const arriveColumnName = ['번호', '이름', 'ID', '출근 일자', '직급']
     const leaveColumnName = ['번호', '이름', 'ID', '퇴근 일자', '직급']
     const paymentColumnName = ['결제번호', '이름', '주문 번호', '결제 종류', '결제 금액', '결제 일자', '자리 번호']
-    const orderColumnName = ['주문번호', '이름', '주문 종류', '주문 합계', '수량', '주문 일자', '자리 번호']
-    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경전 수량', '변경후 수량', '수정 일자']
+    const orderColumnName = ['주문번호', '이름', '주문 종류', '주문 합계', '주문 일자', '자리 번호']
+    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경량', '변경후 수량', '수정 일자']
 
 
     const [changeCello, setChangeCells] = useState([]);   // 테이블 안에 값이 바뀜.
@@ -43,6 +43,8 @@ const EmployeeActivitiesListPage = () => {
 
     useEffect(async () => {
         try {
+            const res = await axios.post('http://localhost:8080/EmployeeActivity');
+            console.log(res);
             const arrivalCells = [
                 CreateArrivalRowData(1, 'test1', '1234', '2021-01-01', '사원')
             ];
@@ -72,7 +74,7 @@ const EmployeeActivitiesListPage = () => {
     }
     const onClickEmployeeListOrder = () => {
         const orderCells = [
-            CreateOrderRowData(1, 'test4', '테이블', 6000, 1, '2021-01-01', '4')
+            CreateOrderRowData(1, 'test4', '테이블', 6000, '2021-01-01', '4')
         ];
         changeState(orderCells, orderColumnName);
     }

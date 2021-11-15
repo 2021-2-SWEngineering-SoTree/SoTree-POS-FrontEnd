@@ -107,13 +107,12 @@ const EmployeeManagementPage = () => {
             const cells = []
             // 데이터를 받아오는 동안 시간 소모. await 대기
             const res = await axios.post('http://localhost:8080/getAllPersonName')
-            //console.log(res);
-            // 받아온 데이터로 다음 일을 진행하려고 await 로 대기
-            // 받아온 데이터를 map 해주어 rowData 별 data 선언
+            console.log(res);
             console.log(res.data);
 
             for (let i = 0; i < res.data.length; i++) {
-                cells.push(CreateRowData('blink', i+1, res.data[i],
+
+                cells.push(CreateRowData('blink', i+1, res.data[i].personName,
                     'hello', '1234', '2021-11-03 13:00', '사장'))
             }
             setCells(cells);
