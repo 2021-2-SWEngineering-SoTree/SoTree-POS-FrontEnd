@@ -87,16 +87,29 @@ const EmployeeManagementPage = () => {
     const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
 
     const [commute, setCommute] = useState(false);
-
     const [addEmployee, setAddEmployee] = useState(false);
     const [changeEmployee, setChangeEmployee] = useState(false);
     const [deleteEmployee, setDeleteEmployee] = useState(false);
 
+    const [getNumber, setGetNumber] = useState(-1);
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
     const [listOfEmployee,  setEmployeeList] = useState(false);  // 버튼 클릭시 LeftDiv 의 변경
 
+    let selectedEmployee = []
+    const [reConstruct, setReConstruct] = useState([0, '', '']);
 
-    const onClickEmployeeCommute = () => { setCommute(!commute); }
+
+    const onClickEmployeeCommute = () => {
+        if (getNumber === -1) {
+            alert("직원이 선택되지 않았습니다.");
+        }
+        else {
+            selectedEmployee = cello[getNumber];
+            // index(1): number, index(2):name, index(6): pos
+            setReConstruct([selectedEmployee[1], selectedEmployee[2], selectedEmployee[6]]);
+            setCommute(!commute);
+        }
+    }
     const onClickEmployeeAdd = () => { setAddEmployee(!addEmployee); }
     const onClickEmployeeChange = () => { setChangeEmployee(!changeEmployee); }
     const onClickEmployeeDelete = () => { setDeleteEmployee(!deleteEmployee); }
@@ -111,7 +124,6 @@ const EmployeeManagementPage = () => {
             console.log(res.data);
 
             for (let i = 0; i < res.data.length; i++) {
-
                 cells.push(CreateRowData('blink', i+1, res.data[i].personName,
                     'hello', '1234', '2021-11-03 13:00', '사장'))
             }
@@ -124,22 +136,22 @@ const EmployeeManagementPage = () => {
 
     return (
         <>
-            <RectangleModal visible={commute}>
-                <EmployeeCommutingPage visible={commute} setCommute={setCommute}/>
+            <RectangleModal setSelectCategory={setCommute} visible={commute} TitleName={"직원 출퇴근"}>
+                <EmployeeCommutingPage visible={commute} setCommute={setCommute} reConstruct={reConstruct} setReConstruct={setReConstruct}/>
             </RectangleModal>
-            <RectangleModal visible={addEmployee}>
+            <RectangleModal setSelectCategory={setAddEmployee} visible={addEmployee} TitleName={"직원 추가"}>
                 <EmployeeAddPage visible={addEmployee}/>
             </RectangleModal>
-            <RectangleModal visible={changeEmployee}>
+            <RectangleModal setSelectCategory={setChangeEmployee} visible={changeEmployee} TitleName={"직원 수정"}>
                 <EmployeeModifyPage/>
             </RectangleModal>
-            <RectangleModal visible={deleteEmployee}>
+            <RectangleModal setSelectCategory={setDeleteEmployee} visible={deleteEmployee} TitleName={"직원 삭제"}>
                 <EmployeeDeletePage/>
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv visible={!listOfEmployee}>
-                    <MintFormTable columnName={columnName} cells={cello} isCheckBox={true}/>
+                    <MintFormTable columnName={columnName} cells={cello} isCheckBox={true} setGetNumber={setGetNumber}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee}>
                     <EmployeeActivitiesListPage/>

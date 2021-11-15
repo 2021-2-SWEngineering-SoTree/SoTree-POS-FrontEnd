@@ -43,8 +43,6 @@ const EmployeeActivitiesListPage = () => {
 
     useEffect(async () => {
         try {
-            const res = await axios.post('http://localhost:8080/EmployeeActivity');
-            console.log(res);
             const arrivalCells = [
                 CreateArrivalRowData(1, 'test1', '1234', '2021-01-01', '사원')
             ];

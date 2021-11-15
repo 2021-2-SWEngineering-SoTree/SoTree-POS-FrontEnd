@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from "styled-components";
 import axios from "axios";
-import {useNavigate} from "react-router";
 
 
 const LargeButton = styled.button`
@@ -9,19 +8,6 @@ const LargeButton = styled.button`
     height : 5.5rem;
     font-size : 1.2rem;
     background-color : #C4C4C4;
-    margin-right : 1rem;
-    border-radius : 0.5rem;
-    padding : 0;
-    float: left;
-`;
-
-
-const CheckButton = styled.button`
-    width : 4rem;
-    height : 3.5rem;
-    font-size : 1.2rem;
-    background-color : #C4C4C4;
-    margin-top : 2rem;
     margin-right : 1rem;
     border-radius : 0.5rem;
     padding : 0;
@@ -66,13 +52,6 @@ const ContentLabel = styled.label`
 
 `;
 
-const Form = styled.form`
-    display : flex;
-    justify-content : center;
-    flex-direction : column;
-    float: right;
-`;
-
 
 const Input = styled.input`   
     height : 2.0rem;
@@ -98,21 +77,64 @@ const DividedHr = styled.hr`
 
 
 
-const EmployeeCommutingPage = ({commute, setCommute}) => {
+const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct}) => {
+
+    const date = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16);
+
+    useEffect(async () => {
+        try {
+            setReConstruct(reConstruct);
+            console.log(reConstruct);
+        } catch (e) {
+            console.error(e.message);
+        }
+    }, [reConstruct]);
+
+
     const CancelClick = () => {
         setCommute(!commute)
     }
-    const navigate = useNavigate();
-    const arrivalHandleClick = async(e) => {
 
+    const arrivalHandleClick = async(e) => {
+        if (window.confirm("출근을 등록하시겠습니까?")) {
+            let arrivalData = {
+                employeeId: reConstruct[0],
+                commingTime: date,
+                branchId: "1"
+            }
+            await axios.post('http://localhost:8080/recordCome', JSON.stringify(arrivalData),
+                { headers: { "Content-Type" : `application/json`, } }).then((res)=>{
+                console.log(res);
+                alert("test, 출근 추가 되었음");
+                setCommute(!commute);
+            }).catch(error => {
+                console.log(error);
+                alert('출근 추가 오류, 다시진행해주세요');
+            })
+        }
+        else { alert("출근 추가 오류"); }
     }
 
     const leaveHandleClick = async(e) => {
         if (window.confirm("test, 퇴근")) {
-            e.preventDefault();
-            alert("test, 퇴근 추가 되었음")
+            let leaveDate = {
+                employeeId: reConstruct[0],
+                commingTime: date,
+                branchId: "1"
+            }
+            await axios.post('http://localhost:8080/recordOut', JSON.stringify(leaveDate),
+                { headers: {"Content-Type" : `application/json`,}}).then((res)=>{
+                    console.log(res);
+                    alert("test, 퇴근 추가 되었음");
+                    setCommute(!commute);
+            }).catch(error => {
+                console.log(error);
+                alert('퇴근 추가 오류, 다시 진행해주세요');
+            })
         }
+        else { alert("퇴근 추가 오류"); }
     }
+
 
     return (
         <>
@@ -121,19 +143,23 @@ const EmployeeCommutingPage = ({commute, setCommute}) => {
                     <HeaderLabel>+ 선택된 직원 정보</HeaderLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <ContentLabel>+ 번&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;호<Input placeholder = {"번호"} style={{flexGrow:3}}/>
+                    <ContentLabel>+ 번&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;호
+                        <Input type="text" value={''||reConstruct[0]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <ContentLabel>+ 이&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;름<Input placeholder = {"번호"} style={{flexGrow:3}}/>
+                    <ContentLabel>+ 이&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;름
+                        <Input type="text" value={''||reConstruct[1]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <ContentLabel>+ 직&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;급<Input placeholder = {"번호"} style={{flexGrow:3}}/>
+                    <ContentLabel>+ 직&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;급
+                        <Input type="text" value={''||reConstruct[2]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <ContentLabel>+ 현재 시간<Input placeholder = {"번호"} style={{flexGrow:3}}/>
+                    <ContentLabel>+ 현재 시간
+                        <Input type="text" value={''||date} onClick={CancelClick} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
@@ -151,11 +177,6 @@ const EmployeeCommutingPage = ({commute, setCommute}) => {
                     <ContentLabel style={{lineHeight: '90px'}}>현재 시간이 퇴근 기록으로 등록됩니다.</ContentLabel>
                 </InnerDiv>
             </WrapperDiv>
-                <Form>
-                    <div>
-                        <CheckButton onClick={CancelClick}>닫기</CheckButton>
-                    </div>
-                </Form>
         </>
     );
 }

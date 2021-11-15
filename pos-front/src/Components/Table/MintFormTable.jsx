@@ -37,16 +37,16 @@ const EmployeeManagementTableStyle = styled.table`
 `;
 
 
-const MintFormTable = ({columnName, cells, isCheckBox}) => {
+const MintFormTable = ({columnName, cells, isCheckBox, setGetNumber}) => {
 
     //----------------- check box ---------------------------------------------------
-    const [inputs, setInputs] = useState(0);
 
     const onChange = (e) => {
         const name = e.target.value; // 우선 e.target 에서 name 과 value 를 추출
-        setInputs(name);
         console.log(name);
+        setGetNumber(name);
     };
+
     //--------------------------------------------------------------------------------
     const showRow = (cells, ele) => {
         return (
