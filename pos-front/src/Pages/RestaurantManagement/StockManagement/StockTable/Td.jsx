@@ -29,7 +29,7 @@ const Td =  memo(({rowIndex, cellIndex, stock, clickedIndex}) => {
 
 
     return (
-        <StockCell id = {rowIndex*7 + cellIndex+1} onClick = {(e)=>stockCellOnClickHandler(e)}>
+        <StockCell key={rowIndex*7 + cellIndex+1} id = {rowIndex*7 + cellIndex+1} onClick = {(e)=>stockCellOnClickHandler(e)}>
             <Stock>
                 <div id = {rowIndex*7 + cellIndex+1} style={{display: 'flex', flexDirection:'column'}}>
                     <div id = {rowIndex*7 + cellIndex+1} style={{marginBottom : '1.3rem'}}>

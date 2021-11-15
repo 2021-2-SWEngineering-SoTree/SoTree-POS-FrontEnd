@@ -23,7 +23,7 @@ const CreateStockRowData = (number, name, stockNum, stockName, beforeAmount, aft
 
 
 
-const EmployeeActivitiesListPage = ({isActive}) => {
+const EmployeeActivitiesListPage = () => {
 
     const arriveColumnName = ['번호', '이름', 'ID', '출근 일자', '직급']
     const leaveColumnName = ['번호', '이름', 'ID', '퇴근 일자', '직급']

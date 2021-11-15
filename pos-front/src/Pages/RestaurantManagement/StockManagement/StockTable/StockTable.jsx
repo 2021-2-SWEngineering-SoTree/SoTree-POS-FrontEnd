@@ -14,9 +14,11 @@ const Table = ({stock, clickedIndex}) => {
 
     return (
         <TableDiv>
-            {Array(7).fill().map((tr,i)=>
-                <Tr rowIndex={i} stock={stock} clickedIndex={clickedIndex}/>
+            <tbody>
+            {Array(7).fill(undefined, undefined, undefined).map((tr,i)=>
+                <Tr key={i} rowIndex={i} stock={stock} clickedIndex={clickedIndex}/>
             )}
+            </tbody>
         </TableDiv>
     );
 };

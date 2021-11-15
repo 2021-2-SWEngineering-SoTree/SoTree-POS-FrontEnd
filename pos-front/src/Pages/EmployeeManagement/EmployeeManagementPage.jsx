@@ -143,7 +143,7 @@ const EmployeeManagementPage = () => {
                     <MintFormTable columnName={columnName} cells={cello} isCheckBox={true}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee}>
-                    <EmployeeActivitiesListPage isActive={listOfEmployee}/>
+                    <EmployeeActivitiesListPage/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
