@@ -150,13 +150,13 @@ const AddStock = ({onClickAdd}) => {
                     <WrapperDiv>
                         <InputLable>재고 이름
                             <Input type="text" placeholder = {"재고명"} style={{flexGrow:3}}
-                                   onChange={(e)=>{setStockName(e.target.value)}} readOnly />
+                                   onChange={(e)=>{setStockName(e.target.value)}} value={stockName} />
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>수&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;량
                             <Input type="text" placeholder = {"0"} style={{flexGrow:3}}
-                                   onChange={(e)=> {setQuantity(e.target.value)}} readOnly />인분
+                                   onChange={(e)=> {setQuantity(e.target.value)}} value={quantity} />인분
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
