@@ -50,7 +50,7 @@ const MintFormTable = ({columnName, cells, isCheckBox}) => {
     //--------------------------------------------------------------------------------
     const showRow = (cells, ele) => {
         return (
-            Array(cells.length).fill().map((obj, j)=>
+            Array(cells.length).fill(undefined, undefined, undefined).map((obj, j)=>
                 <EmployeeManagementCell key={j}>
                     {cells[j]==='blink' ? <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/> : cells[j]}
                 </EmployeeManagementCell>)

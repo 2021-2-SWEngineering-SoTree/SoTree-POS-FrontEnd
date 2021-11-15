@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
+import axios from "axios";
+import {useNavigate} from "react-router";
 
 
 const LargeButton = styled.button`
@@ -95,17 +97,23 @@ const DividedHr = styled.hr`
 `;
 
 
+
 const EmployeeCommutingPage = ({commute, setCommute}) => {
     const CancelClick = () => {
         setCommute(!commute)
     }
+    const navigate = useNavigate();
+    const arrivalHandleClick = async(e) => {
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        if (window.confirm("test, 출퇴근")) {
-            alert("test, 추가되었음.");
+    }
+
+    const leaveHandleClick = async(e) => {
+        if (window.confirm("test, 퇴근")) {
+            e.preventDefault();
+            alert("test, 퇴근 추가 되었음")
         }
     }
+
     return (
         <>
             <WrapperDiv>
@@ -135,11 +143,11 @@ const EmployeeCommutingPage = ({commute, setCommute}) => {
                     <HeaderLabel>+ 출퇴근</HeaderLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <LargeButton onClick={handleClick}>출근 하기</LargeButton>
+                    <LargeButton onClick={arrivalHandleClick}>출근 하기</LargeButton>
                     <ContentLabel style={{lineHeight: '90px'}}>현재 시간이 출근 기록으로 등록됩니다.</ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
-                    <LargeButton onClick={handleClick}>퇴근 하기</LargeButton>
+                    <LargeButton onClick={leaveHandleClick}>퇴근 하기</LargeButton>
                     <ContentLabel style={{lineHeight: '90px'}}>현재 시간이 퇴근 기록으로 등록됩니다.</ContentLabel>
                 </InnerDiv>
             </WrapperDiv>
