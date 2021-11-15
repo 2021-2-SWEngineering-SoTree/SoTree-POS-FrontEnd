@@ -7,21 +7,19 @@ import axios from 'axios';
 
 const CurrentSeatInfoPage = () => {
     
-    const [tableData, setTableData] = useState([
-        [{},{},{},{}],[{},{},{},{}],[{},{},{},{}],[{},{},{},{}]
-    ]);
+    const [tableData, setTableData] = useState([]);
 
     let size = 16;
 
 
     const getCurrentTableInfo = async ()=>{
         let managerId = localStorage.getItem('managerId')
-        await axios.post(`http://localhost:8080/order/getTableNumber/${managerId}/16`,{
+        await axios.post(`http://localhost:8080/order/getTableNumber/1/16`,{
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
             setTableData(()=>res.data);
-            console.log('menu', tableData);
+            console.log('menu', res.data);
         }).catch(e=>{
             console.log(e);
         })
@@ -36,7 +34,7 @@ const CurrentSeatInfoPage = () => {
             <Header text ={"판매"} restaurantName = {localStorage.getItem('storeName')}/>
             <div style= {{display : 'flex', width:'99%', margin:'0.5rem -0.5rem 0.5rem 0.5rem', height:'100%'}}>
                 <div style={{width:'80%'}}>
-                    <SeatTable size = {size}/>
+                    <SeatTable size = {size} data={tableData}/>
                 </div>
                 <div style={{width:'20%', marginLeft:'0.3rem'}}>
                     <div style={{width:'102%'}}>
