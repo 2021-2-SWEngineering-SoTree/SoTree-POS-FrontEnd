@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import Calculator from "../../../Components/Calculator/Calculator";
 import MessageStock from "./MessageStock";
 import { SmallModal } from '../../../Components/Modal';
+import axios from "axios";
 
 const PageWrapper = styled.div`
     margin : 2rem;
@@ -76,6 +77,28 @@ const Title = styled.h1`
 
 const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
 
+    const [stockCell, setStockCells] = useState([]);
+    const [select, setSelect] = useState("")
+    const handleChange = (e) => {
+        setSelect(e.target.value);
+        console.log(e.target.value);
+    }
+
+    useEffect(async () => {
+        try {
+            const getEmployee = []
+            const res = await axios.get('http://localhost:8080/getAllPersonName')
+            console.log('가져온 직원 값들' + res.data);
+            for (let i = 0 ; i < res.data.length; i++) {
+                getEmployee.push(res.data[i]);
+            }
+            setStockCells(getEmployee);
+            console.log(stockCell);
+        } catch (e) {
+            console.error(e.message);
+        }
+    }, []);
+
     const [quantity , setQuantity] = useState('');
 
     const handleClick = (e) =>{
@@ -114,10 +137,9 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>담당
-                        <CategorySelector>
-                            <option value="서혜민" selected>서혜민</option>
-                            <option value="최지환" selected>최지환</option>
-                            <option value="이호준" selected>이호준</option>
+                        <CategorySelector value={select} onChange={handleChange}>
+                            {Array(stockCell.length).fill(undefined, undefined, undefined).map((index, i) =>
+                                <option key={i} defaultValue={stockCell[i]}>{stockCell[i]}</option>)}
                         </CategorySelector>
                             <CheckButton onClick = {handleClick}>수정</CheckButton>
                             <CheckButton>닫기</CheckButton>

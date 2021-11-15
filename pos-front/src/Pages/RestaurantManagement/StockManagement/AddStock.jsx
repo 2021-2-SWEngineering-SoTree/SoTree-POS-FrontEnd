@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import Calculator from "../../../Components/Calculator/Calculator"
 import axios from 'axios';
@@ -119,6 +119,28 @@ const AddStock = ({onClickAdd}) => {
         }).catch(e=>console.log(e));
     };
 
+    const [cello, setCells] = useState([]);
+    const [select, setSelect] = useState("")
+    const handleChange = (e) => {
+        setSelect(e.target.value);
+        console.log(e.target.value);
+    }
+
+    useEffect(async () => {
+        try {
+            const getEmployee = []
+            const res = await axios.get('http://localhost:8080/getAllPersonName')
+            console.log('가져온 직원 값들' + res.data);
+            for (let i = 0 ; i < res.data.length; i++) {
+                getEmployee.push(res.data[i]);
+            }
+            setCells(getEmployee);
+            console.log(cello);
+        } catch (e) {
+            console.error(e.message);
+        }
+    }, []);
+
 
     return (
         <>
@@ -127,15 +149,14 @@ const AddStock = ({onClickAdd}) => {
                 <Form>
                     <WrapperDiv>
                         <InputLable>재고 이름
-                            <Input placeholder = {"재고명"} style={{flexGrow:3}} 
-                            value={stockName} 
-                            onChange={(e)=>setStockName(e.target.value)}/>
+                            <Input type="text" placeholder = {"재고명"} style={{flexGrow:3}}
+                                   onChange={(e)=>{setStockName(e.target.value)}} readOnly />
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>수&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;량
-                            <Input placeholder = {"0"} style={{flexGrow:3}}
-                                   value = {quantity} onChange={(e)=> setQuantity(e.target.value)}/>인분
+                            <Input type="text" placeholder = {"0"} style={{flexGrow:3}}
+                                   onChange={(e)=> {setQuantity(e.target.value)}} readOnly />인분
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
@@ -143,10 +164,9 @@ const AddStock = ({onClickAdd}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>담당
-                            <CategorySelector>
-                                <option value="서혜민" selected>서혜민</option>
-                                <option value="최지환" selected>최지환</option>
-                                <option value="이호준" selected>이호준</option>
+                            <CategorySelector value={select} onChange={handleChange}>
+                                {Array(cello.length).fill(undefined, undefined, undefined).map((index, i) =>
+                                    <option key={i} defaultValue={cello[i]}>{cello[i]}</option>)}
                             </CategorySelector>
                             <CheckButton onClick = {handleClick}>추가</CheckButton>
                             <CheckButton>닫기</CheckButton>
