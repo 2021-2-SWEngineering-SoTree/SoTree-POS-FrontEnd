@@ -37,7 +37,7 @@ const EmployeeManagementTableStyle = styled.table`
 `;
 
 
-const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
+const MintFormTable = ({columnName, cells, isCheckBox}) => {
 
     //----------------- check box ---------------------------------------------------
     const [inputs, setInputs] = useState(0);
@@ -51,7 +51,7 @@ const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
     const showRow = (cells, ele) => {
         return (
             Array(cells.length).fill().map((obj, j)=>
-                <EmployeeManagementCell>
+                <EmployeeManagementCell key={j}>
                     {cells[j]==='blink' ? <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/> : cells[j]}
                 </EmployeeManagementCell>)
         )
@@ -64,12 +64,12 @@ const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
                 <TableHead>
                     <EmployeeManagementRow>
                         {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>
-                            <ColumnCell>{columnName[i]}</ColumnCell>)}
+                            <ColumnCell key={i}>{columnName[i]}</ColumnCell>)}
                     </EmployeeManagementRow>
                 </TableHead>
                 <TableBody>
                     {Array(cells.length).fill(undefined, undefined, undefined).map((td, i)=>
-                        <EmployeeManagementRow>
+                        <EmployeeManagementRow key={i}>
                             {showRow(cells[i], i)}
                         </EmployeeManagementRow>)
                     }
@@ -79,4 +79,4 @@ const EmployeeManagementTable = ({columnName, cells, isCheckBox}) => {
     );
 };
 
-export default EmployeeManagementTable
+export default MintFormTable
