@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import Sign from '../../../Assets/sign.png';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -31,7 +32,6 @@ const Content = styled.div`
     width : 60%;
     height : 80%;
     margin : 0 auto;
-    border : 1px solid black;
 `
 
 const TopContent = styled.div`
@@ -92,6 +92,7 @@ const InputNumber = styled.input`
     width : 55%;
     margin-left : 3%;
     border : 1px solid black;
+    text-align:right;
 `;
 
 const MonthSelector = styled.select`
@@ -108,51 +109,111 @@ const InputSign = styled.div`
     border : 1px solid black;
 `
 
-const CardPay = ({cost}) => {
+const Img = styled.img`
+    width : 100%;
+    height : 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+`;
 
+function generateRandomCode(n) {
+    let str = ''
+    for (let i = 0; i < n; i++) {
+      str += Math.floor(Math.random() * 10)
+    }
+    return str
+}
+
+const CardPay = ({totalPrice, setpayPrice, setClick}) => {
+
+    const [totalprice,setTotalprice]=useState(totalPrice);
     const [cardNum,setCardNum]=useState();
     const [month,setMonth]=useState();
+    const [getSign, setGetSign]=useState(false);
 
+    const getPay=(callback)=> {
+        setTimeout(function(){
+          alert('카드를 입력받았습니다');
+          callback();
+          setTimeout(function(){
+            //결제api
+            alert('결제!');
+          },2000)
+        }, 3000);
+    }
+
+    const doOpenCheck=(index)=>{
+        console.log(index);
+        const obj = document.getElementsByName("month");
+        console.log(obj[0],obj[1]);
+        for(let i=0; i<obj.length; i++){
+            if(i === index){
+                obj[i].selected = true;
+            }
+            else obj[i].selected=false;
+        }
+        console.log(obj[0],obj[1]);
+    }
+
+    useEffect(()=>{getPay(function() {
+        const num = generateRandomCode(16);
+        num.replace('0','1');
+        console.log(num);
+        setCardNum(+num);
+        const rand = Math.floor(Math.random()*12)+1;
+        doOpenCheck(rand);
+        totalprice>=50000 && setGetSign(true);
+
+    });
+    },[]);
+      
     return (
         <>
             <Templet>
                 <Header>&nbsp;신용카드 결제
-                    <ExitBtn>X</ExitBtn>
+                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
                 </Header>
                 <Center>
                     <Content>
                         <TopContent>
                             <h1>+ <span style={{color:'red'}}>결제 금액</span></h1>
-                            <CostDiv>19000</CostDiv>
+                            <CostDiv>{totalprice}</CostDiv>
                         </TopContent>
                         <BottomContent>
                             <BottomInContent>
                                 <h1>+ 카드 정보</h1>
                                 <InputDiv>
                                     <InputLabel>카드 번호</InputLabel>
-                                    <InputNumber></InputNumber>
+                                    <InputNumber value={cardNum}></InputNumber>
                                 </InputDiv>
                                 <InputDiv>
                                     <InputLabel>할부 개월</InputLabel>
                                     <MonthSelector value={month} onChange={''}>
-                                        <option value="">------</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
+                                        <option name="month" value="1">-----</option>
+                                        <option name="month" value="1">1</option>
+                                        <option name="month" value="2">2</option>
+                                        <option name="month" value="3">3</option>
+                                        <option name="month" value="4">4</option>
+                                        <option name="month" value="5">5</option>
+                                        <option name="month" value="6">6</option>
+                                        <option name="month" value="7">7</option>
+                                        <option name="month" value="8">8</option>
+                                        <option name="month" value="9">9</option>
+                                        <option name="month" value="10">10</option>
+                                        <option name="month" value="11">11</option>
+                                        <option name="month" value="12">12</option>
                                     </MonthSelector>
                                 </InputDiv>
                                 <InputDiv>
                                     <InputLabel2>서명</InputLabel2>
-                                    <InputSign/>
+                                    <InputSign>
+                                        {getSign && <Img src={Sign}/>}
+                                    </InputSign>
                                 </InputDiv>
                             </BottomInContent>
                         </BottomContent>
