@@ -54,14 +54,18 @@ const StringStyle = styled.div`
     font-size: 35px;
 `;
 
-const RectangleModal = ({visible, children, TitleName}) => {
+const RectangleModal = ({setSelectCategory, visible, children, TitleName}) => {
+
+    const cancelClickHandler = () => {
+        setSelectCategory(!visible);
+    }
 
     return (
         <>
             <ModalStyledContainer visible={visible}>
                 <ModalHeaderStyled visible={visible}>
                     <StringStyle>{TitleName}</StringStyle>
-                    <ModalRightButton>X</ModalRightButton>
+                    <ModalRightButton onClick={cancelClickHandler}>X</ModalRightButton>
                 </ModalHeaderStyled>
                 <ModalContentStyled visible={visible}>
                     {children}

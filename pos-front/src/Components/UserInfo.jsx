@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 const ContentDiv = styled.div`
     display : flex;
-    width : 80%;
-    height : 25%;
+    width : 25.0rem;
+    height : 13.0rem;
     background: #D7D6D6;
     border-radius: 1.8rem;
     margin-bottom : 1rem;
