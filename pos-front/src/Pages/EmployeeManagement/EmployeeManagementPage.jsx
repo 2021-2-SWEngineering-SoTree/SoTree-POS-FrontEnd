@@ -1,7 +1,7 @@
 import Header from "../../Components/Header";
 import {Link, Route, Routes} from 'react-router-dom';
 import styled from 'styled-components';
-import EmployeeManagementTable from "../../Components/Table/EmployeeManagementTable";
+import MintFormTable from "../../Components/Table/MintFormTable";
 import React, {useEffect, useState} from "react";
 import EmployeeAddPage from "./EmployeeAddPage";
 import EmployeeActivitiesListPage from "./EmployeeActivitiesListPage";
@@ -10,7 +10,6 @@ import EmployeeCommutingPage from "./EmployeeCommutingPage";
 import axios from "axios";
 import EmployeeModifyPage from "./EmployeeModifyPage";
 import EmployeeDeletePage from "./EmployeeDeletePage";
-import ModalButton from "../../Components/Button/ModalButton";
 
 
 const Div = styled.div`
@@ -26,6 +25,7 @@ const Div = styled.div`
 const LeftDiv = styled.div`
     width: 200%;
     height: 100%;
+    padding-top: 2.0rem;
     flex-grow: 1;
     overflow: scroll;
     display: ${(props) => (props.visible ? 'block' : 'none')};
@@ -76,98 +76,35 @@ const Button2 = styled.button`
 `;
 
 
-// input data format
+// input data format (직원 리스트)
 const CreateRowData = (choice, number, name, id, pw, latestDate, pos) => {
     return [choice, number, name, id, pw, latestDate, pos];
 }
-const CreateArrivalRowData = (number, name, id, ArrivalDate, pos) => {
-    return [number, name, id, ArrivalDate, pos];
-}
-const CreateLeaveRowData = (number, name, id, leaveDate, pos) => {
-    return [number, name, id, leaveDate, pos];
-}
-const CreatePaymentRowData = (number, name, orderNum, type, totalPrice, payDate, positionNum) => {
-    return [number, name, orderNum, type, totalPrice, payDate, positionNum];
-}
-const CreateOrderRowData = (number, name, type, totalPrice, amount, orderDate, positionNum) => {
-    return [number, name, type, totalPrice, amount, orderDate, positionNum];
-}
-const CreateStockRowData = (number, name, stockNum, stockName, beforeAmount, afterAmount, changeDate) => {
-    return [number, name, stockNum, stockName, beforeAmount, afterAmount, changeDate];
-}
-
-//---------------------- input rows information(back-end)---------------------
 
 
 const EmployeeManagementPage = () => {
 
     const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
-    const arriveColumnName = ['번호', '이름', 'ID', '출근 일자', '직급']
-    const leaveColumnName = ['번호', '이름', 'ID', '퇴근 일자', '직급']
-    const paymentColumnName = ['결제번호', '이름', '주문 번호', '결제 종류', '결제 금액', '결제 일자', '자리 번호']
-    const orderColumnName = ['주문번호', '이름', '주문 종류', '주문 합계', '수량', '주문 일자', '자리 번호']
-    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경전 수량', '변경후 수량', '수정 일자']
 
     const [commute, setCommute] = useState(false);
-    const [listOfEmployee,  setEmployeeList] = useState(false);
+
     const [addEmployee, setAddEmployee] = useState(false);
     const [changeEmployee, setChangeEmployee] = useState(false);
     const [deleteEmployee, setDeleteEmployee] = useState(false);
 
-    const cells = []
-    const [cello, setCells] = useState([]);
-    const [changeCello, setChangeCells] = useState([]);   // 테이블 안에 값이 바뀜.
-    const [changeTable, setChangeTable] = useState([]);     // 테입르 컬럼 명이 바뀜.
+    const [cello, setCells] = useState([]);     // 초반 테이블 내용
+    const [listOfEmployee,  setEmployeeList] = useState(false);  // 버튼 클릭시 LeftDiv 의 변경
+
 
     const onClickEmployeeCommute = () => { setCommute(!commute); }
     const onClickEmployeeAdd = () => { setAddEmployee(!addEmployee); }
     const onClickEmployeeChange = () => { setChangeEmployee(!changeEmployee); }
     const onClickEmployeeDelete = () => { setDeleteEmployee(!deleteEmployee); }
-    const onClickEmployeeList = () => {
-        onClickEmployeeListArrival();
-        setEmployeeList(!listOfEmployee);
-    }
-
-    const changeState = (cellsElement, tableNameElement) => {
-        setChangeCells(cellsElement);
-        setChangeTable(tableNameElement);
-    }
-
-    const onClickEmployeeListArrival = () => {
-        const arrivalCells = [
-            CreateArrivalRowData(1, 'test1', '1234', '2021-01-01', '사원')
-        ];
-        changeState(arrivalCells, arriveColumnName);
-    }
-    const onClickEmployeeListLeave = () => {
-        const leaveCells = [
-            CreateLeaveRowData(1, 'test2', '1234', '2021-01-01', '사원')
-        ];
-        changeState(leaveCells, leaveColumnName);
-    }
-    const onClickEmployeeListPayment = () => {
-        const paymentCells = [
-            CreatePaymentRowData(1, 'test3', 2, '현금', 6000, '2021-10-01 12:00', 4)
-        ];
-        changeState(paymentCells, paymentColumnName);
-    }
-    const onClickEmployeeListOrder = () => {
-        const orderCells = [
-            CreateOrderRowData(1, 'test4', '테이블', 6000, 1, '2021-01-01', '4')
-        ];
-        changeState(orderCells, orderColumnName);
-    }
-    const onClickEmployeeListStock = () => {
-        const stockCells = [
-            CreateStockRowData(1, 'test5', '1', '돼지고기', 100, 90,'2021-01-01')
-        ];
-        changeState(stockCells, stockColumnName);
-    }
-
-
+    const onClickEmployeeList = () => { setEmployeeList(!listOfEmployee); }
 
     useEffect(async () => {
         try {
+            const cells = []
             // 데이터를 받아오는 동안 시간 소모. await 대기
             const res = await axios.post('http://localhost:8080/getAllPersonName')
             //console.log(res);
@@ -203,17 +140,10 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv visible={!listOfEmployee}>
-                    <EmployeeManagementTable columnName={columnName} cells={cello} isCheckBox={true}/>
+                    <MintFormTable columnName={columnName} cells={cello} isCheckBox={true}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee}>
-                    <div style={{marginBottom: '1.0rem'}}>
-                    <ModalButton name={'출 근'} onClick={onClickEmployeeListArrival}/>
-                    <ModalButton name={'퇴 근'} onClick={onClickEmployeeListLeave}/>
-                    <ModalButton name={'결 제'} onClick={onClickEmployeeListPayment}/>
-                    <ModalButton name={'주 문'} onClick={onClickEmployeeListOrder}/>
-                    <ModalButton name={'재 고'} onClick={onClickEmployeeListStock}/>
-                    </div>
-                    <EmployeeManagementTable columnName={changeTable} cells={changeCello} isCheckBox={false}/>
+                    <EmployeeActivitiesListPage isActive={listOfEmployee}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
