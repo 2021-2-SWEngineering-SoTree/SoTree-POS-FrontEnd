@@ -129,7 +129,7 @@ function generateRandomCode(n) {
     return str
 }
 
-const CardPay = ({totalPrice, setpayPrice, setClick}) => {
+const CardPay = ({all, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
     const [cardNum,setCardNum]=useState();
@@ -143,6 +143,7 @@ const CardPay = ({totalPrice, setpayPrice, setClick}) => {
           setTimeout(function(){
             //결제api
             alert('결제!');
+            setAllprice(all-totalprice);
           },2000)
         }, 3000);
     }
@@ -168,7 +169,6 @@ const CardPay = ({totalPrice, setpayPrice, setClick}) => {
         const rand = Math.floor(Math.random()*12)+1;
         doOpenCheck(rand);
         totalprice>=50000 && setGetSign(true);
-
     });
     },[]);
       
@@ -176,7 +176,10 @@ const CardPay = ({totalPrice, setpayPrice, setClick}) => {
         <>
             <Templet>
                 <Header>&nbsp;신용카드 결제
-                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
+                    <ExitBtn onClick={()=>{
+                        setDisplay && setDisplay(0);
+                        !setDisplay && setClick(0)
+                    }}>X</ExitBtn>
                 </Header>
                 <Center>
                     <Content>

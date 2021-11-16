@@ -182,12 +182,13 @@ function generateRandomCode(n) {
     return str
 }
 
-const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
+const CashPay = memo(({all, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
-    const [totalprice,setTotalprice]=useState(totalPrice);
-    const [price, setPrice]=useState(0);
-    const [backPrice, setBackPrice]=useState(0);
+    const [totalprice,setTotalprice]=useState(totalPrice); //받을 금액
+    const [price, setPrice]=useState(0); //받은 금액
+    const [backPrice, setBackPrice]=useState(0); //거스름 돈
 
+    //부모 컴포넌트의 
     const setpayprice = (i) =>{
         console.log('i='+i);
         setpayPrice(i);
@@ -196,7 +197,7 @@ const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
     const wonBtn = (i) =>{
         console.log(setpayPrice);
         setPrice(price+i);
-        //setpayprice(price+i);
+        //setpayprice(500);
         console.log('price='+price);
     }
 
@@ -206,6 +207,7 @@ const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
     },[price]);
 
     const getPaid = ()=>{
+        setAllprice(all-price);
         setTotalprice(0);
         setPrice(0);
         setBackPrice(0);
@@ -233,7 +235,8 @@ const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
         console.log(obj[0],obj[1]);
     }
     
-    const onClickBtn = () =>{
+    const onClickBtn = (e) =>{
+        e.preventDefault();
         {
             !checkCard && alert('카드번호를 입력받습니다');
             setTimeout(() => {
@@ -259,7 +262,10 @@ const CashPay = memo(({totalPrice, setpayPrice, setClick}) => {
         <>
             <Templet>
                 <Header>&nbsp;현금 결제
-                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
+                    <ExitBtn onClick={()=>{
+                        setDisplay && setDisplay(0);
+                        !setDisplay && setClick(0)
+                    }}>X</ExitBtn>
                 </Header>
                 <Center>
                     <Content>
