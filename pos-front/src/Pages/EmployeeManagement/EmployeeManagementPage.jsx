@@ -107,6 +107,7 @@ const EmployeeManagementPage = () => {
             selectedEmployee = cello[getNumber];
             // index(1): number, index(2):name, index(6): pos
             setReConstruct([selectedEmployee[1], selectedEmployee[2], selectedEmployee[6]]);
+            console.log("check row", reConstruct)
             setCommute(!commute);
         }
     }
@@ -124,7 +125,7 @@ const EmployeeManagementPage = () => {
             console.log(res.data);
 
             for (let i = 0; i < res.data.length; i++) {
-                cells.push(CreateRowData('blink', i+1, res.data[i].personName,
+                cells.push(CreateRowData('blink', res.data[i].EmployeeId, res.data[i].personName,
                     'hello', '1234', '2021-11-03 13:00', '사장'))
             }
             setCells(cells);
