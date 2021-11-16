@@ -44,19 +44,19 @@ const DeleteStock = ({stock, clickedIndex, visible}) => {
             const ingredients = [{
                 time: time,
                 quantityChanged: '',
-                employeeId: '',
+                employeeId: 99,
             }];
             console.log(ingredients);
             let managerId = window.localStorage.getItem('managerId');
             const data = {
                 stockName: stock[clickedIndex].stockName,
                 managerId: managerId,
-                quantity: '',
+                quantity: stock[clickedIndex].quantity,
                 stockDetailList: ingredients,
-                employeeId: '',
+                employeeId: 99,
             }
             console.log(data);
-            await axios.delete('http://localhost:8080/stock/'+clickedIndex,
+            await axios.delete(`http://localhost:8080/stock/${clickedIndex}`,
                 JSON.stringify(data),{
                     headers : {
                         "Content-Type": `application/json`,

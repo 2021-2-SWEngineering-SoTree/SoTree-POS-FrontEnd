@@ -79,9 +79,11 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
 
     const [stockCell, setStockCells] = useState([{}]);
     const [select, setSelect] = useState("");
+    const [quantity , setQuantity] = useState('');
+
     const handleChange = async(e) => {
         setSelect(e.target.value);
-        console.log(select);
+        console.log(e.target.value);
     }
 
     useEffect(async () => {
@@ -100,7 +102,6 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
         }
     }, []);
 
-    const [quantity , setQuantity] = useState('');
 
     const changeHandleClick = async(e) =>{
         e.preventDefault();
@@ -121,11 +122,12 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                 stockDetailList: ingredients,
                 employeeId: select,
             };
-            console.log(data);
-            await axios.put('http://localhost:8080/stock/'+clickedIndex,
-                JSON.stringify(data), {
+            const data2 = JSON.stringify(data);
+            console.log("data2: ", data2);
+            axios.put(`http://localhost:8080/stock/${clickedIndex}`,
+                data2, {
                     headers : {
-                        "Content-Type": `application/json`,
+                        "Content-Type": 'application/json; charset=UTF-8',
                     }
                 }).then((res) => {
                 console.log(res);
