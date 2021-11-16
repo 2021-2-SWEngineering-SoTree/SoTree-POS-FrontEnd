@@ -238,6 +238,23 @@ const SalePage = () => {
     // totalprice : 12000,
     // message : '',}
 
+    const makeOrderStyle = (summary)=> {
+        let order = [];
+        summary.forEach(function(item, index){
+            let temp = {};
+            temp["name"] = item.menu.menuName;
+            temp["price"] = item.menu.price;
+            temp["quantity"] = item.quantity;
+            temp["totalprice"] = item.menu.price * item.quantity;
+            temp["message"] = '';
+            temp["discount"] = 0;
+            console.log("변경체크" , temp);
+            order.push(temp);
+        })
+        console.log("오더 만들기", order);
+        return order;
+    }
+
     // 오더 states
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalPrice, setToltalPrice] = useState(0);
@@ -277,13 +294,30 @@ const SalePage = () => {
         await axios.post('http://localhost:8080/menu/getAll',managerId,{
             headers : {
             "Content-Type" : `application/json`,
-        }}).then((res)=>{
+        }}).then(async (res)=>{
+            const CurrentTableInfo = await getCurrentTableInfo();
+            if(CurrentTableInfo.data.orderId>=0){
+                console.log("currentTable", CurrentTableInfo.data);
+                const currentOrderList = makeOrderStyle(CurrentTableInfo.data.orderDetailSummaries);
+                const currentTotalAmount = CurrentTableInfo.data.orderDetailSummaries.reduce((ac, arr)=>{return ac +arr.quantity},0);
+                setCurrentOrders(currentOrderList);
+                setToltalPrice(CurrentTableInfo.data.totalPrice);
+                setTotalAmount(currentTotalAmount);
+            }
             setMenus(()=>res.data);
-            console.log('menu', menus);
         }).catch(e=>{
             console.log(e);
         })
     };
+
+    const getCurrentTableInfo = async ()=>{
+        let managerId = localStorage.getItem('managerId')
+        return axios.post(`http://localhost:8080/order/getOneTableInfo/${managerId}/${params.state[0].seatNum}`,{
+            headers : {
+            "Content-Type" : `application/json`,
+        }})
+    };
+
 
     const getCategoryMenus = (category) =>{
         console.log(menus);
