@@ -240,7 +240,7 @@ const SalePage = () => {
 
     // 오더 states
     const [totalAmount, setTotalAmount] = useState(0);
-    const [totalPrice, setToltalPrce] = useState(0);
+    const [totalPrice, setToltalPrice] = useState(0);
     const [totalDiscount, setTotalDiscount] = useState(0)
     const [nottotalPrice, setNottotalPrice]=useState(0);
 
@@ -375,7 +375,7 @@ const SalePage = () => {
                 message : '',  
             }])
         }
-        setToltalPrce((prev)=> prev + selected.price);
+        setToltalPrice((prev)=> prev + selected.price);
         setTotalAmount((prev)=> prev + 1);
         setTotalDiscount((prev) => prev + 0);
     };
@@ -395,6 +395,9 @@ const SalePage = () => {
         e.preventDefault();
         setNewOrders([]);
         setCurrentOrders([]);
+        setToltalPrice(0);
+        setTotalAmount(0);
+        setTotalDiscount(0);
     }
 
     const selectCancleHander = (e) =>{
@@ -402,11 +405,18 @@ const SalePage = () => {
         if(orderSelection >= 0){
             const temp = newOrders.filter((arr,index) => index!==orderSelection);
             const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
+            const cancleAmount = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
+            const canclePriceSum = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
+
+            console.log("test",canclePriceSum);
             setNewOrders(temp);
             setCurrentOrders(temp2);
             setOrderSelection(-1);
+            setToltalPrice((prev)=>prev-canclePriceSum);
+            setTotalAmount((prev)=>prev - cancleAmount);
         }
     }
+
 
     const minus = (a,b) => a-b;
 
@@ -497,7 +507,7 @@ const SalePage = () => {
                 setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);
             }        
         }
-        setToltalPrce((prev)=> count * currentOrders[i].price + prev);
+        setToltalPrice((prev)=> count * currentOrders[i].price + prev);
         setTotalAmount((prev)=> prev + count);
         setTotalDiscount((prev) => prev + 0);
     }
