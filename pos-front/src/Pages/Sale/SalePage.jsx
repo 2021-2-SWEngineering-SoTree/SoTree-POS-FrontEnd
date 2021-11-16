@@ -555,17 +555,17 @@ const SalePage = () => {
         setPayedPrice(i);
     }
 
-    const RightComponent=(props)=>{
-        const num = props.number;
-        if(num===0){
-            return <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
-            categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
-            changeDiv={changeDiv}/>
-        }
-        else if(num===1) return <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-        else if(num===2) return <CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-        else if(num===3) return <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-    }
+    // const RightComponent=(props)=>{
+    //     const num = props.number;
+    //     if(num===0){
+    //         return <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
+    //         categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
+    //         changeDiv={changeDiv}/>
+    //     }
+    //     else if(num===1) return <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
+    //     else if(num===2) return <CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
+    //     else if(num===3) return <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
+    // }
 
     return (
         <>
@@ -700,7 +700,13 @@ const SalePage = () => {
                 </LeftDiv>
 
                 <RightDiv>
-                    <RightComponent number={click}/>
+                {(click===0) && <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
+                    categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
+                    changeDiv={changeDiv}/>}
+                {(click===1) && <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===2)  &&<CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===3) && <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                
                 </RightDiv>
 
             </Div>
