@@ -182,7 +182,7 @@ function generateRandomCode(n) {
     return str
 }
 
-const CashPay = memo(({all, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CashPay = memo(({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice); //받을 금액
     const [price, setPrice]=useState(0); //받은 금액
@@ -197,7 +197,7 @@ const CashPay = memo(({all, totalPrice, setpayPrice, setClick, setDisplay, setAl
     const wonBtn = (i) =>{
         console.log(setpayPrice);
         setPrice(price+i);
-        //setpayprice(500);
+        { payedPrice ? setpayprice(+payedPrice):setpayprice(price+i)}
         console.log('price='+price);
     }
 
@@ -207,7 +207,8 @@ const CashPay = memo(({all, totalPrice, setpayPrice, setClick, setDisplay, setAl
     },[price]);
 
     const getPaid = ()=>{
-        setAllprice(all-price);
+        {setAllprice && setAllprice(all-totalPrice);}
+        {notTotalPrice && notTotalPrice(all-totalprice);}
         setTotalprice(0);
         setPrice(0);
         setBackPrice(0);
@@ -225,14 +226,12 @@ const CashPay = memo(({all, totalPrice, setpayPrice, setClick, setDisplay, setAl
         setCheckMan(true);
         console.log(index);
         const obj = document.getElementsByName("check");
-        console.log(obj[0],obj[1]);
         for(let i=0; i<obj.length; i++){
             if(i === index){
                 obj[i].checked = true;
             }
             else obj[i].checked=false;
         }
-        console.log(obj[0],obj[1]);
     }
     
     const onClickBtn = (e) =>{
