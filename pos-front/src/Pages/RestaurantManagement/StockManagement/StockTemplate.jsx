@@ -89,7 +89,7 @@ const StockTemplate = () => {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
             setStock(res.data);
-            console.log(res.data);
+            console.log("가져온 getStock 값 :" + res.data);
         }).catch(e=>{
             console.log(e);
         })
@@ -112,7 +112,7 @@ const StockTemplate = () => {
                 <ChangeStock onClickChange={onClickChangeAfter} stock={stock} clickedIndex={clickedIndex}/>
             </Modal>
             <SmallModal visible={deleteStock}>
-                <DeleteStock name={clickedIndex? stock[clickedIndex].stockName:""} visible = {deleteStock}/>
+                <DeleteStock visible = {deleteStock} stock={stock} clickedIndex={clickedIndex}/>
             </SmallModal>
             {clickedIndex ? 
                 <SmallModal visible={isChanged}>
