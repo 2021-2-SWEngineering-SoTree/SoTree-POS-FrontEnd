@@ -1,10 +1,10 @@
 import React from 'react';
 import Td from './Td'
-const Tr = ({rowIndex, size, data}) => {
+const Tr = ({rowIndex, size, tableData}) => {
     return (
         <tr>
             {Array(Math.sqrt(size)).fill().map((td, i) =>
-            <Td rowIndex={rowIndex} cellIndex={i+1} size={size} data ={data} />
+            <Td rowIndex={rowIndex} cellIndex={i} size={size} tableData={tableData} top={"-2rem"} />
             )}
         </tr>
     );

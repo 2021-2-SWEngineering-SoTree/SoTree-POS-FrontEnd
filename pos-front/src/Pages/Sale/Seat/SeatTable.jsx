@@ -7,12 +7,14 @@ const Table = styled.table`
     width: 100%;
     height : 100%;
     border : 5px solid #000000;
+    table-layout : fixed;
+    word-break : break-all;
 `;
 
-const SeatTable = memo(({size}) => {
+const SeatTable = memo(({size, tableData}) => {
     return (
         <Table>
-            {Array(Math.sqrt(size)).fill().map((tr, i) => <Tr rowIndex={i} size={size}/>)}
+            {Array(Math.sqrt(size)).fill().map((tr, i) => <Tr rowIndex={i} size={size} tableData={tableData}/>)}
         </Table>
     );
 });
