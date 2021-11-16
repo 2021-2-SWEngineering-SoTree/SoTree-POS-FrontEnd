@@ -432,7 +432,7 @@ const SalePage = () => {
             totalPrice : totalPrice,
             startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
             orderType : "TABLE_ORDER",
-            seatNumber : seatNum,
+            seatNumber : seatNum+1,
             isSeated : "True",
             managerId: managerId,
             employeeId : 1,
