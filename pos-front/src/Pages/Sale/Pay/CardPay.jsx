@@ -129,7 +129,7 @@ function generateRandomCode(n) {
     return str
 }
 
-const CardPay = ({all, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CardPay = ({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
     const [cardNum,setCardNum]=useState();
@@ -143,7 +143,9 @@ const CardPay = ({all, totalPrice, setpayPrice, setClick, setDisplay, setAllpric
           setTimeout(function(){
             //결제api
             alert('결제!');
-            setAllprice(all-totalprice);
+            { payedPrice ? setpayPrice(+payedPrice+totalprice):setpayPrice(totalprice);}
+            {notTotalPrice && notTotalPrice(all-totalprice);}
+            {setAllprice && setAllprice(all-totalprice);}
           },2000)
         }, 3000);
     }
@@ -168,7 +170,7 @@ const CardPay = ({all, totalPrice, setpayPrice, setClick, setDisplay, setAllpric
         setCardNum(+num);
         const rand = Math.floor(Math.random()*12)+1;
         doOpenCheck(rand);
-        totalprice>=50000 && setGetSign(true);
+        {totalprice>=50000 && setGetSign(true);}
     });
     },[]);
       

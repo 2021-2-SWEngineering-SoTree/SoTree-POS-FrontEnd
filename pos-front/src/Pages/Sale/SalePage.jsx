@@ -242,6 +242,7 @@ const SalePage = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalPrice, setToltalPrce] = useState(0);
     const [totalDiscount, setTotalDiscount] = useState(0)
+    const [nottotalPrice, setNottotalPrice]=useState(0);
 
     const [calculNum, setCalculNum] = useState(0);
     const [orderSelection, setOrderSelection] = useState(-1);
@@ -312,6 +313,9 @@ const SalePage = () => {
         console.log(categoryMenus);
     },[category]);
 
+    useEffect(()=>{
+        setNottotalPrice(totalPrice);
+    },[totalPrice]);
 
     const onClickCategoryButton = (e) =>{
         console.log(e.target.name);
@@ -516,8 +520,6 @@ const SalePage = () => {
         navigation('/CurrentSeatInfo');
     }
 
-    
-
     const makeTakeOutOrder = () =>{
         let managerId = window.localStorage.getItem('managerId');
         const orderDetails = makeOrdetailMap();
@@ -645,9 +647,9 @@ const SalePage = () => {
                                 </InfoContent>
                                 <InfoSpace name={'총 금 액'} value={totalPrice} color={'white'}/>
                                 <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
-                                <InfoSpace name={'받을금액'} value={minus(totalPrice,payedPrice)} color={'yellow'}/>
+                                <InfoSpace name={'받을금액'} value={nottotalPrice} color={'yellow'}/>
                                 <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
-                                <InfoSpace name={'거스름돈'} value={minus(payedPrice,minus(totalPrice,payedPrice))>0 && minus(payedPrice,minus(totalPrice,payedPrice))} color={'yellow'}/> 
+                                <InfoSpace name={'거스름돈'} value={totalPrice===payedPrice?'0':minus(payedPrice,nottotalPrice)>0 ? minus(payedPrice,nottotalPrice):'0'} color={'yellow'}/> 
                                 </>
                             )}
 
@@ -705,7 +707,7 @@ const SalePage = () => {
                     changeDiv={changeDiv}/>}
                 {(click===1) && <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===2)  &&<CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===3) && <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===3) && <MultiPay payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 
                 </RightDiv>
 

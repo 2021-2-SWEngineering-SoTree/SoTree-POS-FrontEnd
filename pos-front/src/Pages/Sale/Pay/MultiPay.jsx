@@ -100,7 +100,7 @@ const InputNumber = styled.input`
 `;
 
 
-const MultiPay = ({totalPrice, setpayPrice, setClick}) => {
+const MultiPay = ({payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}) => {
 
     const [totalprice,setTotalPrice]=useState(totalPrice);
     const [cash,setCash]=useState();
@@ -116,8 +116,12 @@ const MultiPay = ({totalPrice, setpayPrice, setClick}) => {
         setCash(totalprice-e.target.value);
     }
 
+    const finish=()=>{
+        alert('결제가 모두 완료되었습니다');
+        setClick(0);
+    }
     useEffect(()=>{
-        totalprice===0 && alert('결제가 모두완료되었습니다');
+        totalprice===0 && finish();
     },[totalprice]);
 
     const [display,setDisplay]=useState(0);
@@ -154,8 +158,8 @@ const MultiPay = ({totalPrice, setpayPrice, setClick}) => {
                     </Center>
                 </Templet>
             }
-            {display===1 && <CashPay all={totalprice} totalPrice={cash} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
-            {display===2 && <CardPay all={totalprice} totalPrice={card} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
+            {display===1 && <CashPay all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={cash} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
+            {display===2 && <CardPay all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={card} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
         </>
     )
 };
