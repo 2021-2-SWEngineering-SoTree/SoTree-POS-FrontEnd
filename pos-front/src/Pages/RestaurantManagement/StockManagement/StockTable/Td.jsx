@@ -24,7 +24,9 @@ const Td =  memo(({rowIndex, cellIndex, stock, clickedIndex}) => {
     const stockCellOnClickHandler = (e) => {
         e.preventDefault();
         console.log("Click Stock Cell : ", index);
-        clickedIndex(index);
+        if(stock[index]){
+            clickedIndex(index);
+        }
     };
 
 
