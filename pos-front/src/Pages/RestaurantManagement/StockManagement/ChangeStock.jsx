@@ -77,20 +77,21 @@ const Title = styled.h1`
 
 const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
 
-    const [stockCell, setStockCells] = useState([]);
-    const [select, setSelect] = useState("")
-    const handleChange = (e) => {
+    const [stockCell, setStockCells] = useState([{}]);
+    const [select, setSelect] = useState("");
+    const handleChange = async(e) => {
         setSelect(e.target.value);
-        console.log(e.target.value);
+        console.log(select);
     }
 
     useEffect(async () => {
         try {
+            console.log("select clickedIndex: " + clickedIndex);
             const getEmployee = []
             const res = await axios.get('http://localhost:8080/getAllPersonName')
             console.log('가져온 직원 값들' + res.data);
             for (let i = 0 ; i < res.data.length; i++) {
-                getEmployee.push(res.data[i].personName);
+                getEmployee.push(res.data[i]);
             }
             setStockCells(getEmployee);
             console.log(stockCell);
@@ -101,13 +102,37 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
 
     const [quantity , setQuantity] = useState('');
 
-    const handleClick = (e) =>{
+    const changeHandleClick = async(e) =>{
         e.preventDefault();
         if(window.confirm("정말로 수정하시겠습니까?")){
             console.log("ok");
-            onClickChange();
-        }
-        console.log("Click test : preventDefault");
+            const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
+            const ingredients = [{
+                time: time,
+                quantityChanged: +quantity,
+                employeeId: select,
+            }];
+            console.log(ingredients);
+            let managerId = window.localStorage.getItem('managerId');
+            const data = {
+                stockName: stock[clickedIndex].stockName,
+                managerId: managerId,
+                quantity: quantity,
+                stockDetailList: ingredients,
+                employeeId: select,
+            };
+            console.log(data);
+            await axios.put('http://localhost:8080/stock/'+clickedIndex,
+                JSON.stringify(data), {
+                    headers : {
+                        "Content-Type": `application/json`,
+                    }
+                }).then((res) => {
+                console.log(res);
+                setQuantity('');
+                console.log("Click test : preventDefault");
+            }).catch(e=>{console.log(e.message); alert('재고 수정 실패');})
+        };
     }
 
     const changeQuantity = (change) =>{
@@ -137,11 +162,11 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>담당
-                        <CategorySelector value={select} onChange={handleChange}>
+                        <CategorySelector onChange={handleChange}>
                             {Array(stockCell.length).fill(undefined, undefined, undefined).map((index, i) =>
-                                <option key={i} defaultValue={stockCell[i]}>{stockCell[i]}</option>)}
+                                <option key={i} value={stockCell[i].EmployeeId}>{stockCell[i].personName}</option>)}
                         </CategorySelector>
-                            <CheckButton onClick = {handleClick}>수정</CheckButton>
+                            <CheckButton onClick = {changeHandleClick}>수정</CheckButton>
                             <CheckButton>닫기</CheckButton>
                         </InputLable>
                     </WrapperDiv>

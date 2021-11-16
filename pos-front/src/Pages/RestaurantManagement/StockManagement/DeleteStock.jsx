@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ModalButton from '../../../Components/Button/ModalButton'
+import axios from "axios";
 
 const Title = styled.h1`
     text-align:center;
@@ -34,23 +35,46 @@ const Form = styled.form`
     flex-direction : column;
 `;
 
-const DeleteStock = ({name, visible}) => {
+const DeleteStock = ({stock, clickedIndex, visible}) => {
 
-    const deleteClickHandler = () =>{
+    const deleteClickHandler = async () =>{
         console.log("Delete button Clicked");
         if(window.confirm("정말로 삭제하시겠습니까?")){
-            alert("삭제되었습니다.");
+            const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
+            const ingredients = [{
+                time: time,
+                quantityChanged: '',
+                employeeId: '',
+            }];
+            console.log(ingredients);
+            let managerId = window.localStorage.getItem('managerId');
+            const data = {
+                stockName: stock[clickedIndex].stockName,
+                managerId: managerId,
+                quantity: '',
+                stockDetailList: ingredients,
+                employeeId: '',
+            }
+            console.log(data);
+            await axios.delete('http://localhost:8080/stock/'+clickedIndex,
+                JSON.stringify(data),{
+                    headers : {
+                        "Content-Type": `application/json`,
+                    }
+            }).then((res) => {
+                console.log(res);
+                alert("삭제되었습니다.");
+            }).catch(e=>{console.log(e.message); alert('재고 삭제 실패');})
         }else{
             visible = !visible;
         }
-
     }
     return (
         <>
         <Form>
         <Title>재고 삭제</Title>
         <Text>
-        <Menu>{name}</Menu><TextByMenu>메뉴를</TextByMenu>
+        <Menu>{clickedIndex? stock[clickedIndex].stockName:""}</Menu><TextByMenu>메뉴를</TextByMenu>
         </Text>
         <UnderText>삭제하시겠습니까?</UnderText>
         <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
