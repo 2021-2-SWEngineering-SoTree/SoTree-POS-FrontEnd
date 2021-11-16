@@ -99,7 +99,7 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
         if (window.confirm("출근을 등록하시겠습니까?")) {
             let arrivalData = {
                 employeeId: reConstruct[0],
-                commingTime: date,
+                time: date,
                 branchId: "1"
             }
             await axios.post('http://localhost:8080/recordCome', JSON.stringify(arrivalData),
@@ -119,7 +119,7 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
         if (window.confirm("test, 퇴근")) {
             let leaveDate = {
                 employeeId: reConstruct[0],
-                commingTime: date,
+                time: date,
                 branchId: "1"
             }
             await axios.post('http://localhost:8080/recordOut', JSON.stringify(leaveDate),
