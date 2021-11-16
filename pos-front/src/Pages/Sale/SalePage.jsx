@@ -421,7 +421,6 @@ const SalePage = () => {
         const data = {
             totalPrice : totalPrice,
             startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-            endTime : new Date(+new Date() + 3240 * 20000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
             orderType : "TABLE_ORDER",
             seatNumber : seatNum,
             isSeated : "True",
@@ -443,7 +442,7 @@ const SalePage = () => {
         let orderdetails = [];
         newOrders.forEach(function(item, index){
             let temp = {};
-            temp[item.name] = item.price;
+            temp[item.name] = item.quantity;
             console.log("temp", temp)
             orderdetails.push(temp);
         })
@@ -526,7 +525,6 @@ const SalePage = () => {
         const data = {
             totalPrice : totalPrice,
             startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-            endTime : new Date(+new Date() + 3240 * 20000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
             orderType : "TAKEOUT_ORDER",
             takeoutTickNumber : seatNum,
             managerId: managerId,
@@ -689,7 +687,7 @@ const SalePage = () => {
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
                                     
-                                    <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
+                                    <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'} onClick={makeTakeOutOrder}/>
                                     <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
