@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { CashPay, CardPay } from '.';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -101,51 +102,60 @@ const InputNumber = styled.input`
 
 const MultiPay = ({totalPrice, setpayPrice, setClick}) => {
 
-    const [totalprice,setTotalprice]=useState(totalPrice);
+    const [totalprice,setTotalPrice]=useState(totalPrice);
     const [cash,setCash]=useState();
     const [card,setCard]=useState();
 
     const onChangeCash=(e)=>{
         setCash(e.target.value);
+        setCard(totalprice-e.target.value);
     }
 
     const onChangeCard=(e)=>{
         setCard(e.target.value);
+        setCash(totalprice-e.target.value);
     }
+
+    useEffect(()=>{
+        totalprice===0 && alert('결제가 모두완료되었습니다');
+    },[totalprice]);
+
+    const [display,setDisplay]=useState(0);
 
     return (
         <>
-            <Templet>
-                <Header>&nbsp;복합 결제
-                    <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
-                </Header>
-                <Center>
-                    <Content>
-                        <TopContent>
-                            <h1>+ <span style={{color:'red'}}>남은 금액</span></h1>
-                            <CostDiv>{totalPrice}</CostDiv>
-                        </TopContent>
-                        <BottomContent>
-                            <BottomInContent>
-                                <InputDiv>
-                                    <InputLabel>현 금</InputLabel>
-                                    <InputNumber onChange={onChangeCash} value={cash}></InputNumber>
-                                </InputDiv>
-                                <InputDiv>
-                                    <InputLabel>신용카드</InputLabel>
-                                    <InputNumber onChange={onChangeCard} value={card}></InputNumber>
-                                </InputDiv>
-                                
-
-                            </BottomInContent>
-                            <center>
-                                <h3>현금 클릭시, 현금결제 UI로 이동<br/>신용카드 클릭 시, 신용카드결제 UI로 이동</h3>
-                            </center>
-                        </BottomContent>
-                    </Content>
-                </Center>
-
-            </Templet>
+            {display===0 && 
+                <Templet>
+                    <Header>&nbsp;복합 결제
+                        <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
+                    </Header>
+                    <Center>
+                        <Content>
+                            <TopContent>
+                                <h1>+ <span style={{color:'red'}}>남은 금액</span></h1>
+                                <CostDiv>{totalprice}</CostDiv>
+                            </TopContent>
+                            <BottomContent>
+                                <BottomInContent>
+                                    <InputDiv>
+                                        <InputLabel onClick={()=>{setDisplay(1)}}>현 금</InputLabel>
+                                        <InputNumber onChange={onChangeCash} value={cash}></InputNumber>
+                                    </InputDiv>
+                                    <InputDiv>
+                                        <InputLabel onClick={()=>{setDisplay(2)}}>신용카드</InputLabel>
+                                        <InputNumber onChange={onChangeCard} value={card}></InputNumber>
+                                    </InputDiv>                                    
+                                </BottomInContent>
+                                <center>
+                                    <h3>현금 클릭시, 현금결제 UI로 이동<br/>신용카드 클릭 시, 신용카드결제 UI로 이동</h3>
+                                </center>
+                            </BottomContent>
+                        </Content>
+                    </Center>
+                </Templet>
+            }
+            {display===1 && <CashPay all={totalprice} totalPrice={cash} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
+            {display===2 && <CardPay all={totalprice} totalPrice={card} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
         </>
     )
 };
