@@ -14,7 +14,8 @@ const Td = ({rowIndex, cellIndex, size, top, tableData}) => {
 
     const seatOnClickHandler = (index) =>{
         console.log("Click Seat : ", index);
-        navigate('/sale', {state : [{seatNum : index , test : "Test 성공"}]});
+        const seatInfo = index+1;
+        navigate('/sale', {state : [{seatNum : seatInfo}]});
     };
     
     const index = rowIndex * 4 + cellIndex >= 100 ? rowIndex * 4 + cellIndex - 100: rowIndex * 4 + cellIndex;
