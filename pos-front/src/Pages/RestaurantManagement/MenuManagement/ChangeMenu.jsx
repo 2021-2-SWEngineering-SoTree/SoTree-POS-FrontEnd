@@ -212,10 +212,11 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
 
     const changeMenu = (e) =>{
         e.preventDefault();
+        let managerId = window.localStorage.getItem('managerId');
         const data = {
             menuName : name,
             price : price,
-            managerId:1,
+            managerId:managerId,
             menuCategory : category,
             menuIngredientLists : finalIngredients
         };
