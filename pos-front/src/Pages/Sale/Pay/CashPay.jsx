@@ -196,11 +196,16 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
     }
 
     const wonBtn = (i) =>{
-        console.log(setpayPrice);
-        setPrice(price+i);
-        { payedPrice ? setpayprice(+payedPrice):setpayprice(price+i)}
-        console.log('price='+price);
+        console.log(payedPrice);
+        setPrice(+price+i);
+        { setAllprice ? setpayprice(+payedPrice):setpayprice(+price+i)} //복합 결제 시 받을 금액 기존 금액에 +
+        console.log('price='+(+price+i));
     }
+
+    useEffect(()=>{
+        console.log('값 바뀜');
+        setPrice(+payedPrice);
+    },[payedPrice]);
 
     useEffect(()=>{
         console.log('가격 설정',price);

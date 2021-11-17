@@ -748,8 +748,8 @@ const SalePage = () => {
                 {(click===0) && <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
                     categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
                     changeDiv={changeDiv}/>}
-                {(click===1) && <CashPay orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===2)  &&<CardPay orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===1) && <CashPay payedPrice={payedPrice} orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 
                 </RightDiv>
