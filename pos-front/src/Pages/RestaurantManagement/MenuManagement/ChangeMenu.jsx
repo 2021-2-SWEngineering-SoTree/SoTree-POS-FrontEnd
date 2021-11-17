@@ -99,10 +99,11 @@ const Title = styled.h1`
     margin-top:-3rem;
 `
 
-const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
-    const [name, setName]=useState('');
-    const [category, setCategory] = useState('');
-    const [price, setPrice] = useState(0);
+const ChangeMenu = ({changemenu, menu, id, menuprice, menucategory}) =>{
+
+    const [name, setName]=useState(menu);
+    const [category, setCategory] = useState();
+    const [price, setPrice] = useState();
     const [ingredients,setIngredients]=useState([
         {
             ingredientName:'',
@@ -132,7 +133,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
         e.preventDefault();
         !menu && alert('메뉴를 선택해주세요');
     }
-
+    
     const getStocks = async ()=>{
         let managerId = window.localStorage.getItem('managerId');
         await axios.post('http://localhost:8080/stock/getAll', managerId,{
@@ -202,11 +203,10 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
     }
 
     const nullCheck = ()=>{
-        console.log(name);
         console.log(category);
         console.log(price);
         //finalIngredients.length===0
-        if(!name || !category || !price) return false;
+        if(!category || !price) return false;
         return true;
     }
 
@@ -214,7 +214,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
         e.preventDefault();
         let managerId = window.localStorage.getItem('managerId');
         const data = {
-            menuName : name,
+            menuName : menu,
             price : price,
             managerId:managerId,
             menuCategory : category,
@@ -243,11 +243,11 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                 <Form>
                     <WrapperDiv>
                         <InputLable>메뉴명</InputLable>
-                        <Input placeholder = {'메뉴이름'} style={{flexGrow:3}} value={name} disabled/>
+                        <Input placeholder = {menu} style={{flexGrow:3}} value={name} disabled/>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>분류</InputLable>
-                        <CategorySelector value={category} onChange={handleSelect}>
+                        <CategorySelector placeholder={menucategory} value={category} onChange={handleSelect}>
                             <option value="">------</option>
                             <option value="세트메뉴">세트메뉴</option>
                             <option value="2~3인분메뉴">2-3인분메뉴</option>
@@ -260,7 +260,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>가격</InputLable>
-                        <Input placeholder = {price} onChange={onChangePrice} value={price}/>
+                        <Input placeholder = {menuprice} onChange={onChangePrice} value={price}/>
                     </WrapperDiv>
                     {/* <WrapperDiv>
                         <InputLable>식재료</InputLable>
@@ -317,7 +317,7 @@ const ChangeMenu = ({menu, id, menuprice, menucategory}) =>{
                     </WrapperDiv> */}
 
                     <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '10em', marginTop:'10em'}}>
-                        <CheckButton onClick={load}>Load</CheckButton>
+                        {/* <CheckButton onClick={load}>Load</CheckButton> */}
                         <CheckButton onClick = {changeMenu}>수정</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>

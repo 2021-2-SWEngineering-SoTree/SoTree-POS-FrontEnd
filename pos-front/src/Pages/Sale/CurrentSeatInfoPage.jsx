@@ -9,7 +9,7 @@ const CurrentSeatInfoPage = memo(() => {
     
     const [tableData, setTableData] = useState([]);
     const [takeoutData, setTakeOutData] = useState([]);
-
+    
     let size = 16;
 
 
