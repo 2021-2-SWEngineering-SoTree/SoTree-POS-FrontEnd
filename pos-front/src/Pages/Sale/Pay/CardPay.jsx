@@ -1,7 +1,8 @@
+/* eslint-disable no-lone-blocks */
 import styled from 'styled-components';
 import React, {useState, useEffect} from 'react';
 import Sign from '../../../Assets/sign.png';
-
+import axios from 'axios';
 const Templet = styled.div`
     background-color:#474D4E;
     width : 100%;
@@ -129,23 +130,73 @@ function generateRandomCode(n) {
     return str
 }
 
-const CardPay = ({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
     const [cardNum,setCardNum]=useState();
     const [month,setMonth]=useState();
     const [getSign, setGetSign]=useState(false);
 
+    
+    const getPaid = async ()=>{
+        const managerId = window.localStorage.getItem('managerId');
+        console.log(managerId);
+        
+        //직원 ID
+        const data = JSON.stringify({
+            orderId : orderId,
+            employeeId : 1,
+            branchId: managerId,
+            payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            method : '카드'
+        });
+
+        await axios.post('http://localhost:8080/payment/makePayment',data, {
+            headers : {
+            "Content-Type" : "application/json",
+        }}).then(async (res)=>{
+            const data2 = JSON.stringify({
+                paymentId: 1,
+                branchId : managerId
+            
+            });
+            await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                { payedPrice ? setpayPrice(+payedPrice+totalprice):setpayPrice(totalprice);}
+                {notTotalPrice && notTotalPrice(all-totalprice);}
+                {setAllprice && setAllprice(all-totalprice);}
+                alert('카드결제가 완료되었습니다');
+                window.location.replace("/CurrentSeatInfo")
+                
+            }).catch(e=>{
+                console.log(e);
+                alert('결제가 실패하였습니다');
+            })
+        }).catch(e=>{
+            console.log(e);
+            alert('결제가 실패하였습니다');
+        })
+        
+    }
+
+
     const getPay=(callback)=> {
         setTimeout(function(){
           alert('카드를 입력받았습니다');
           callback();
           setTimeout(function(){
-            //결제api
-            alert('결제!');
-            { payedPrice ? setpayPrice(+payedPrice+totalprice):setpayPrice(totalprice);}
-            {notTotalPrice && notTotalPrice(all-totalprice);}
-            {setAllprice && setAllprice(all-totalprice);}
+            if (!notTotalPrice) {
+                getPaid();
+                alert('결제!');
+            }
+            else {
+                { payedPrice ? setpayPrice(+payedPrice+totalprice):setpayPrice(totalprice);}
+                {notTotalPrice && notTotalPrice(all-totalprice);}
+                {setAllprice && setAllprice(all-totalprice);}
+                alert('카드결제가 완료되었습니다');   
+            }
           },2000)
         }, 3000);
     }

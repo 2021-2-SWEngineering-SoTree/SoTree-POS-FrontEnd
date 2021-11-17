@@ -82,6 +82,7 @@ const MenuTemplate = () => {
     useEffect(()=>{
         console.log('index change!');
         if(index>-1 && index<categoryMenus.length) {
+            console.log('바뀜');
             setSelectedMenu(categoryMenus[index].menuName);
             setSelectedId(categoryMenus[index].id);
             setSelectedPrice(categoryMenus[index].price);
@@ -141,6 +142,7 @@ const MenuTemplate = () => {
     }
 
     const onClickChange = () => {
+        console.log(selectedMenu, selectedPrice, selectedCategory);
         setChangeMenu(!changeMenu);
     }
 
@@ -159,7 +161,7 @@ const MenuTemplate = () => {
         </Modal>
 
         <SmallModal visible={deleteMenu}>
-            <DeleteMenu menu={selectedMenu} id={selectedId} price={selectedPrice} category={selectedCategory}/>
+            <DeleteMenu menu={selectedMenu} id={selectedId} price={selectedPrice} category={selectedCategory} changemenu={changeMenu}/>
         </SmallModal>
         
         <Header text ={"메뉴 관리"} restaurantName = {localStorage.getItem('storeName')}/>

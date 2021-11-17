@@ -1,6 +1,7 @@
 /* eslint-disable no-lone-blocks */
 import styled from 'styled-components';
 import React, {useState, useEffect, memo} from 'react';
+import axios from 'axios';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -182,7 +183,7 @@ function generateRandomCode(n) {
     return str
 }
 
-const CashPay = memo(({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice); //받을 금액
     const [price, setPrice]=useState(0); //받은 금액
@@ -206,14 +207,62 @@ const CashPay = memo(({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, 
         price && price>totalPrice && setBackPrice(price-totalPrice);
     },[price]);
 
-    const getPaid = ()=>{
-        {setAllprice && setAllprice(all-totalPrice);}
-        {notTotalPrice && notTotalPrice(all-totalprice);}
-        setTotalprice(0);
-        setPrice(0);
-        setBackPrice(0);
-        //결제api
-        alert('결제가 완료되었습니다');
+
+    const getPaid = async ()=>{
+        const managerId = window.localStorage.getItem('managerId');
+        console.log(managerId);
+
+        //직원 ID.
+        const data = JSON.stringify({
+            orderId : orderId,
+            employeeId : 1,
+            branchId: managerId,
+            payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            method : '현금'
+        });
+
+        await axios.post('http://localhost:8080/payment/makePayment',data, {
+            headers : {
+            "Content-Type" : "application/json",
+        }}).then(async (res)=>{
+            const data2 = JSON.stringify({
+                paymentId: 1,
+                branchId : managerId
+            
+            });
+            await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                {setAllprice && setAllprice(all-totalPrice);}
+                {notTotalPrice && notTotalPrice(all-totalprice);}
+                setTotalprice(0);
+                setPrice(0);
+                setBackPrice(0);
+                alert('현금결제가 완료되었습니다');
+                window.location.replace("/CurrentSeatInfo")
+            }).catch(e=>{
+                console.log(e);
+                alert('결제가 실패하였습니다');
+            })
+        }).catch(e=>{
+            console.log(e);
+            alert('결제가 실패하였습니다');
+        })
+        
+    }
+
+    const getPay=()=>{
+        if(price>=totalprice && !notTotalPrice) getPaid();
+        else if(price>=totalprice) {
+            {setAllprice && setAllprice(all-totalPrice);}
+            {notTotalPrice && notTotalPrice(all-totalprice);}
+            setTotalprice(0);
+            setPrice(0);
+            setBackPrice(0);
+            alert('현금결제가 완료되었습니다');
+        }
+        else if(price===0 || totalprice===0 || price<totalprice) alert('금액이 부족합니다!');
     }
 
     const [cardNum,setCardNum]=useState();
@@ -283,7 +332,7 @@ const CashPay = memo(({payedPrice, all, notTotalPrice, totalPrice, setpayPrice, 
                                 <CostDiv>{backPrice}</CostDiv>
                                 </TopLeftWrapper>
                             </TopLeft>
-                            <TopRightBtn onClick={getPaid}>현금 결제<br/>완료</TopRightBtn>
+                            <TopRightBtn onClick={getPay}>현금 결제<br/>완료</TopRightBtn>
                         </TopContent>
 
                         <MidContent>

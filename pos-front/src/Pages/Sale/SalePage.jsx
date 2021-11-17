@@ -221,7 +221,7 @@ const SalePage = () => {
     const [newOrders, setNewOrders] = useState([]);
     const [currentOrders, setCurrentOrders] = useState([]);
     const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
-    
+    const [orderId, setOrderId]=useState(params.state[1].orderId);
     const [click,setClick]=useState(0);
 
 
@@ -726,8 +726,9 @@ const SalePage = () => {
                             
                             <LeftBottomTwoDiv>
                                 <BottomBottomLeftDiv>
-                                    <NumberDiv>{calculNum}&nbsp;</NumberDiv>
-                                    <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}/>
+                                    <NumberDiv>{calculNum}&nbsp;</NumberDiv> 
+                                    <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}
+                                        quantity2={(click!==0) ? payedPrice:null} changeQuantity2={(click!==0) ? setPayedPrice:null}/>
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
                                     
@@ -747,9 +748,9 @@ const SalePage = () => {
                 {(click===0) && <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
                     categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
                     changeDiv={changeDiv}/>}
-                {(click===1) && <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===2)  &&<CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===3) && <MultiPay payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===1) && <CashPay orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===2)  &&<CardPay orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 
                 </RightDiv>
 

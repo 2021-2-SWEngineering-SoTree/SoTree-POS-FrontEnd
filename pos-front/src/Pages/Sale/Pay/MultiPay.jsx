@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React, {useState, useEffect} from 'react';
 import { CashPay, CardPay } from '.';
+import axios from 'axios';
 
 const Templet = styled.div`
     background-color:#474D4E;
@@ -100,7 +101,7 @@ const InputNumber = styled.input`
 `;
 
 
-const MultiPay = ({payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}) => {
+const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}) => {
 
     const [totalprice,setTotalPrice]=useState(totalPrice);
     const [cash,setCash]=useState();
@@ -116,8 +117,39 @@ const MultiPay = ({payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}
         setCash(totalprice-e.target.value);
     }
 
-    const finish=()=>{
-        alert('결제가 모두 완료되었습니다');
+    const finish= async ()=>{
+        let managerId = window.localStorage.getItem('managerId');
+
+        const data = JSON.stringify({
+            orderId : orderId,
+            employeeId : 1,
+            branchId: managerId,
+            payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            method : '복합'
+        });
+
+        await axios.post('http://localhost:8080/payment/makePayment',data, {
+            headers : {
+            "Content-Type" : "application/json",
+        }}).then(async (res)=>{
+            const data2 = JSON.stringify({
+                paymentId: 1,
+                branchId : managerId
+            
+            });
+            await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                alert('결제가 모두 완료되었습니다');
+            }).catch(e=>{
+                console.log(e);
+                alert('결제가 실패하였습니다');
+            })
+        }).catch(e=>{
+            console.log(e);
+            alert('결제가 실패하였습니다');
+        })
         setClick(0);
     }
     useEffect(()=>{
