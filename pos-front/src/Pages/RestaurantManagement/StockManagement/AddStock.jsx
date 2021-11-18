@@ -76,6 +76,9 @@ const AddStock = ({onClickAdd}) => {
     const [quantity , setQuantity] = useState('');
     const [stockName, setStockName] = useState('');
 
+    const [cello, setCells] = useState([]);
+    const [select, setSelect] = useState("");
+
     const handleClick = async (e) =>{
         e.preventDefault();
         if(window.confirm("정말로 추가하시겠습니까?")){
@@ -95,10 +98,12 @@ const AddStock = ({onClickAdd}) => {
     const addStockHandler = async () =>{
         // let managerId = window.localStorage.getItem('')
         const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
+        const employeeIdInfo = select !== undefined ? select : 0;
+        console.log("EmployeeID : ", employeeIdInfo);
         const ingredients = [{
             time : time,
             quantityChanged : +quantity,
-            employeeId : 1,
+            employeeId : employeeIdInfo,
         }];
         let managerId = window.localStorage.getItem('managerId');
         const data = {
@@ -106,7 +111,7 @@ const AddStock = ({onClickAdd}) => {
             managerId : managerId,
             quantity : quantity,
             stockDetailList : ingredients,
-            employeeId : 1,
+            employeeId : employeeIdInfo,
         };
         console.log(data.stockDetailList);
         await axios.post('http://localhost:8080/stock/add', JSON.stringify(data), {
@@ -119,8 +124,7 @@ const AddStock = ({onClickAdd}) => {
         }).catch(e=>console.log(e));
     };
 
-    const [cello, setCells] = useState([]);
-    const [select, setSelect] = useState("")
+
     const handleChange = (e) => {
         setSelect(e.target.value);
         console.log(e.target.value);
@@ -130,9 +134,9 @@ const AddStock = ({onClickAdd}) => {
         try {
             const getEmployee = []
             const res = await axios.get('http://localhost:8080/getAllPersonName')
-            console.log('가져온 직원 값들' + res.data);
+            console.log('가져온 직원 값들', res.data);
             for (let i = 0 ; i < res.data.length; i++) {
-                getEmployee.push(res.data[i].personName);
+                getEmployee.push(res.data[i]);
             }
             setCells(getEmployee);
             console.log(cello);
@@ -141,6 +145,7 @@ const AddStock = ({onClickAdd}) => {
         }
     }, []);
 
+    useEffect(()=>{console.log(select)},[select])
 
     return (
         <>
@@ -166,7 +171,7 @@ const AddStock = ({onClickAdd}) => {
                         <InputLable>담당
                             <CategorySelector value={select} onChange={handleChange}>
                                 {Array(cello.length).fill(undefined, undefined, undefined).map((index, i) =>
-                                    <option key={i} defaultValue={cello[i]}>{cello[i]}</option>)}
+                                    <option key={i} value={cello[i].EmployeeId !== undefined ? cello[i].EmployeeId: cello[i].ManagerId}>{cello[i].personName}</option>)}
                             </CategorySelector>
                             <CheckButton onClick = {handleClick}>추가</CheckButton>
                             <CheckButton>닫기</CheckButton>

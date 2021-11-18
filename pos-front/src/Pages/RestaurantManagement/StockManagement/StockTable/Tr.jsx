@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Td from './Td';
 
-const Tr = ({rowIndex, stock, clickedIndex}) => {
+const Tr = memo(({rowIndex, stock, clickedIndex}) => {
     return (
         <tr>
             {Array(7).fill(undefined, undefined, undefined).map((td, i)=>
@@ -13,6 +13,6 @@ const Tr = ({rowIndex, stock, clickedIndex}) => {
             )}
         </tr>
     );
-};
+});
 
 export default Tr;

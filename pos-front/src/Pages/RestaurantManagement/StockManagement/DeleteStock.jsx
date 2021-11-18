@@ -35,7 +35,7 @@ const Form = styled.form`
     flex-direction : column;
 `;
 
-const DeleteStock = ({stock, clickedIndex, visible}) => {
+const DeleteStock = ({stock, clickedIndex, onClickDelete, visible}) => {
 
     const deleteClickHandler = async () =>{
         console.log("Delete button Clicked");
@@ -56,7 +56,7 @@ const DeleteStock = ({stock, clickedIndex, visible}) => {
                 employeeId: 99,
             }
             console.log(data);
-            await axios.delete(`http://localhost:8080/stock/${clickedIndex}`,
+            await axios.delete(`http://localhost:8080/stock/${stock[clickedIndex].id}`,
                 JSON.stringify(data),{
                     headers : {
                         "Content-Type": `application/json`,
@@ -64,9 +64,10 @@ const DeleteStock = ({stock, clickedIndex, visible}) => {
             }).then((res) => {
                 console.log(res);
                 alert("삭제되었습니다.");
+                onClickDelete();
             }).catch(e=>{console.log(e.message); alert('재고 삭제 실패');})
         }else{
-            visible = !visible;
+            onClickDelete();   
         }
     }
     return (
@@ -79,7 +80,7 @@ const DeleteStock = ({stock, clickedIndex, visible}) => {
         <UnderText>삭제하시겠습니까?</UnderText>
         <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
             <ModalButton name={'삭제'} onClick={deleteClickHandler}/>
-            <ModalButton name={'닫기'} onClick={()=> {visible= !visible; console.log(visible)}}/>
+            <ModalButton name={'닫기'} onClick={onClickDelete}/>
         </div>
         </Form>
         </>

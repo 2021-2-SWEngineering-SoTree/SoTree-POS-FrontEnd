@@ -124,7 +124,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
             };
             const data2 = JSON.stringify(data);
             console.log("data2: ", data2);
-            axios.put(`http://localhost:8080/stock/${stock[clickedIndex].id}`,
+            await axios.put(`http://localhost:8080/stock/${stock[clickedIndex].id}`,
                 data2, {
                     headers : {
                         "Content-Type": 'application/json; charset=UTF-8',
@@ -132,7 +132,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                 }).then((res) => {
                 console.log(res);
                 setQuantity('');
-                console.log("Click test : preventDefault");
+                onClickChange();
             }).catch(e=>{console.log(e.message); alert('재고 수정 실패');})
         };
     }

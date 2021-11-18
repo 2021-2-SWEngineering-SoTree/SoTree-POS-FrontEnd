@@ -122,13 +122,13 @@ const MenuTemplate = () => {
         getCategoryMenus(category);
         //makeCategoryMenusFull();
         console.log(categoryMenus);
-
     },[category]);
 
-    useEffect(()=>{
+    useEffect(async()=>{
         console.log('get menu useeffect');
-        getMenus();
+        await getMenus();
         console.log(menus);
+        setCategory('세트메뉴');
     },[]);
 
 
@@ -167,13 +167,13 @@ const MenuTemplate = () => {
         <Header text ={"메뉴 관리"} restaurantName = {localStorage.getItem('storeName')}/>
         <LeftDiv>
             <LeftTopDiv>
-                <CategoryButton name={"세트메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"2~3인분메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"식사메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"사이드메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"후식메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"추가메뉴"} onClick={onClickCategoryButton}/>
-                <CategoryButton name={"주류/음료"} onClick={onClickCategoryButton}/>
+                <CategoryButton id = '세트메뉴'    name={"세트메뉴"}    onClick={onClickCategoryButton}/>
+                <CategoryButton id = '2~3인분메뉴' name={"2~3인분메뉴"} onClick={onClickCategoryButton}/>
+                <CategoryButton id = '식사메뉴'    name={"식사메뉴"}    onClick={onClickCategoryButton}/>
+                <CategoryButton id = '사이드메뉴'  name={"사이드메뉴"}  onClick={onClickCategoryButton}/>
+                <CategoryButton id = '후식메뉴'    name={"후식메뉴"}    onClick={onClickCategoryButton}/>
+                <CategoryButton id = '추가메뉴'    name={"추가메뉴"}    onClick={onClickCategoryButton}/>
+                <CategoryButton id = '주류/음료'   name={"주류/음료"}   onClick={onClickCategoryButton}/>
             </LeftTopDiv>
             <LeftBottomDiv>
                 <SmallTable menu={categoryMenus} getIndex={getIndex} width={'78rem'} height={'35rem'}/> 
