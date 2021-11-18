@@ -65,8 +65,16 @@ const StockTemplate = () => {
         setAddStock(!addStock);
     }
 
+    const onClickDeleteModal = () =>{
+        setDeleteStock((prev)=>!prev);
+    }
+
     const onClickChange = () => {
-        setChangeStock(!changeStock);
+        if(clickedIndex){
+            setChangeStock(!changeStock);
+        }else{
+            alert("재고를 선택하고 수정해주세요!");
+        }
     }
 
     const onClickChangeAfter = () => {
@@ -75,7 +83,11 @@ const StockTemplate = () => {
     }
 
     const onClickDelete = () => {
-        setDeleteStock(!deleteStock);
+        if(clickedIndex){
+            setDeleteStock(!deleteStock);
+        }else{
+            alert("재고를 선택하고 삭제해주세요!");
+        }
     }
 
     const onClickIsChanged = ()=>{
@@ -112,7 +124,7 @@ const StockTemplate = () => {
                 <ChangeStock onClickChange={onClickChangeAfter} stock={stock} clickedIndex={clickedIndex}/>
             </Modal>
             <SmallModal visible={deleteStock}>
-                <DeleteStock visible = {deleteStock} stock={stock} clickedIndex={clickedIndex}/>
+                <DeleteStock onClickDelete = {onClickDeleteModal} stock={stock} clickedIndex={clickedIndex}/>
             </SmallModal>
             {clickedIndex ? 
                 <SmallModal visible={isChanged}>

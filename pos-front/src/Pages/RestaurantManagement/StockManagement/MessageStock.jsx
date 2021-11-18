@@ -6,11 +6,11 @@ const Title = styled.h1`
     text-align:center;
 `;
 
-const TextByMenu = styled.h3`
+const TextByMenu = styled.h2`
     margin-left : 0.5rem;
 `
 
-const UnderText = styled.h3`
+const UnderText = styled.h2`
     text-align:center;
 `
 
@@ -22,10 +22,13 @@ const Text = styled.div`
 
 const Menu = styled.div`
     text-align : center;
+    vertical-align : center;
     background-color : #ECECEC;
-    height : 3.2rem;
-    width : 17rem;
-    font-size : 1.5rem;
+    height : 3rem;
+    width : 10rem;
+    font-size : 2rem;
+    margin-left : 1rem;
+    margin-right : 1rem;
 `;
 
 const Form = styled.form`
