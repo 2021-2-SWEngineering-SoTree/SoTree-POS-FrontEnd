@@ -133,15 +133,17 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
             "Content-Type" : "application/json",
         }}).then(async (res)=>{
             const data2 = JSON.stringify({
-                paymentId: 1,
+                paymentId: res.data,
                 branchId : managerId
             
             });
+            console.log(data2);
             await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
             headers : {
             "Content-Type" : "application/json",
             }}).then((res)=>{
                 alert('결제가 모두 완료되었습니다');
+                window.location.replace("/CurrentSeatInfo")
             }).catch(e=>{
                 console.log(e);
                 alert('결제가 실패하였습니다');
