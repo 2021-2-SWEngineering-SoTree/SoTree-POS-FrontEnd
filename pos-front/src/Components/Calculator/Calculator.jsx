@@ -21,26 +21,23 @@ const Calculator = ({num, num2, quantity, changeQuantity, quantity2, changeQuant
         e.preventDefault();
         if (number === "C") {
             quantity = "";
-            if(quantity2!==null) quantity2 = "";
+            if(quantity2!==undefined) quantity2 = "";
         }
         else if (number === "&lt") {
             quantity = quantity.slice(0, quantity.length-1);
-            if(quantity2!==null) quantity2 = quantity2.slice(0, quantity2.length-1);
+            if(quantity2!==undefined) quantity2 = quantity2.slice(0, quantity2.length-1);
         }
         else {
             e.preventDefault();
-            console.log(number);
-            console.log(quantity, typeof quantity);
             if(quantity==='0' || quantity===0) quantity=number;
             else if(quantity!=='0') quantity += number;
-            if(quantity2!==null){
+            if(quantity2!==undefined){
                 if(quantity2==='0' || quantity2===0) quantity2 = number;
                 else if(quantity2!=='0') quantity2+=number;
-            console.log(quantity);
             }
         }
         changeQuantity(quantity);
-        if(quantity2!==null) changeQuantity2(quantity2);
+        if(quantity2!==undefined) changeQuantity2(quantity2);
         console.log(quantity, quantity2, changeQuantity, changeQuantity2);
     }
 
