@@ -230,11 +230,13 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
             headers : {
             "Content-Type" : "application/json",
         }}).then(async (res)=>{
+            console.log(res.data);
             const data2 = JSON.stringify({
-                paymentId: 1,
+                paymentId: res.data,
                 branchId : managerId
             
             });
+            console.log(data2);
             await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
             headers : {
             "Content-Type" : "application/json",
@@ -244,6 +246,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 setTotalprice(0);
                 setPrice(0);
                 setBackPrice(0);
+                console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
                 window.location.replace("/CurrentSeatInfo")
             }).catch(e=>{
