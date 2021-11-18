@@ -156,7 +156,7 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
             "Content-Type" : "application/json",
         }}).then(async (res)=>{
             const data2 = JSON.stringify({
-                paymentId: 1,
+                paymentId: res.data,
                 branchId : managerId
             
             });
@@ -167,6 +167,7 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
                 { payedPrice ? setpayPrice(+payedPrice+totalprice):setpayPrice(totalprice);}
                 {notTotalPrice && notTotalPrice(all-totalprice);}
                 {setAllprice && setAllprice(all-totalprice);}
+                console.log(res,res.data);
                 alert('카드결제가 완료되었습니다');
                 window.location.replace("/CurrentSeatInfo")
                 
