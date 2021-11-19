@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import profile_Image from '../Assets/profile.png'
 import {BsPerson} from "react-icons/bs"
 import { useNavigate } from 'react-router-dom';
-
+import { Link, Routes, Route } from 'react-router-dom';
 
 const ContentDiv = styled.div`
     display : flex;
@@ -105,7 +105,9 @@ const UserInfo = ({RestaurantName, EmpolyeeName}) => {
                         <Input>{EmpolyeeName}님</Input>
                 </InputDiv>
                 <ButtonDiv>
-                    <Button>내정보</Button>
+                    <Link to="/myInfo">
+                        <Button>내정보</Button>
+                    </Link>
                     <Button style={{width:'4.5rem'}} onClick={logoutHandler}>로그아웃</Button>
                 </ButtonDiv>
             </InfoDiv>
