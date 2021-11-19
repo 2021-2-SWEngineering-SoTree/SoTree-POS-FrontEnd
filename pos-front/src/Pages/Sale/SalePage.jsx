@@ -221,7 +221,7 @@ const SalePage = () => {
     const [newOrders, setNewOrders] = useState([]);
     const [currentOrders, setCurrentOrders] = useState([]);
     const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
-    const [orderId, setOrderId]=useState(params.state[1].orderId);
+    const [orderId, setOrderId]=useState('');
     const [click,setClick]=useState(0);
 
 
@@ -295,14 +295,36 @@ const SalePage = () => {
             headers : {
             "Content-Type" : `application/json`,
         }}).then(async (res)=>{
-            const CurrentTableInfo = await getCurrentTableInfo();
-            if(CurrentTableInfo.data.orderId>=0){
-                console.log("currentTable", CurrentTableInfo.data);
-                const currentOrderList = makeOrderStyle(CurrentTableInfo.data.orderDetailSummaries);
-                const currentTotalAmount = CurrentTableInfo.data.orderDetailSummaries.reduce((ac, arr)=>{return ac +arr.quantity},0);
-                setCurrentOrders(currentOrderList);
-                setToltalPrice(CurrentTableInfo.data.totalPrice);
-                setTotalAmount(currentTotalAmount);
+            let CurrentTableInfo;
+            console.log("zz",params.state[0].seatNum-100);
+            
+            if(params.state[0].seatNum < 100){
+                CurrentTableInfo = await getCurrentTableInfo();
+                if(CurrentTableInfo.data.orderId>=0){
+                    console.log("currentTable", CurrentTableInfo.data);
+                    const currentOrderList = makeOrderStyle(CurrentTableInfo.data.orderDetailSummaries);
+                    const currentTotalAmount = CurrentTableInfo.data.orderDetailSummaries.reduce((ac, arr)=>{return ac +arr.quantity},0);
+                    setCurrentOrders(currentOrderList);
+                    setToltalPrice(CurrentTableInfo.data.totalPrice);
+                    setTotalAmount(currentTotalAmount);
+                    setOrderId(CurrentTableInfo.data.orderId);
+                }
+            }else{
+                let temp = await getCurrentTakeOutInfo();
+                CurrentTableInfo = temp.data[params.state[0].seatNum-100];
+                console.log("Test", CurrentTableInfo);
+                if(params.state[0].seatNum-100 < temp.data.length){
+                    console.log("zz", temp.data.length );
+                    if(CurrentTableInfo.orderId>=0){
+                        console.log("currentTable", CurrentTableInfo);
+                        const currentOrderList = makeOrderStyle(CurrentTableInfo.orderDetailSummaries);
+                        const currentTotalAmount = CurrentTableInfo.orderDetailSummaries.reduce((ac, arr)=>{return ac +arr.quantity},0);
+                        setCurrentOrders(currentOrderList);
+                        setToltalPrice(CurrentTableInfo.totalPrice);
+                        setTotalAmount(currentTotalAmount);
+                        setOrderId(CurrentTableInfo.data.orderId);
+                    }
+                } 
             }
             setMenus(()=>res.data);
         }).catch(e=>{
@@ -312,7 +334,15 @@ const SalePage = () => {
 
     const getCurrentTableInfo = async ()=>{
         let managerId = localStorage.getItem('managerId')
-        return axios.post(`http://localhost:8080/order/getOneTableInfo/${managerId}/${params.state[0].seatNum}`,{
+        return axios.post(`http://localhost:8080/order/getOneTableInfo/${managerId}/${params.state[0].seatNum+1}`,{
+            headers : {
+            "Content-Type" : `application/json`,
+        }})
+    };
+
+    const getCurrentTakeOutInfo = async ()=>{
+        let managerId = localStorage.getItem('managerId')
+        return axios.post(`http://localhost:8080/order/getTakeoutOrder/${managerId}`,{
             headers : {
             "Content-Type" : `application/json`,
         }})
