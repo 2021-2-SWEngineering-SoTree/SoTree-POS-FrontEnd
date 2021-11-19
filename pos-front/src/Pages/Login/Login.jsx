@@ -93,6 +93,7 @@ const Login = ({loginCallBack}) => {
 
                 }else{
                     alert("로그인 성공");
+                    console.log(user);
                     axios.defaults.headers.common['Authorization'] = `webfirewood ${res.data}`;
                     window.localStorage.setItem('Token', JSON.stringify(res.data));
                     window.localStorage.setItem('userName', user.userName);
