@@ -222,7 +222,9 @@ const EmployeeActivitiesListPage = () => {
                     </div>
                 </div>
             </div>
-            <MintFormTable columnName={changeTable} cells={changeCello} isCheckBox={false}/>
+            <div style={{overFlow: "scroll"}}>
+                <MintFormTable columnName={changeTable} cells={changeCello} isCheckBox={false}/>
+            </div>
         </>
     )
 }

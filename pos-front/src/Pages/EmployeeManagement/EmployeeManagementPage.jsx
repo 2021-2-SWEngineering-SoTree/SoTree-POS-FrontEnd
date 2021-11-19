@@ -25,9 +25,8 @@ const Div = styled.div`
 const LeftDiv = styled.div`
     width: 200%;
     height: 100%;
-    padding-top: 2.0rem;
+    padding-top: 0rem;
     flex-grow: 1;
-    overflow: scroll;
     display: ${(props) => (props.visible ? 'block' : 'none')};
 `;
 
@@ -155,10 +154,10 @@ const EmployeeManagementPage = () => {
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
-                <LeftDiv visible={!listOfEmployee}>
+                <LeftDiv visible={!listOfEmployee} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
                     <MintFormTable columnName={columnName} cells={cello} isCheckBox={true} setGetNumber={setGetNumber}/>
                 </LeftDiv>
-                <LeftDiv visible={listOfEmployee}>
+                <LeftDiv visible={listOfEmployee} style={{overFlow: "auto", marginTop: "2.0rem"}}>
                     <EmployeeActivitiesListPage/>
                 </LeftDiv>
                 <RightDiv>
