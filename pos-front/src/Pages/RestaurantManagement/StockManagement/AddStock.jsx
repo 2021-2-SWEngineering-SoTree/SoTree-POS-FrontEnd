@@ -97,11 +97,9 @@ const AddStock = ({onClickAdd}) => {
 
     const addStockHandler = async () =>{
         // let managerId = window.localStorage.getItem('')
-        const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
-        const employeeIdInfo = select !== undefined ? select : 0;
+        const employeeIdInfo = select !== undefined ? select : null;
         console.log("EmployeeID : ", employeeIdInfo);
         const ingredients = [{
-            time : time,
             quantityChanged : +quantity,
             employeeId : employeeIdInfo,
         }];
@@ -109,9 +107,7 @@ const AddStock = ({onClickAdd}) => {
         const data = {
             stockName : stockName,
             managerId : managerId,
-            quantity : quantity,
             stockDetailList : ingredients,
-            employeeId : employeeIdInfo,
         };
         console.log(data.stockDetailList);
         await axios.post('http://localhost:8080/stock/add', JSON.stringify(data), {

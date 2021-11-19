@@ -442,6 +442,7 @@ const SalePage = () => {
         setToltalPrice((prev)=> prev + selected.price);
         setTotalAmount((prev)=> prev + 1);
         setTotalDiscount((prev) => prev + 0);
+        console.log("NEW ORDER CHANGE", newOrders);
     };
 
     useEffect(()=>{
@@ -537,7 +538,7 @@ const SalePage = () => {
     const changeSelectionOrderQuantity = (i, count) =>{
         const index = newOrders.findIndex((key)=> key.name === currentOrders[i].name);
         if(index>=0){
-            let temp = newOrders.filter(arr => arr.name !== currentOrders[i].name);
+            let temp = newOrders.filter(arr => arr.name !== currentOrders[index].name);
             const data = {
                 name : currentOrders[i].name,
                 price : currentOrders[i].price,
@@ -554,7 +555,7 @@ const SalePage = () => {
         }
         const index2 = currentOrders.findIndex((key)=> key.name === currentOrders[i].name);
         if(index2>=0){
-            let temp = currentOrders.filter(arr => arr.name !== currentOrders[i].name);
+            let temp = currentOrders.filter(arr => arr.name !== currentOrders[index2].name);
             console.log(temp);
             console.log("current order ", currentOrders[index])
             let data = {
@@ -562,7 +563,7 @@ const SalePage = () => {
                 price : currentOrders[i].price,
                 quantity : currentOrders[i].quantity + count,
                 discount : currentOrders[i].discount,
-                totalprice : count * currentOrders[i].price + newOrders[index].totalprice,
+                totalprice : count * currentOrders[i].price + currentOrders[i].totalprice,
                 message : currentOrders[i].message,
             }
             if(data.quantity <= 0 ){
