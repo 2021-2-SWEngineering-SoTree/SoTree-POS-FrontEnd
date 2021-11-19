@@ -70,7 +70,7 @@ const StockTemplate = () => {
     }
 
     const onClickChange = () => {
-        if(clickedIndex){
+        if(clickedIndex >= '0'){
             setChangeStock(!changeStock);
         }else{
             alert("재고를 선택하고 수정해주세요!");
@@ -101,7 +101,7 @@ const StockTemplate = () => {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
             setStock(res.data);
-            console.log("가져온 getStock 값 :" + res.data);
+            console.log("가져온 getStock 값 :",res.data);
         }).catch(e=>{
             console.log(e);
         })
