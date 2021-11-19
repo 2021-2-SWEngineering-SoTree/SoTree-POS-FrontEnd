@@ -135,6 +135,10 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
         else { alert("퇴근 추가 오류"); }
     }
 
+    const checkHandleClick = async(e) => {
+
+    }
+
 
     return (
         <>
@@ -175,6 +179,10 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
                 <InnerDiv>
                     <LargeButton onClick={leaveHandleClick}>퇴근 하기</LargeButton>
                     <ContentLabel style={{lineHeight: '90px'}}>현재 시간이 퇴근 기록으로 등록됩니다.</ContentLabel>
+                </InnerDiv>
+                <InnerDiv>
+                    <LargeButton onClick={checkHandleClick}>출퇴근<br/>내역 확인</LargeButton>
+                    <ContentLabel style={{lineHeight: '90px'}}>선택한 직원 출퇴근 내역을 확인합니다.</ContentLabel>
                 </InnerDiv>
             </WrapperDiv>
         </>

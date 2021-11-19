@@ -85,6 +85,7 @@ const CreateRowData = (choice, number, name, id, pw, latestDate, pos) => {
 const EmployeeManagementPage = () => {
 
     const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
+    const [employeeManagementChange, setEmployeeManagementChange] = useState(false);
 
     const [commute, setCommute] = useState(false);
     const [addEmployee, setAddEmployee] = useState(false);
@@ -114,7 +115,10 @@ const EmployeeManagementPage = () => {
     const onClickEmployeeAdd = () => { setAddEmployee(!addEmployee); }
     const onClickEmployeeChange = () => { setChangeEmployee(!changeEmployee); }
     const onClickEmployeeDelete = () => { setDeleteEmployee(!deleteEmployee); }
-    const onClickEmployeeList = () => { setEmployeeList(!listOfEmployee); }
+    const onClickEmployeeList = () => {
+        setEmployeeManagementChange(!employeeManagementChange);
+        setEmployeeList(!listOfEmployee);
+    }
 
     useEffect(async () => {
         try {
@@ -161,7 +165,7 @@ const EmployeeManagementPage = () => {
                     <InnerRightDiv>
                         <Link to="/employeeManagement/workSchedule"><Button>근무표</Button></Link>
                         <Button2 onClick={onClickEmployeeCommute}>직원 출퇴근</Button2>
-                        <Button onClick={onClickEmployeeList}>직원활동내역</Button>
+                        <Button onClick={onClickEmployeeList}>{employeeManagementChange? "직원관리로 돌아가기" : "직원활동내역"}</Button>
                         <Link to="/employeeManagement/employeeApproval"><Button2>직원승인</Button2></Link>
                         <Button onClick={onClickEmployeeAdd}>직원추가</Button>
                         <Button onClick={onClickEmployeeChange}>직원수정</Button>
