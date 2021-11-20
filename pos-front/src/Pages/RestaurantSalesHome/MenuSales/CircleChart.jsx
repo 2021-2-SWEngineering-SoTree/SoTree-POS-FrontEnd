@@ -39,6 +39,7 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
+
 export default function CircleChart() {
   return (
     <PieChart width={400} height={400}>
@@ -48,7 +49,7 @@ export default function CircleChart() {
         cy={200}
         labelLine={false}
         label={renderLabel}
-        outerRadius={80}
+        outerRadius={140}
         fill="#8884d8"
         dataKey="value"
       >
