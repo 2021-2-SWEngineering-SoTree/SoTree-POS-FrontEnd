@@ -687,6 +687,8 @@ const SalePage = () => {
         if(currentOrders.length>index && orderSelection >=0 && +changeQuantity > 0 ){
             changeSelectionOrderQuantity(orderSelection, +changeQuantity-currentOrders[orderSelection].quantity);
         }
+        setCalculNum(0);
+        setChangeQuantity('');
     }
 
     const downSelectionHandler = (e) =>{
@@ -720,6 +722,8 @@ const SalePage = () => {
         console.log(i);
         setPayedPrice(i);
     }
+
+    useEffect(()=>{},[changeQuantity])
 
     return (
         <>
