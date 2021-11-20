@@ -241,23 +241,6 @@ const SalePage = () => {
     // totalprice : 12000,
     // message : '',}
 
-    const makeOrderStyle = (summary)=> {
-        let order = [];
-        summary.forEach(function(item, index){
-            let temp = {};
-            temp["name"] = item.menu.menuName;
-            temp["price"] = item.menu.price;
-            temp["quantity"] = item.quantity;
-            temp["totalprice"] = item.menu.price * item.quantity;
-            temp["message"] = '';
-            temp["discount"] = 0;
-            console.log("변경체크" , temp);
-            order.push(temp);
-        })
-        console.log("오더 만들기", order);
-        return order;
-    }
-
     // 오더 states
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalPrice, setToltalPrice] = useState(0);
@@ -463,7 +446,8 @@ const SalePage = () => {
 
     const makeOrderHandler = (e) =>{
         e.preventDefault();
-        if(currentOrders.length === 0){
+        let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
+        if(deleteflag === currentOrders.length){
             orderDeleteHandler();
         }else{
             if(orderId!==''){
@@ -510,10 +494,27 @@ const SalePage = () => {
         return orderdetails;
     };
 
+    const makeOrderStyle = (summary)=> {
+        let order = [];
+        summary.forEach(function(item, index){
+            let temp = {};
+            temp["name"] = item.menu.menuName;
+            temp["price"] = item.menu.price;
+            temp["quantity"] = item.quantity;
+            temp["totalprice"] = item.menu.price * item.quantity;
+            temp["message"] = '';
+            temp["discount"] = 0;
+            console.log("변경체크" , temp);
+            order.push(temp);
+        })
+        console.log("오더 만들기", order);
+        return order;
+    }
+
 
     const changeSelectionOrderQuantity = (i, count) =>{
         const index = newOrders.findIndex((key)=> key.name === currentOrders[i].name);
-        if(index>=0){
+        if(index>=0 && newOrders[index].quantity>=0){
             let temp = newOrders.filter(arr => arr.name !== currentOrders[index].name);
             const data = {
                 name : currentOrders[i].name,
@@ -521,16 +522,18 @@ const SalePage = () => {
                 quantity : newOrders[index].quantity + count,
                 discount : newOrders[index].discount,
                 totalprice : count * currentOrders[i].price + newOrders[index].totalprice,
-                message : newOrders[index].message,
+                message : newOrders[i].message === '취소' ? '' : newOrders[i].message,
             }
             if(data.quantity <= 0 ){
-                setNewOrders([...temp]);
-            }else{
-                setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
+                data.message = '취소';
+                data.quantity = 0;
+                data.discount = 0;
+                data.totalprice = 0;
             }
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);   
         }
         const index2 = currentOrders.findIndex((key)=> key.name === currentOrders[i].name);
-        if(index2>=0){
+        if(index2>=0 && currentOrders[index2].quantity>=0){
             let temp = currentOrders.filter(arr => arr.name !== currentOrders[index2].name);
             console.log(temp);
             console.log("current order ", currentOrders[index])
@@ -540,17 +543,21 @@ const SalePage = () => {
                 quantity : currentOrders[i].quantity + count,
                 discount : currentOrders[i].discount,
                 totalprice : count * currentOrders[i].price + currentOrders[i].totalprice,
-                message : currentOrders[i].message,
+                message : currentOrders[i].message === '취소' ? '' : currentOrders[i].message,
             }
             if(data.quantity <= 0 ){
-                setCurrentOrders([...temp]);
-            }else{
-                setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);
-            }        
+                data.message = '취소';
+                data.quantity = 0;
+                data.discount = 0;
+                data.totalprice = 0;
+            }
+            setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);          
         }
-        setToltalPrice((prev)=> count * currentOrders[i].price + prev);
-        setTotalAmount((prev)=> prev + count);
-        setTotalDiscount((prev) => prev + 0);
+        if(count + currentOrders[index2].quantity>= 0){
+            setToltalPrice((prev)=> count * currentOrders[i].price + prev);
+            setTotalAmount((prev)=> prev + count);
+            setTotalDiscount((prev) => prev + 0); 
+        }
     }
 
 
@@ -648,29 +655,61 @@ const SalePage = () => {
     
     const allCancleHandler = (e)=>{
         e.preventDefault();
-        setNewOrders([]);
-        setCurrentOrders([]);
+        for(var i in currentOrders){
+            var row = currentOrders[i];
+            row.quantity = 0;
+            row.discount = 0;
+            row.totalprice = 0;
+            row.message = '취소';
+        }
+        setCurrentOrders(currentOrders)
         setToltalPrice(0);
         setTotalAmount(0);
         setTotalDiscount(0);
     }
 
-    const selectCancleHander = (e) =>{
+    // const selectCancleHander = (e) =>{
+    //     e.preventDefault();
+    //     if(orderSelection >= 0){
+    //         const temp = newOrders.filter((arr,index) => index!==orderSelection);
+    //         const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
+    //         const cancleAmount = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
+    //         const canclePriceSum = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
+
+    //         console.log("test",canclePriceSum);
+    //         setNewOrders(temp);
+    //         setCurrentOrders(temp2);
+    //         setOrderSelection(-1);
+    //         setToltalPrice((prev)=>prev-canclePriceSum);
+    //         setTotalAmount((prev)=>prev - cancleAmount);
+    //     }
+    // }
+        const selectCancleHander = (e) =>{
         e.preventDefault();
         if(orderSelection >= 0){
-            const temp = newOrders.filter((arr,index) => index!==orderSelection);
-            const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
-            const cancleAmount = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
-            const canclePriceSum = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
-
+            let index = orderSelection;
+            let temp = currentOrders.filter(arr => arr.name !== currentOrders[index].name);
+            const cancleAmount = currentOrders.filter((arr,i) => i===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
+            const canclePriceSum = currentOrders.filter((arr,i) => i===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
+            let data = {
+                name : currentOrders[index].name,
+                price : currentOrders[index].price,
+                quantity : 0,
+                discount : 0,
+                totalprice : 0,
+                message : '취소',
+            }
+            setCurrentOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
             console.log("test",canclePriceSum);
-            setNewOrders(temp);
-            setCurrentOrders(temp2);
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
             setOrderSelection(-1);
             setToltalPrice((prev)=>prev-canclePriceSum);
             setTotalAmount((prev)=>prev - cancleAmount);
+        }else{
+            alert("취소할 주문메뉴를 선택해주세요!");
         }
     }
+   
 
     const plusButtonHandler = (index, e) =>{
         e.preventDefault();
