@@ -207,7 +207,9 @@ const CategoryButton = styled.button`
 
 const UnderTableDiv = styled.div`
     width : 100%;
-    height : 12%;
+    height : 15%;
+    margin-top : 0.1vh;
+    padding : 0px;
 `
 
 const SalePage = () => {
@@ -223,6 +225,7 @@ const SalePage = () => {
     const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
     const [orderId, setOrderId]=useState('');
     const [click,setClick]=useState(0);
+    const [changeQuantity, setChangeQuantity] = useState('');
 
 
     // {name : '왕돈까스',
@@ -237,23 +240,6 @@ const SalePage = () => {
     // discount : 0,
     // totalprice : 12000,
     // message : '',}
-
-    const makeOrderStyle = (summary)=> {
-        let order = [];
-        summary.forEach(function(item, index){
-            let temp = {};
-            temp["name"] = item.menu.menuName;
-            temp["price"] = item.menu.price;
-            temp["quantity"] = item.quantity;
-            temp["totalprice"] = item.menu.price * item.quantity;
-            temp["message"] = '';
-            temp["discount"] = 0;
-            console.log("변경체크" , temp);
-            order.push(temp);
-        })
-        console.log("오더 만들기", order);
-        return order;
-    }
 
     // 오더 states
     const [totalAmount, setTotalAmount] = useState(0);
@@ -322,7 +308,7 @@ const SalePage = () => {
                         setCurrentOrders(currentOrderList);
                         setToltalPrice(CurrentTableInfo.totalPrice);
                         setTotalAmount(currentTotalAmount);
-                        setOrderId(CurrentTableInfo.data.orderId);
+                        setOrderId(CurrentTableInfo.orderId);
                     }
                 } 
             }
@@ -456,43 +442,27 @@ const SalePage = () => {
         setOrderSelection(index);
     }
 
-    const allCancleHandler = (e)=>{
-        e.preventDefault();
-        setNewOrders([]);
-        setCurrentOrders([]);
-        setToltalPrice(0);
-        setTotalAmount(0);
-        setTotalDiscount(0);
-    }
-
-    const selectCancleHander = (e) =>{
-        e.preventDefault();
-        if(orderSelection >= 0){
-            const temp = newOrders.filter((arr,index) => index!==orderSelection);
-            const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
-            const cancleAmount = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
-            const canclePriceSum = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
-
-            console.log("test",canclePriceSum);
-            setNewOrders(temp);
-            setCurrentOrders(temp2);
-            setOrderSelection(-1);
-            setToltalPrice((prev)=>prev-canclePriceSum);
-            setTotalAmount((prev)=>prev - cancleAmount);
-        }
-    }
-
-
     const minus = (a,b) => a-b;
 
     const makeOrderHandler = (e) =>{
         e.preventDefault();
-        makeOrder();
+        let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
+        if(deleteflag === currentOrders.length){
+            orderDeleteHandler();
+        }else{
+            if(orderId!==''){
+                updateTableOrder();
+            }else{
+                makeOrder();
+            }
+        }
+        navigation('/CurrentSeatInfo');
     }
+
 
     const makeOrder = () =>{
         let managerId = window.localStorage.getItem('managerId');
-        const orderDetails = makeOrdetailMap();
+        const orderDetails = makeOrdetailMap(newOrders);
         const data = {
             totalPrice : totalPrice,
             startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
@@ -509,13 +479,12 @@ const SalePage = () => {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
             console.log(res);
-            navigation('/CurrentSeatInfo');
         }).catch(e=>console.log(e));
     }
 
-    const makeOrdetailMap = () =>{
+    const makeOrdetailMap = (order) =>{
         let orderdetails = [];
-        newOrders.forEach(function(item, index){
+        order.forEach(function(item, index){
             let temp = {};
             temp[item.name] = item.quantity;
             console.log("temp", temp)
@@ -525,19 +494,27 @@ const SalePage = () => {
         return orderdetails;
     };
 
-    const plusButtonHandler = (index, e) =>{
-        e.preventDefault();
-        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, 1);}        
+    const makeOrderStyle = (summary)=> {
+        let order = [];
+        summary.forEach(function(item, index){
+            let temp = {};
+            temp["name"] = item.menu.menuName;
+            temp["price"] = item.menu.price;
+            temp["quantity"] = item.quantity;
+            temp["totalprice"] = item.menu.price * item.quantity;
+            temp["message"] = '';
+            temp["discount"] = 0;
+            console.log("변경체크" , temp);
+            order.push(temp);
+        })
+        console.log("오더 만들기", order);
+        return order;
     }
 
-    const minusButtonHandler = (index, e) =>{
-        e.preventDefault();
-        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, -1);}
-    }
 
     const changeSelectionOrderQuantity = (i, count) =>{
         const index = newOrders.findIndex((key)=> key.name === currentOrders[i].name);
-        if(index>=0){
+        if(index>=0 && newOrders[index].quantity>=0){
             let temp = newOrders.filter(arr => arr.name !== currentOrders[index].name);
             const data = {
                 name : currentOrders[i].name,
@@ -545,16 +522,18 @@ const SalePage = () => {
                 quantity : newOrders[index].quantity + count,
                 discount : newOrders[index].discount,
                 totalprice : count * currentOrders[i].price + newOrders[index].totalprice,
-                message : newOrders[index].message,
+                message : newOrders[i].message === '취소' ? '' : newOrders[i].message,
             }
             if(data.quantity <= 0 ){
-                setNewOrders([...temp]);
-            }else{
-                setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
+                data.message = '취소';
+                data.quantity = 0;
+                data.discount = 0;
+                data.totalprice = 0;
             }
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);   
         }
         const index2 = currentOrders.findIndex((key)=> key.name === currentOrders[i].name);
-        if(index2>=0){
+        if(index2>=0 && currentOrders[index2].quantity>=0){
             let temp = currentOrders.filter(arr => arr.name !== currentOrders[index2].name);
             console.log(temp);
             console.log("current order ", currentOrders[index])
@@ -564,17 +543,191 @@ const SalePage = () => {
                 quantity : currentOrders[i].quantity + count,
                 discount : currentOrders[i].discount,
                 totalprice : count * currentOrders[i].price + currentOrders[i].totalprice,
-                message : currentOrders[i].message,
+                message : currentOrders[i].message === '취소' ? '' : currentOrders[i].message,
             }
             if(data.quantity <= 0 ){
-                setCurrentOrders([...temp]);
-            }else{
-                setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);
-            }        
+                data.message = '취소';
+                data.quantity = 0;
+                data.discount = 0;
+                data.totalprice = 0;
+            }
+            setCurrentOrders([...temp.slice(0,index2), data, ...temp.slice(index2, temp.length)]);          
         }
-        setToltalPrice((prev)=> count * currentOrders[i].price + prev);
-        setTotalAmount((prev)=> prev + count);
-        setTotalDiscount((prev) => prev + 0);
+        if(count + currentOrders[index2].quantity>= 0){
+            setToltalPrice((prev)=> count * currentOrders[i].price + prev);
+            setTotalAmount((prev)=> prev + count);
+            setTotalDiscount((prev) => prev + 0); 
+        }
+    }
+
+
+    const takeOutOrderHandler = () =>{
+        if(orderId !== ''){
+            updateTakeOutOrder();
+        }else{
+            makeTakeOutOrder();
+        }
+        navigation('/CurrentSeatInfo');
+    }
+
+    const makeTakeOutOrder = () =>{
+        let managerId = window.localStorage.getItem('managerId');
+        const orderDetails = makeOrdetailMap(newOrders);
+        const data = {
+            totalPrice : totalPrice,
+            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            orderType : "TAKEOUT_ORDER",
+            takeoutTickNumber : seatNum+1,
+            managerId: managerId,
+            employeeId : 1,
+            orderDetails : orderDetails,
+        };
+        console.log(data);
+        axios.post('http://localhost:8080/order/addTakeoutOrder', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+        }).catch(e=>console.log(e));
+    }
+
+    const updateTableOrder = ()=>{
+        let managerId = window.localStorage.getItem('managerId');
+        const orderDetails = makeOrdetailMap(currentOrders);
+        const data = {
+            totalPrice : totalPrice,
+            orderId : orderId,
+            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            orderType : "TABLE_ORDER",
+            seatNumber : seatNum+1,
+            isSeated : "True",
+            managerId: managerId,
+            employeeId : 1,
+            orderDetails : orderDetails,
+        };
+        console.log(data);
+        axios.put('http://localhost:8080/order/updateTableOrder', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+        }).catch(e=>console.log(e));
+    }
+
+    const updateTakeOutOrder = ()=>{
+        let managerId = window.localStorage.getItem('managerId');
+        const orderDetails = makeOrdetailMap(currentOrders);
+        const data = {
+            totalPrice : totalPrice,
+            orderId : orderId,
+            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            orderType : "TAKEOUT_ORDER",
+            seatNumber : seatNum+1,
+            isSeated : "True",
+            managerId: managerId,
+            employeeId : 1,
+            orderDetails : orderDetails,
+        };
+        console.log(data);
+        axios.put('http://localhost:8080/order/updateTakeoutOrder', JSON.stringify(data), {
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            console.log(res);
+            navigation('/CurrentSeatInfo');
+        }).catch(e=>console.log(e));
+    }
+    
+    const orderDeleteHandler = () =>{
+        let managerId = window.localStorage.getItem('managerId');
+        const data = JSON.stringify({
+            orderId : orderId,
+            managerId: managerId,  
+        });
+        axios.delete('http://localhost:8080/order/deleteTableOrder', {
+            data : data,
+            headers : {
+            "Content-Type" : `application/json; charset=UTF-8`,
+        }}).then((res)=>{
+            console.log(res);
+        }).catch(e=>console.log(e));
+    }
+    
+    const allCancleHandler = (e)=>{
+        e.preventDefault();
+        for(var i in currentOrders){
+            var row = currentOrders[i];
+            row.quantity = 0;
+            row.discount = 0;
+            row.totalprice = 0;
+            row.message = '취소';
+        }
+        setCurrentOrders(currentOrders)
+        setToltalPrice(0);
+        setTotalAmount(0);
+        setTotalDiscount(0);
+    }
+
+    // const selectCancleHander = (e) =>{
+    //     e.preventDefault();
+    //     if(orderSelection >= 0){
+    //         const temp = newOrders.filter((arr,index) => index!==orderSelection);
+    //         const temp2 = currentOrders.filter((arr,index) => index!==orderSelection);
+    //         const cancleAmount = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
+    //         const canclePriceSum = currentOrders.filter((arr,index) => index===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
+
+    //         console.log("test",canclePriceSum);
+    //         setNewOrders(temp);
+    //         setCurrentOrders(temp2);
+    //         setOrderSelection(-1);
+    //         setToltalPrice((prev)=>prev-canclePriceSum);
+    //         setTotalAmount((prev)=>prev - cancleAmount);
+    //     }
+    // }
+        const selectCancleHander = (e) =>{
+        e.preventDefault();
+        if(orderSelection >= 0){
+            let index = orderSelection;
+            let temp = currentOrders.filter(arr => arr.name !== currentOrders[index].name);
+            const cancleAmount = currentOrders.filter((arr,i) => i===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity},0);
+            const canclePriceSum = currentOrders.filter((arr,i) => i===orderSelection).reduce((ac, arr)=>{return ac + arr.quantity*arr.price},0);
+            let data = {
+                name : currentOrders[index].name,
+                price : currentOrders[index].price,
+                quantity : 0,
+                discount : 0,
+                totalprice : 0,
+                message : '취소',
+            }
+            setCurrentOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
+            console.log("test",canclePriceSum);
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
+            setOrderSelection(-1);
+            setToltalPrice((prev)=>prev-canclePriceSum);
+            setTotalAmount((prev)=>prev - cancleAmount);
+        }else{
+            alert("취소할 주문메뉴를 선택해주세요!");
+        }
+    }
+   
+
+    const plusButtonHandler = (index, e) =>{
+        e.preventDefault();
+        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, 1);}        
+    }
+    
+    const minusButtonHandler = (index, e) =>{
+        e.preventDefault();
+        if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, -1);}
+    }
+
+    const quantityChangeButtonHandler = (e) => {
+        e.preventDefault();
+        if(currentOrders.length>index && orderSelection >=0 && +changeQuantity > 0 ){
+            changeSelectionOrderQuantity(orderSelection, +changeQuantity-currentOrders[orderSelection].quantity);
+        }
+        setCalculNum(0);
+        setChangeQuantity('');
     }
 
     const downSelectionHandler = (e) =>{
@@ -594,27 +747,6 @@ const SalePage = () => {
         navigation('/CurrentSeatInfo');
     }
 
-    const makeTakeOutOrder = () =>{
-        let managerId = window.localStorage.getItem('managerId');
-        const orderDetails = makeOrdetailMap();
-        const data = {
-            totalPrice : totalPrice,
-            startTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-            orderType : "TAKEOUT_ORDER",
-            takeoutTickNumber : seatNum,
-            managerId: managerId,
-            employeeId : 1,
-            orderDetails : orderDetails,
-        };
-        console.log(data);
-        axios.post('http://localhost:8080/order/addTakeoutOrder', JSON.stringify(data), {
-            headers : {
-            "Content-Type" : `application/json`,
-        }}).then((res)=>{
-            console.log(res);
-        }).catch(e=>console.log(e));
-    }
-
     const changeDiv = (e)=>{
         e.preventDefault();
         navigation('/sale/cashPay');
@@ -630,31 +762,12 @@ const SalePage = () => {
         setPayedPrice(i);
     }
 
-    // const RightComponent=(props)=>{
-    //     const num = props.number;
-    //     if(num===0){
-    //         return <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
-    //         categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
-    //         changeDiv={changeDiv}/>
-    //     }
-    //     else if(num===1) return <CashPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-    //     else if(num===2) return <CardPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-    //     else if(num===3) return <MultiPay employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>
-    // }
+    useEffect(()=>{},[changeQuantity])
 
     return (
         <>
             
             <Header text ={"판매"} restaurantName = {localStorage.getItem('storeName')}/>
-            {/* <div style={{textAlign:'center'}}>
-                <h2>
-                    {parmas.state[0].seatNum}번자리가 선택되었습니다!!!.
-                </h2>
-                    {console.log(parmas)}
-                <div>
-                    {parmas.state[0].test}
-                </div>
-            </div> */}
             <Div>
 
                 <LeftDiv>
@@ -674,6 +787,7 @@ const SalePage = () => {
                                 </TableHead>
                                 <TableBody>
                                     {currentOrders.length>0 && currentOrders.map((cell, index) => (
+                                        index - orderSelection > -7 ? 
                                         <OrderRow  id = {"order"+String(index)} onClick={(e)=>{orderInfoClickHandler(index, e)}} checked={index===orderSelection ? true: false}>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.name}</OrderCell>
@@ -682,7 +796,8 @@ const SalePage = () => {
                                             <OrderCell>{cell.discount}</OrderCell>
                                             <OrderCell>{cell.totalprice}</OrderCell>
                                             <OrderCell>{cell.message}</OrderCell>
-                                            </OrderRow>
+                                        </OrderRow>
+                                        : null
                                     ))}
                                 </TableBody>
                             </TableStyle>                
@@ -708,7 +823,7 @@ const SalePage = () => {
                                 <CircledRectButton name={'전체\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={allCancleHandler}/>
                                 <CircledRectButton name={'선택\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={selectCancleHander}/>
                                 <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
+                                <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={quantityChangeButtonHandler}/>
                             </LeftBottomTopDiv>
                             <Button onClick={()=>setLeftBot(true)}>결제 내역</Button>
                             <Button onClick={()=>setLeftBot(false)}>담당자 정보</Button>
@@ -759,11 +874,11 @@ const SalePage = () => {
                                 <BottomBottomLeftDiv>
                                     <NumberDiv>{calculNum}&nbsp;</NumberDiv> 
                                     <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}
-                                        quantity2={(click!==0) ? payedPrice:null} changeQuantity2={(click!==0) ? setPayedPrice:null}/>
+                                        quantity2={(click!==0) ? payedPrice:changeQuantity} changeQuantity2={(click!==0) ? setPayedPrice:setChangeQuantity}/>
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
                                     
-                                    <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'} onClick={makeTakeOutOrder}/>
+                                    <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'} onClick={takeOutOrderHandler}/>
                                     <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>

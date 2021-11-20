@@ -83,15 +83,23 @@ const GraphTemp=styled.div`
 const GraphTop = styled.div`
     width : 100%;
     height : 30vh;
-    margin-top:3%;
+    margin-top: 0.3rem;
     border : 1px solid blue;
 `
 
 const GraphBottom = styled.div`
     width : 100%;
-    margin-top:2%;
+    margin-top: 0.3rem;
     border : 1px solid green;
 `
+
+const GraphDiv = styled.div`
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    width : 100%;
+    height : 100%;
+`;
 
 const TextDiv = styled.div`
     height : 2rem;
@@ -309,7 +317,9 @@ const SalesTemplate = () => {
                         {(select!==3) &&
                             <>
                             <GraphBottom>
-                            <LChart/>
+                                <GraphDiv>
+                                    <LChart/>
+                                </GraphDiv>
                             </GraphBottom>
                             </>
                         }
