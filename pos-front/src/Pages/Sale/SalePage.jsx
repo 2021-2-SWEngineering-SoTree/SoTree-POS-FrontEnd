@@ -562,10 +562,15 @@ const SalePage = () => {
 
 
     const takeOutOrderHandler = () =>{
-        if(orderId !== ''){
-            updateTakeOutOrder();
+        let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
+        if(deleteflag === currentOrders.length){
+            orderDeleteHandler();
         }else{
-            makeTakeOutOrder();
+            if(orderId !== ''){
+                updateTakeOutOrder();
+            }else{
+                makeTakeOutOrder();
+            }
         }
         navigation('/CurrentSeatInfo');
     }
@@ -644,7 +649,8 @@ const SalePage = () => {
             orderId : orderId,
             managerId: managerId,  
         });
-        axios.delete('http://localhost:8080/order/deleteTableOrder', {
+        const url = seatNum < 100 ?  'http://localhost:8080/order/deleteTableOrder' : 'http://localhost:8080/order/deleteTakeoutOrder';
+        axios.delete(url, {
             data : data,
             headers : {
             "Content-Type" : `application/json; charset=UTF-8`,
@@ -699,9 +705,9 @@ const SalePage = () => {
                 totalprice : 0,
                 message : '취소',
             }
-            setCurrentOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
+            setCurrentOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
             console.log("test",canclePriceSum);
-            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index+1, temp.length)]);
+            setNewOrders([...temp.slice(0,index), data, ...temp.slice(index, temp.length)]);
             setOrderSelection(-1);
             setToltalPrice((prev)=>prev-canclePriceSum);
             setTotalAmount((prev)=>prev - cancleAmount);
