@@ -53,7 +53,7 @@ const Td = ({rowIndex, cellIndex, size, top, tableData}) => {
     return (
         tableData !== undefined ? 
             <>
-            <Seat onClick = {()=> seatOnClickHandler(rowIndex * 4 + cellIndex)} colors = {tableData.length > index ? tableData[index].orderId < 0 ? "#white" : "#D7FAFF" : "white"} >
+            <Seat onClick = {()=> seatOnClickHandler(rowIndex * 4 + cellIndex)} colors = {tableData.length > index ? tableData[index].orderId < 0 ? "white" : "#D7FAFF" : "white"} >
                 <div style={{display : 'flex', flexDirection:'column'}}>
                     <div style={{verticalAlign:'top', textAlign:'left',fontWeight:'bold', marginBottom:'1rem', marginLeft:'0.3rem'}} >
                         {rowIndex * Math.sqrt(size) + cellIndex + 1}

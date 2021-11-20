@@ -562,10 +562,15 @@ const SalePage = () => {
 
 
     const takeOutOrderHandler = () =>{
-        if(orderId !== ''){
-            updateTakeOutOrder();
+        let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
+        if(deleteflag === currentOrders.length){
+            orderDeleteHandler();
         }else{
-            makeTakeOutOrder();
+            if(orderId !== ''){
+                updateTakeOutOrder();
+            }else{
+                makeTakeOutOrder();
+            }
         }
         navigation('/CurrentSeatInfo');
     }
