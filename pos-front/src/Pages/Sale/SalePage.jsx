@@ -225,6 +225,7 @@ const SalePage = () => {
     const [seatNum, setSeatNum] = useState(params.state[0].seatNum)
     const [orderId, setOrderId]=useState('');
     const [click,setClick]=useState(0);
+    const [changeQuantity, setChangeQuantity] = useState('');
 
 
     // {name : '왕돈까스',
@@ -675,10 +676,17 @@ const SalePage = () => {
         e.preventDefault();
         if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, 1);}        
     }
-
+    
     const minusButtonHandler = (index, e) =>{
         e.preventDefault();
         if(currentOrders.length>index && index >=0) {changeSelectionOrderQuantity(index, -1);}
+    }
+
+    const quantityChangeButtonHandler = (e) => {
+        e.preventDefault();
+        if(currentOrders.length>index && orderSelection >=0 && +changeQuantity > 0 ){
+            changeSelectionOrderQuantity(orderSelection, +changeQuantity-currentOrders[orderSelection].quantity);
+        }
     }
 
     const downSelectionHandler = (e) =>{
@@ -772,7 +780,7 @@ const SalePage = () => {
                                 <CircledRectButton name={'전체\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={allCancleHandler}/>
                                 <CircledRectButton name={'선택\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={selectCancleHander}/>
                                 <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
-                                <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
+                                <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={quantityChangeButtonHandler}/>
                             </LeftBottomTopDiv>
                             <Button onClick={()=>setLeftBot(true)}>결제 내역</Button>
                             <Button onClick={()=>setLeftBot(false)}>담당자 정보</Button>
@@ -823,7 +831,7 @@ const SalePage = () => {
                                 <BottomBottomLeftDiv>
                                     <NumberDiv>{calculNum}&nbsp;</NumberDiv> 
                                     <Calculator num={'2.6em'} num2={'5.3em'} quantity={calculNum} changeQuantity={setCalculNum}
-                                        quantity2={(click!==0) ? payedPrice:null} changeQuantity2={(click!==0) ? setPayedPrice:null}/>
+                                        quantity2={(click!==0) ? payedPrice:changeQuantity} changeQuantity2={(click!==0) ? setPayedPrice:setChangeQuantity}/>
                                 </BottomBottomLeftDiv>
                                 <BottomBottomRightDiv>
                                     
