@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import DateButton from '../../../Components/Button/DateButton';
@@ -6,6 +6,7 @@ import {Paper, TableContainer} from "@material-ui/core";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import CircleChart from './CircleChart';
+import axios from 'axios';
 
 const Div = styled.div`
     display : flex;
@@ -146,9 +147,100 @@ const MenuSalesTemplate = () => {
     const [category,setCategory]=useState('');
     const [select,setSelect]=useState(0);
 
+    //월별->연도,월 선택
     const [year,setYear]=useState();
     const [month,setMonth]=useState();
+
+    //요일별->요일 선택
     const [day,setDay]=useState();
+
+    //통계
+    const [stats,setStats]=useState();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async ()=>{
+        const date = new Date();
+        const today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        const managerId = window.localStorage.getItem('managerId');
+        console.log(today);
+
+        if(category!==''){
+            let categ=category;
+            if(category==='전체') categ=undefined;
+
+            if(select===0){//전체
+                const data={
+                    branchId : managerId,
+                    stDate : '2021-11-01',
+                    enDate : today,
+                    menuCategory : categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getAll',data,{
+                headers : {
+                "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+            }).catch(e=>{
+                console.log(e);
+            })
+            }
+            else if(select===1 && year!=='' && year!==undefined && month!=='' && month!==undefined){//월별
+                let changeMonth=month;
+                if(month.length===1) changeMonth='0'+changeMonth;
+                const date=year+'-'+changeMonth+'-';
+                console.log(date);
+                let lastD='30';
+                if(month==1||month==3||month==5||month==7||month==8||month==10||month==12) lastD='31';
+                else if(month==2) lastD='28';
+                const data={
+                    branchId : managerId,
+                    stDate : date+'01',
+                    enDate : date+lastD,
+                    menuCategory : categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getAll',data,{
+                headers : {
+                "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+            }).catch(e=>{
+                console.log(e);
+            })
+            }
+            else if(select===2 && day!=='' && day!==undefined){//요일별
+                console.log(day);
+                let dayNum;
+                if(day==='일요일') dayNum=1;
+                else if(day==='월요일') dayNum=2;
+                else if(day==='화요일') dayNum=3;
+                else if(day==='수요일') dayNum=4;
+                else if(day==='목요일') dayNum=5;
+                else if(day==='금요일') dayNum=6;
+                else if(day==='토요일') dayNum=7;
+                console.log(day,dayNum);
+                const data={
+                    branchId : managerId,
+                    day:dayNum,
+                    menuCategory:categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getByDay',data,{
+                headers : {
+                "Content-Type" : "application/json",
+                }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+                }).catch(e=>{
+                console.log(e);
+            })
+            }
+            
+        }
+    },[category, select, year, month, day])
 
     return (
         <>
@@ -163,8 +255,9 @@ const MenuSalesTemplate = () => {
                 <LeftBottomDiv>
                 <Div>
                     <LeftTitle>카테고리 : </LeftTitle>
-                    <Selector  onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
-                                <option value="">------</option>
+                    <Selector style={{width : '8.4rem'}} onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
+                                <option value="">-------</option>
+                                <option value="전체">전체</option>
                                 <option value="세트메뉴">세트메뉴</option>
                                 <option value="2~3인분메뉴">2-3인분메뉴</option>
                                 <option value="식사메뉴">식사메뉴</option>
@@ -179,12 +272,13 @@ const MenuSalesTemplate = () => {
                         <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
                             {(select===1) && (
                                 <>
-                                <Selector value={year} onChange={''} style={{marginTop:'0.2%',width:'4.6rem', height :'2rem'}}>
+                                <Selector value={year} onChange={(e)=>{setYear(e.target.value)}} style={{marginTop:'0.2%',width:'4.9rem', height :'2rem'}}>
                                     <option value="">-------</option>
+                                    <option value="2020">2020</option>
                                     <option value="2021">2021</option>
                                 </Selector>
                                 <TextDiv>년</TextDiv>
-                                <Selector value={month} onChange={''} style={{marginTop:'0.2%', width:'3.5rem', height : '2rem'}}>
+                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'3.5rem', height : '2rem'}}>
                                     <option value="">-------</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -204,7 +298,7 @@ const MenuSalesTemplate = () => {
                             )}
                             {(select===2) && (
                                 <>
-                                <Selector value={day} onChange={''} style={{marginTop:'0.2%',width:'5.4rem', height :'2rem'}}>
+                                <Selector value={day} onChange={(e)=>{setDay(e.target.value)}} style={{marginTop:'0.2%',width:'5.4rem', height :'2rem'}}>
                                     <option value="">-------</option>
                                     <option value="월요일">월요일</option>
                                     <option value="화요일">화요일</option>
@@ -229,60 +323,6 @@ const MenuSalesTemplate = () => {
                                             <ColumnCell>메뉴</ColumnCell>
                                             <ColumnCell>매출</ColumnCell>
                                             <ColumnCell>비율</ColumnCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>3</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>9</OrderCell>
-                                            <OrderCell>1</OrderCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>

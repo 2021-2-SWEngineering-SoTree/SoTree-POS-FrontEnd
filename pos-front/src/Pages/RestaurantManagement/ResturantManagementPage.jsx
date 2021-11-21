@@ -17,7 +17,7 @@ const Div = styled.div`
     height : 680px;
 `;
 const LeftDiv = styled.div`
-    width : 200%;
+    width : 100%;
     height : 100%;
     flex-grow : 1;
 `;
@@ -32,7 +32,7 @@ const LogoDiv = styled.div`
 `;
 
 const RightDiv = styled.div`
-    width : 70%;
+    width : 60%;
     margin : 0 auto;
     align-items: center
 `;
@@ -45,7 +45,7 @@ const InnerRightDiv = styled.div`
 `;
 
 const LogoImg = styled.img`
-    width : 600px;
+    width : 700px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -56,9 +56,9 @@ const LogoImg = styled.img`
 `;
 
 const Button = styled.button`
-
-    width : 20rem;
-    height : 4rem;
+    top:50%;
+    width : 25rem;
+    height : 4.5rem;
     background: #EBE7E7;
     border: 1px solid #000000;
     box-sizing: border-box;
@@ -66,7 +66,7 @@ const Button = styled.button`
     border-radius: 0.8rem;
     font-size : 1.3rem;
     margin-bottom : 3rem;
-    cursor : pointer;
+    
 `;
 
 const RestaurantManagementPage = () => {
