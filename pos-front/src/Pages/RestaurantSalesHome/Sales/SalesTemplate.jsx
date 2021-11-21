@@ -7,6 +7,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import LChart from './LineChart';
 import SaleInfoItem from '../../../Components/Box/SaleInfoItem';
+import BChart from './BarChart';
+import CircleChart from '../MenuSales/CircleChart';
 
 const Div = styled.div`
     display : flex;
@@ -86,13 +88,11 @@ const GraphTop = styled.div`
     width : 100%;
     height : 30vh;
     margin-top: 0.3rem;
-    border : 1px solid blue;
 `
 
 const GraphBottom = styled.div`
     width : 100%;
     margin-top: 0.3rem;
-    border : 1px solid green;
 `
 
 const GraphDiv = styled.div`
@@ -100,7 +100,8 @@ const GraphDiv = styled.div`
     justify-content : center;
     align-items : center;
     width : 100%;
-    height : 100%;
+    height : 70%;
+    margin-top :1%;
 `;
 
 const TextDiv = styled.div`
@@ -142,8 +143,10 @@ const Cell=styled.td`
 `
 
 const SaleDiv = styled.div`
+    width : 98%;
     display : flex;
     flex-direction : row;
+    margin-left : 1%;
 `;
 
 const SaleInfoDiv = styled.div`
@@ -180,6 +183,7 @@ const SalesTemplate = () => {
                 </LeftTopDiv>
                 <LeftBotBotDiv>
                     <Criteria>
+                        
                         <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
                            
                             {(select===1) && (
@@ -255,7 +259,7 @@ const SalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphTop>
-                        {(select===0) && (
+                            {(select===0) && (
                             <>
                             <SaleDiv>
                                 <SaleInfoItem price={0} colors={"#8DDEE9"} criterion ={"오늘"} count ={0}/>
@@ -342,12 +346,14 @@ const SalesTemplate = () => {
                             <>
                             <GraphBottom>
                                 <GraphDiv>
-                                    <LChart/>
+                                    {select!==0 && <LChart/>}
+                                    {select===0 && <BChart/>}
                                 </GraphDiv>
                             </GraphBottom>
                             </>
                         }
-                        {select===5 &&
+                        
+                        {select===4 &&
                             <>
                             <RightTopDiv style={{height : '100%', border:'none'}}>
                             <Title>기간 누적매출</Title>
@@ -380,8 +386,10 @@ const SalesTemplate = () => {
                 
             </LeftDiv>
             <RightDiv>
-                {select!==4 && (<>
+                {select!==4 && (
                 <RightTopDiv>
+                    {select!==4 && select!==0 && (
+                    <>
                     <Title>기간 누적매출</Title>
                     <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                 <TableStyle>
@@ -404,11 +412,33 @@ const SalesTemplate = () => {
                                     </TableBody>
                                 </TableStyle>                
                     </TableContainer>
+                    </>
+                    )}
+                    {select===0 && (
+                    <>
+                    <Title>주간 인기메뉴 TOP 5</Title>
+                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>NO</ColumnCell>
+                                            <ColumnCell>메뉴</ColumnCell>
+                                            <ColumnCell>판매량</ColumnCell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                    </TableContainer>
+                    </>
+                    )}
                 </RightTopDiv>
-                </>
                 )}
-                {select===4 && (<div style={{height:'25%'}}/>)}
+                {select===4 && (<div style={{height:'11%'}}/>)}
                 <RightBottomDiv>
+                    {select!==0 && (
+                    <>
                     <Title>전체 매출</Title>
                     <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                 <TableStyle>
@@ -431,6 +461,16 @@ const SalesTemplate = () => {
                                     </TableBody>
                                 </TableStyle>                
                             </TableContainer>
+                    </>
+                    )}
+                    {select==0 && (
+                    <>
+                    <Title>요일별 매출</Title>
+                    <GraphDiv>
+                        <CircleChart/>
+                    </GraphDiv>
+                    </>
+                    )}
                 </RightBottomDiv>
             </RightDiv>
         </Div>
