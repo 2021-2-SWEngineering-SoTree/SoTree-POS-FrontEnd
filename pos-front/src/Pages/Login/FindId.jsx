@@ -80,16 +80,16 @@ const Title = styled.h1`
     text-align:center;
 `;
 
-const Text = styled.h1`
+const Text = styled.h2`
     margin-top : 5%;
     text-align : center;
 `;
 
 const Button = styled.button`
-    width : 6.3rem;
-    height : 3.5rem;
+    width : 5rem;
+    height : 3rem;
     background-color : #C4C4C4;
-    font-size : 1.8rem;
+    font-size : 1.3rem;
     margin-left : 80%;
     border-radius : 10px;
    
@@ -148,15 +148,18 @@ const FindId = () =>{
             phoneNumber : first+"-"+middle+"-"+last
         }
         console.log(data);
+        
+        await axios.post('http://localhost:8080/findLoginId',JSON.stringify(data),{
+            headers : {
+            "Content-Type" : `application/json;charset=utf8`,
+        }}).then((res)=>{
+            console.log(res.data);
+            setId(res.data);
+        }).catch(e=>{
+            console.log(e);
+            setId('');
+        })
         setVisible(true);
-        // await axios.post('',JSON.stringify(data),{
-        //     headers : {
-        //     "Content-Type" : `application/json;charset=utf8`,
-        // }}).then((res)=>{
-        //     setId(res.data);
-        // }).catch(e=>{
-        //     console.log(e);
-        // })
 
     }
 
@@ -164,11 +167,14 @@ const FindId = () =>{
         if(!name){
             alert('이름을 입력하세요!');
         }
-        else if(!validateEmail(emailName+"@"+emailAddress)){
-            alert('이메일 형식이 잘못되었습니다');
-        }
+        else if(!month||!year||!day) alert('생년월일을 입력하세요!');
+        else if(!first||!middle||!last) alert('전화번호 입력하세요!');
+        else if(!emailName||!emailAddress) alert('이메일을 입력하세요!');
         else if(!validateDate(year+"-"+month+"-"+day)){
             alert('생년월일 형식이 잘못되었습니다');
+        }
+        else if(!validateEmail(emailName+"@"+emailAddress)){
+            alert('이메일 형식이 잘못되었습니다');
         }
         else if(!validatePhoneNum(first+"-"+middle+"-"+last)){
             alert('전화번호 형식이 잘못되었습니다');
@@ -185,13 +191,26 @@ const FindId = () =>{
                 <SmallModal visible={visible}>
                 <Form>
                     <Title>찾기 결과</Title>
-                    <Text>{name}님의 아이디는</Text>
-                    <Text>{id}입니다.</Text>
-                    <Button onClick={()=>{window.location.replace("/")}}>닫기</Button>
+                    {(id!=='') &&
+                        <>
+                        <Text><span style={{padding:'1%', backgroundColor:'lightgray'}}>{name}</span> 님의 아이디는</Text>
+                        <Text><span style={{padding:'1%', backgroundColor:'lightgray'}}>{id}</span> 입니다.</Text>
+                        <br/>
+                        <Button onClick={()=>{setVisible(false)}}>닫기</Button>
+                        </>
+                    }
+                    {(id==='') &&
+                        <>
+                        <br/>
+                        <Text>아이디를 찾을 수 없습니다<br/>다시 입력해주세요</Text>
+                        <br/><br/>
+                        <Button onClick={()=>{setVisible(false)}}>닫기</Button>
+                        </>
+                    }
                 </Form>
                 </SmallModal>
 
-                <Form onSubmit = {'findId'}>
+                <Form onSubmit = {findIdClick}>
 
                     <WrapperDiv>
                         <InputLable >성명</InputLable>

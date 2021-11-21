@@ -11,6 +11,7 @@ const Div = styled.div`
     height : 87vh;  
     max-height : 56rem;
     border : 1px solid black;
+    min-width : 90rem;
 `;
 
 const LeftDiv = styled.div`

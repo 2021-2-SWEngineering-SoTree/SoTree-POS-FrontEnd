@@ -80,17 +80,18 @@ const Title = styled.h1`
     text-align:center;
 `;
 
-const Text = styled.h1`
+const Text = styled.h2`
     margin-top : 5%;
     text-align : center;
 `;
 
 const Button = styled.button`
-    width : 6.3rem;
-    height : 3.5rem;
+    width : 5rem;
+    height : 3rem;
     background-color : #C4C4C4;
-    font-size : 1.8rem;
+    font-size : 1.3rem;
     margin-left : 80%;
+    margin-top : 2%;
     border-radius : 10px;
    
 `
@@ -135,15 +136,17 @@ const FindId = () =>{
             phoneNumber : first+"-"+middle+"-"+last
         }
         console.log(data);
+        await axios.post('http://localhost:8080/findUserPw',JSON.stringify(data),{
+            headers : {
+            "Content-Type" : `application/json;charset=utf8`,
+        }}).then((res)=>{
+            console.log(res.data);
+            setPw(res.data);
+        }).catch(e=>{
+            console.log(e);
+            setPw('');
+        })
         setVisible(true);
-        // await axios.post('',JSON.stringify(data),{
-        //     headers : {
-        //     "Content-Type" : `application/json;charset=utf8`,
-        // }}).then((res)=>{
-        //     setPw(res.data);
-        // }).catch(e=>{
-        //     console.log(e);
-        // })
 
     }
 
@@ -154,6 +157,8 @@ const FindId = () =>{
         else if(!id){
             alert('아이디를 입력하세요!');
         }
+        else if(!first||!middle||!last) alert('전화번호 입력하세요!');
+        else if(!emailName||!emailAddress) alert('이메일을 입력하세요!');
         else if(!validatePhoneNum(first+"-"+middle+"-"+last)){
             alert('전화번호 형식이 잘못되었습니다');
         }
@@ -172,9 +177,22 @@ const FindId = () =>{
                 <SmallModal visible={visible}>
                 <Form>
                     <Title>찾기 결과</Title>
-                    <Text>{id}님의 비밀번호는</Text>
-                    <Text>{pw}입니다.</Text>
-                    <Button onClick={()=>{window.location.replace("/")}}>닫기</Button>
+                    <br/>
+                    {(pw!=='') &&
+                        <>
+                        <Text><span style={{padding:'1%', backgroundColor:'lightgray'}}>{id}</span> 님의 비밀번호는</Text>
+                        <Text><span style={{padding:'1%', backgroundColor:'lightgray'}}>{pw}</span> 로 변경되었습니다.</Text>
+                        <Button onClick={()=>{window.location.replace("/")}}>닫기</Button>
+                        </>
+                    }
+                    {(pw==='') &&
+                        <>
+                        <Text>비밀번호를 찾을 수 없습니다<br/>다시 입력해주세요</Text>
+                        <br/>
+                        <Button onClick={()=>{setVisible(false)}}>닫기</Button>
+                        </>
+                    }
+                    
                 </Form>
                 </SmallModal>
 
