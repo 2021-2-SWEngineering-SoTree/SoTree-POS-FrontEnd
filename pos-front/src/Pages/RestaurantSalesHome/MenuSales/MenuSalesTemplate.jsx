@@ -79,7 +79,7 @@ const Criteria = styled.div`
 
 const GraphTemp=styled.div`
     display : flex;
-
+    width : 100%;
 `
 const GraphLeft = styled.div`
     width : 50%;
@@ -93,6 +93,15 @@ const GraphRight = styled.div`
     border : 1px solid green;
 `
 
+const GraphDiv = styled.div`
+    display : flex;
+    justifyContent : center;
+    width : 100%;
+    height : 100%;
+    align-items : center;
+    margin-left : 0.8rem;
+`;
+
 const TextDiv = styled.div`
     height : 2rem;
     font-size : 1rem;
@@ -105,6 +114,7 @@ const TableStyle = styled.table`
     width: 80%;
     margin : 0 auto;
     margin-top : 5%;
+    max-height : 5rem;
 `;
 
 const OrderCell = styled.td`
@@ -153,7 +163,7 @@ const MenuSalesTemplate = () => {
                 <LeftBottomDiv>
                 <Div>
                     <LeftTitle>카테고리 : </LeftTitle>
-                    <Selector value={category} onChange={''}>
+                    <Selector  onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
                                 <option value="">------</option>
                                 <option value="세트메뉴">세트메뉴</option>
                                 <option value="2~3인분메뉴">2-3인분메뉴</option>
@@ -211,14 +221,68 @@ const MenuSalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphLeft>
-                            <TableContainer margin='10px' style={{height : '85%',overflow: 'hidden',}}>
-                                <TableStyle>
+                            <TableContainer margin='10px' style={{marginTop :'3%',height : '70%',overflow: 'hidden',}}>
+                                <TableStyle style={{overflow:'auto'}}>
                                     <TableHead>
                                         <OrderRow>
                                             <ColumnCell>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
                                             <ColumnCell>매출</ColumnCell>
                                             <ColumnCell>비율</ColumnCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>3</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>9</OrderCell>
+                                            <OrderCell>1</OrderCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
@@ -227,8 +291,8 @@ const MenuSalesTemplate = () => {
                                 </TableStyle>                
                             </TableContainer>
 
-                            <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
-                            <TableContainer margin='10px' style={{width : '50%', height : '85%',overflow: 'hidden',}}>
+                            <div style={{marginTop:'10%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                            <TableContainer margin='10px' style={{width : '50%', height : '55%',overflow: 'hidden',}}>
                                 <TableStyle>
                                     <TableHead>
                                         <OrderRow>
@@ -243,7 +307,9 @@ const MenuSalesTemplate = () => {
                             </div>
                         </GraphLeft>
                         <GraphRight>
-                            <CircleChart/>
+                            <GraphDiv>
+                                <CircleChart/>
+                            </GraphDiv>
                         </GraphRight>
                     </GraphTemp>
                 </LeftBotBotDiv>
