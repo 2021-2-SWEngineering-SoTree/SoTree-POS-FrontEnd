@@ -1,8 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import SmallModal from '../../Components/Modal/SmallModal';
-import ModalButton from '../../Components/Button/ModalButton';
 import Header from '../../Components/Header';
 
 const Div = styled.div`
@@ -19,9 +17,8 @@ const PageWrapper = styled.div`
     height : 70vh;
     display : flex;
     margin : 0 auto;
-    margin-top:3.3%;
-    `;
-
+    margin-top:4%;
+`;
 
 const WrapperDiv = styled.div`
     justify-content : center;
@@ -88,10 +85,10 @@ const CheckButton = styled.button`
 
 const ChangeInfo = ()=>{
     //id 성명 생년월일 전화번호 이메일
-    let managerId = window.localStorage.getItem('managerId');
-    console.log(managerId);
+    let loginId = window.localStorage.getItem('loginId');
+    console.log(loginId);
 
-    const [id, setId]=useState(managerId);
+    const [id, setId]=useState(loginId);
 
     const [name, setName]=useState('');
 
@@ -116,19 +113,114 @@ const ChangeInfo = ()=>{
     const emailNameRef = useRef();
     const emailAddressRef = useRef();
 
+    
+    const getInfos = async ()=>{
+        console.log(typeof loginId, loginId);
+        await axios.post('http://localhost:8080/getUserByLoginId',loginId,{
+            headers : {
+            "Content-Type" : `text/plain`,
+        }}).then((res)=>{
+            const {birthDay, phoneNumber, personName, email}=res.data;
+            
+            const emailArr=email.split('@');
+            const birthArr=birthDay.split('-');
+            const phoneArr=phoneNumber.split('-');
+
+            console.log(emailArr,birthArr,phoneArr);
+            
+            setName(personName);
+            setEmailName(emailArr[0]);
+            setEmailAddress(emailArr[1]);
+            setFirst(phoneArr[0]);
+            setMiddle(phoneArr[1]);
+            setLast(phoneArr[2]);
+            setYear(birthArr[0]);
+
+            if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
+            setMonth(birthArr[1]);
+
+            let day=birthArr[2].slice(0,2);
+            if(day[0]==='0'){
+                day=day[1];
+            }
+            console.log(day);
+            console.log(emailAddress);
+            setDay(day);
+
+        }).catch(e=>{
+            console.log(e);
+        })
+    }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        setId(loginId);
+        await getInfos();
+    },[]);
+
+    const validateEmail = check =>{
+        const reg = /^[0-9?A-z0-9?]+(\.)?[0-9?A-z0-9?]+@[0-9?A-z]+\.[A-z]{2}.?[A-z]{0,3}$/;
+        return reg.test(check);
+    }
+
+    const validateDate = check =>{
+        const reg = /^(19|20)\d{2}-(0[1-9]|1[012])-([1-9]|[12][0-9]|3[0-1])$/;
+        return reg.test(check);
+    }
+
+    const validatePhoneNum = check =>{
+        const reg = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/
+        return reg.test(check);
+    }
+
+    const updateInfo = async () =>{
+        const data = {
+            userName : name,
+            birthDay : year+"-"+month+"-"+day,
+            phoneNumber : first+"-"+middle+"-"+last,
+            email : emailName+"@"+emailAddress,
+            loginId : id
+        }
+        console.log(data);
+        await axios.put('http://localhost:8080/updateUser',JSON.stringify(data),{
+                headers : {
+                "Content-Type" : `application/json;charset=utf8`,
+            }}).then((res)=>{
+                console.log(res);
+                alert('내 정보가 변경되었습니다!');
+                window.location.replace("/myInfo");
+            }).catch(e=>{
+                alert('입력한 정보를 다시한번 확인해주세요!');
+        })
+    };
+
+    
+    const changeInfo = () =>{
+        
+        if(!name) alert('성명을 입력하세요!');
+        else if(!year||!month||!day) alert("생년월일을 입력하세요!");
+        else if(!first||!middle||!last) alert("전화번호를 입력하세요!");
+        else if(!emailName||!emailAddress) alert("이메일을 입력하세요!");
+        else if(!(validateDate(year+"-"+month+"-"+day))) alert("생년월일 형식이 올바르지 않습니다!");
+        else if (!(validatePhoneNum(first+"-"+middle+"-"+last))) alert("전화번호 형식이 올바르지 않습니다!");
+        else if(!(validateEmail(emailName+"@"+emailAddress))) alert("이메일 형식이 올바르지 않습니다!");
+        else updateInfo();
+    }
+
+
     return (
         <>
         <Header text ={"내 정보 수정"} restaurantName = {localStorage.getItem('storeName')}/>
         <Div>
             <PageWrapper>
-                <Form onSubmit = {'findId'}>
+                <Form onSubmit = {changeInfo}>
                     <WrapperDiv>
                         <InputLable>ID</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>
                         <Input type = "text" placeholder = {"아이디"} style={{flexGrow:3}}
                             value={id}
-                            onChange={(e)=> {setId(e.target.value.trim());}}
-                            onKeyPress={(e)=> {if(e.key === 'Enter') nameRef.current.focus();}}/>
+                            onKeyPress={(e)=> {if(e.key === 'Enter') nameRef.current.focus();}}
+                            disabled/>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
@@ -218,7 +310,7 @@ const ChangeInfo = ()=>{
                         </div>
                     </WrapperDiv>
                     <div style={{display : 'flex', flexDirection : 'row', justifyContent:'flex-end', marginTop:'2rem'}}>
-                        <CheckButton>완료</CheckButton>
+                        <CheckButton onClick={changeInfo}>완료</CheckButton>
                     </div>
                 </Form>
             </PageWrapper>

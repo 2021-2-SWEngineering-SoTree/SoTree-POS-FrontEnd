@@ -101,13 +101,14 @@ const MyInfo = ()=>{
             headers : {
             "Content-Type" : `text/plain`,
         }}).then((res)=>{
+            console.log(res.data);
             const {birthDay, phoneNumber, personName, email}=res.data;
             
             const emailArr=email.split('@');
             const birthArr=birthDay.split('-');
             const phoneArr=phoneNumber.split('-');
 
-            console.log(emailArr,birthArr,phoneArr);
+            console.log(emailArr,birthArr,phoneArr, personName);
             
             setName(personName);
             setEmailName(emailArr[0]);
@@ -124,8 +125,6 @@ const MyInfo = ()=>{
             if(day[0]==='0'){
                 day=day[1];
             }
-            console.log(day);
-            console.log(emailAddress);
             setDay(day);
 
         }).catch(e=>{
