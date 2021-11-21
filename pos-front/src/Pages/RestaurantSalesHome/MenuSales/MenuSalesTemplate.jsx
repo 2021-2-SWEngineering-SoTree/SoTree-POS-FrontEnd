@@ -79,7 +79,7 @@ const Criteria = styled.div`
 
 const GraphTemp=styled.div`
     display : flex;
-    width : 100%;
+
 `
 const GraphLeft = styled.div`
     width : 50%;
@@ -92,15 +92,6 @@ const GraphRight = styled.div`
     height : 66vh;
     border : 1px solid green;
 `
-
-const GraphDiv = styled.div`
-    display : flex;
-    justifyContent : center;
-    width : 100%;
-    height : 100%;
-    align-items : center;
-    margin-left : 0.8rem;
-`;
 
 const TextDiv = styled.div`
     height : 2rem;
@@ -162,7 +153,7 @@ const MenuSalesTemplate = () => {
                 <LeftBottomDiv>
                 <Div>
                     <LeftTitle>카테고리 : </LeftTitle>
-                    <Selector  onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
+                    <Selector value={category} onChange={''}>
                                 <option value="">------</option>
                                 <option value="세트메뉴">세트메뉴</option>
                                 <option value="2~3인분메뉴">2-3인분메뉴</option>
@@ -252,9 +243,7 @@ const MenuSalesTemplate = () => {
                             </div>
                         </GraphLeft>
                         <GraphRight>
-                            <GraphDiv>
-                                <CircleChart/>
-                            </GraphDiv>
+                            <CircleChart/>
                         </GraphRight>
                     </GraphTemp>
                 </LeftBotBotDiv>
