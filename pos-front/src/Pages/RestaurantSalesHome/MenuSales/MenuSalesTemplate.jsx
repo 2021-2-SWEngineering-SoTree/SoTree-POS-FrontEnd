@@ -230,60 +230,6 @@ const MenuSalesTemplate = () => {
                                             <ColumnCell>매출</ColumnCell>
                                             <ColumnCell>비율</ColumnCell>
                                         </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>3</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                            <OrderCell>9</OrderCell>
-                                            <OrderCell>1</OrderCell>
-                                        </OrderRow>
                                     </TableHead>
                                     <TableBody>
 
