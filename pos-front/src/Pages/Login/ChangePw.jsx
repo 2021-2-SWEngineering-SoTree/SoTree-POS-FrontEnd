@@ -81,11 +81,27 @@ const ChangePw = ()=>{
     const newpwRef = useRef();
     const againpwRef = useRef();
 
-    const changePw = () =>{
-        if(!pw) alert('비밀번호를 입력하세요');
+    const changePw = async () =>{
+        if(!pw || !newpw || !againpw) alert('비밀번호를 입력하세요');
         else if(!check) alert('비밀번호를 다시 입력하세요');
         else{
-            
+            let loginId = window.localStorage.getItem('loginId');
+            const data={
+                loginId: loginId,
+                changePw: newpw,
+                prevPw:pw
+            }
+            console.log(data);
+            await axios.put('http://localhost:8080/updateUserPw',JSON.stringify(data),{
+                headers : {
+                "Content-Type" : `application/json;charset=utf8`,
+            }}).then((res)=>{
+                console.log(res);
+                alert('비밀번호가 변경되었습니다!');
+                window.location.replace("/myInfo");
+            }).catch(e=>{
+                alert('비밀번호를 다시 확인 후 입력해주세요!');
+            })
         }
     }
 
@@ -119,7 +135,7 @@ const ChangePw = ()=>{
        <Header text ={"비밀번호 변경"} restaurantName = {localStorage.getItem('storeName')}/>
        <Div>
             <PageWrapper>
-                <Form onSubmit = {'changePw'}>
+                <Form onSubmit = {changePw}>
                     <WrapperDiv>
                         <InputLable>현재 비밀번호</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>

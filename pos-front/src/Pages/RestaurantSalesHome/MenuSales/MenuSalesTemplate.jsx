@@ -114,6 +114,7 @@ const TableStyle = styled.table`
     width: 80%;
     margin : 0 auto;
     margin-top : 5%;
+    max-height : 5rem;
 `;
 
 const OrderCell = styled.td`
@@ -220,14 +221,68 @@ const MenuSalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphLeft>
-                            <TableContainer margin='10px' style={{height : '85%',overflow: 'hidden',}}>
-                                <TableStyle>
+                            <TableContainer margin='10px' style={{marginTop :'3%',height : '70%',overflow: 'hidden',}}>
+                                <TableStyle style={{overflow:'auto'}}>
                                     <TableHead>
                                         <OrderRow>
                                             <ColumnCell>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
                                             <ColumnCell>매출</ColumnCell>
                                             <ColumnCell>비율</ColumnCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>3</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>1</OrderCell>
+                                            <OrderCell>9</OrderCell>
+                                            <OrderCell>1</OrderCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
@@ -236,8 +291,8 @@ const MenuSalesTemplate = () => {
                                 </TableStyle>                
                             </TableContainer>
 
-                            <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
-                            <TableContainer margin='10px' style={{width : '50%', height : '85%',overflow: 'hidden',}}>
+                            <div style={{marginTop:'10%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                            <TableContainer margin='10px' style={{width : '50%', height : '55%',overflow: 'hidden',}}>
                                 <TableStyle>
                                     <TableHead>
                                         <OrderRow>

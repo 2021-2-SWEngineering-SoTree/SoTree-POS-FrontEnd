@@ -11,7 +11,7 @@ const Div = styled.div`
     display: flex;
     width : 100%;
     height : 87vh;  
-    max-height : 56rem;
+    min-height : 45rem;
     border : 1px solid black;
 `;
 const PageWrapper = styled.div`
@@ -78,8 +78,7 @@ const TextDiv = styled.div`
 
 const MyInfo = ()=>{
     //id 성명 생년월일 전화번호 이메일
-    let managerId = window.localStorage.getItem('managerId');
-    console.log(managerId);
+    let loginId = window.localStorage.getItem('loginId');
 
     const [id, setId]=useState();
 
@@ -96,33 +95,75 @@ const MyInfo = ()=>{
     const [emailName, setEmailName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
 
+    const getInfos = async ()=>{
+        console.log(typeof loginId, loginId);
+        await axios.post('http://localhost:8080/getUserByLoginId',loginId,{
+            headers : {
+            "Content-Type" : `text/plain`,
+        }}).then((res)=>{
+            const {birthDay, phoneNumber, personName, email}=res.data;
+            
+            const emailArr=email.split('@');
+            const birthArr=birthDay.split('-');
+            const phoneArr=phoneNumber.split('-');
+
+            console.log(emailArr,birthArr,phoneArr);
+            
+            setName(personName);
+            setEmailName(emailArr[0]);
+            setEmailAddress(emailArr[1]);
+            setFirst(phoneArr[0]);
+            setMiddle(phoneArr[1]);
+            setLast(phoneArr[2]);
+            setYear(birthArr[0]);
+
+            if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
+            setMonth(birthArr[1]);
+
+            let day=birthArr[2].slice(0,2);
+            if(day[0]==='0'){
+                day=day[1];
+            }
+            console.log(day);
+            console.log(emailAddress);
+            setDay(day);
+
+        }).catch(e=>{
+            console.log(e);
+        })
+    }
+    
+    useEffect(async()=>{
+        setId(loginId);
+        await getInfos();
+    },[]);
+
     return (
         <>
         <Header text ={"내 정보"} restaurantName = {localStorage.getItem('storeName')}/>
         <Div>
             <PageWrapper>
-                <Form onSubmit = {'findId'}>
+                <Form>
                     <WrapperDiv>
                         <InputLable>ID</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>
                         <Input type = "text" placeholder = {"아이디"}
-                            value={id}
+                            value={id} disabled
                         />
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable >성명</InputLable>
-                        <Input type = "text" placeholder = {"성명"}
-                        value={name}/>
+                        <Input type = "text" value={name} disabled/>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable >생년월일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
-                            <Input  type = "text" value={year} style={{width:'9.5rem'}}/>
+                            <Input  type = "text" value={year} style={{width:'9.5rem'}} disabled/>
                             <TextDiv>년</TextDiv>
-                            <Input type = "text"  value={month} style={{width:'9.5rem'}}/>
+                            <Input type = "text"  value={month} style={{width:'9.5rem'}} disabled/>
                             <TextDiv>월</TextDiv>
-                            <Input type = "text"  value={day} style={{width:'9.5rem'}}/>
+                            <Input type = "text"  value={day} style={{width:'9.5rem'}} disabled/>
                             <TextDiv>일</TextDiv>
                         </div>
                     </WrapperDiv>
@@ -130,21 +171,21 @@ const MyInfo = ()=>{
                         <InputLable>전화번호</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
                             <Input type = 'text' style={{width:'10.8rem'}}
-                            value = {first}/>
+                            value = {first} disabled/>
                             <TextDiv>-</TextDiv>
-                            <Input type = "text" style={{width:'10.8rem'}} value={middle}/>
+                            <Input type = "text" style={{width:'10.8rem'}} value={middle} disabled/>
                             <TextDiv>-</TextDiv>
-                            <Input type = "text"  style={{width:'10.8rem'}} value={last}/>
+                            <Input type = "text"  style={{width:'10.8rem'}} value={last} disabled/>
                         </div>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>이메일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', width :'24rem'}}>
                             <Input type = "text" style={{width:'19.2rem'}} 
-                            value={emailName}/>
+                            value={emailName} disabled/>
                             <TextDiv> @ </TextDiv>
-                            <Input type = "text" placeholder = {"naver.com"} style={{width:'17.2rem'}} 
-                            val={emailAddress}
+                            <Input type = "text" style={{width:'17.2rem'}} 
+                            value={emailAddress} disabled
                             />
                         </div>
                     </WrapperDiv>
