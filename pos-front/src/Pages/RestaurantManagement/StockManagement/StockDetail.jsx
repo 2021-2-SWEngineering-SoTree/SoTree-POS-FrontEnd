@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import Table from '../../../Components/Table/Table'
 import {Paper, TableContainer} from "@material-ui/core";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
+import { useParams,useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 
 const PageWrapper = styled.div`
@@ -50,27 +52,30 @@ const InputLable = styled.label`
 
 const Div = styled.div`
   max-width: 1980px;
-
   flex-wrap: nowrap;
   display: flex;
   gap: 1em;
   height: 600px;
-  overflow: scroll;
 `;
 
 // td column style
 const ColumnCell = styled.td`
     background-color: #8DDEE9;
-    font-size: 30px;
+    font-size: 2rem;
     text-align: center;
+    padding : 10px;
+    font-weight : bold;
 `;
 
 // td style
 const StockDetailCell = styled.td`
     background-color: #FFFFFF;
     color: #000000;
-    font-size: 30px;
+    font-size: 1.5rem;
     text-align: center;
+    padding : 0.8rem;
+    color : ${(props)=> props.colors !== ""? props.colors : "#000000"};
+    
 `;
 
 // tr style
@@ -84,37 +89,101 @@ const StockDetailTableStyle = styled.table`
     width: 100%;
 `;
 
-const CreateRowData = (date, name, prevAmount, updateAmount, afterAmount) => {
-    return ({date, name, prevAmount, updateAmount, afterAmount });
+const StockDetail = () => {
+
+    const params = useParams();
+    const location = useLocation();
+
+    let didMount = useRef();
+    
+    useEffect(async ()=>{
+        await getStockDetailsHandler();
+        didMount.current = true;
+        },[])
+
+const [stockDetails, setStockDetails] = useState([]);
+const [selectionStockName, setSelectionStockName] = useState([]);
+const [stock, setStock] = useState([]);
+
+const getStockDetailsHandler = async() =>{
+    const managerId = window.localStorage.getItem('managerId');
+    const stockName = location.state;
+    const data = JSON.stringify({
+        managerId : managerId,
+        stockName : stockName
+    })
+    await axios.post('http://localhost:8080/stock/getAllStockDetailsOnSelectionStock',data,{
+        headers : {
+        "Content-Type" : `application/json`,
+    }}).then(async(res)=>{
+        const stock_temp = await getStocksWithOutActive();
+        setStock(stock_temp.data);
+        setStockDetails(res.data);
+        console.log("가져온 stockDetail 값 :", res.data);
+        console.log("가져온 getStock 값 :",stock_temp);
+        setSelectionStockName(stockName);
+    }).catch(async(e)=>{
+        console.log("에러지점", e);
+        setSelectionStockName(stockName);
+        const stock_temp = await getStocksWithOutActive();
+        setStock(stock_temp.data);
+    })
 }
 
-const cells = [
-    CreateRowData('2021-10-31 13:00', '이호준', '0',
-        '+3', '3'),
-    CreateRowData('2021-10-31 14:00', '서혜민', '3',
-        '+1', '4'),
-    CreateRowData('2021-10-31 15:00', '최지환', '5',
-        '-2', '3'),
-];
+const getOtherStockDetailHandler = async(stockName) =>{
+    const managerId = window.localStorage.getItem('managerId');
+    const data = JSON.stringify({
+        managerId : managerId,
+        stockName : stockName
+    })
+    await axios.post('http://localhost:8080/stock/getAllStockDetailsOnSelectionStock',data,{
+        headers : {
+        "Content-Type" : `application/json`,
+    }}).then((res)=>{
+        setStockDetails(res.data);
+        console.log("가져온 stockDetail 값 :", res.data);
+        setSelectionStockName(stockName);
+    }).catch(e=>{
+        console.log(e);
+        setStockDetails([]);
+    })
+}
 
-const StockDetail = () => {
+useEffect(()=>{
+    if(didMount.current){
+        getOtherStockDetailHandler(selectionStockName);
+    }
+},[selectionStockName])
+
+const getStocksWithOutActive =  async() =>{
+    let managerId = window.localStorage.getItem('managerId');
+  return axios.post('http://localhost:8080/stock/getAllStockWithOutActiveCondition',managerId,{
+        headers : {
+        "Content-Type" : `application/json`,
+    }})
+}
+
     return (
         <>
-            <Header text ={"재고 관리"} restaurantName = {localStorage.getItem('storeName')}/>
+            <Header text ={"재고 추적 내역"} restaurantName = {localStorage.getItem('storeName')}/>
             <PageWrapper>
                 <Form>
                     <WrapperDiv>
-                        <InputLable>재고 선택
-                            <CategorySelector>
-                                <option value="돼지고기" selected>돼지고기</option>
-                                <option value="치즈" selected>치즈</option>
-                                <option value="밀가루" selected>밀가루</option>
+                        <InputLable style ={{fontWeight : 'bold', fontSize : '1.8rem', marginTop : '-1.5rem'}}>[{selectionStockName}] 재고 추적 내역 리스트</InputLable>
+                        <InputLable style ={{fontWeight : 'bold', fontSize : '1.8rem',}}>재고 변경
+                            <CategorySelector onChange={(e)=>setSelectionStockName(e.target.value)}>
+                                {
+                                    stock.map((s, index)=>
+                                    <>
+                                        <option value={s.stockName} selected = {s.stockName === selectionStockName ? true: false}>{s.stockName}</option>
+                                    </>)
+                                }
                             </CategorySelector>
                         </InputLable>
                     </WrapperDiv>
                     <Div>
                     <WrapperDiv>
-                        <TableContainer component={Paper} margin='10px' style={{overflow: 'hidden',}}>
+                        <TableContainer component={Paper} margin='10px' style={{overflow:'scroll',}}>
                             <StockDetailTableStyle>
                                 <TableHead>
                                     <StockDetailRow>
@@ -126,15 +195,22 @@ const StockDetail = () => {
                                     </StockDetailRow>
                                 </TableHead>
                                 <TableBody>
-                                    {cells.map((cell) => (
+                                    {
+                                    stockDetails.length > 0 ? 
+                                    stockDetails.map((cell) => (
                                         <StockDetailRow>
-                                            <StockDetailCell component="th" scope="cell">{cell.date}</StockDetailCell>
-                                            <StockDetailCell>{cell.name}</StockDetailCell>
-                                            <StockDetailCell>{cell.prevAmount}</StockDetailCell>
-                                            <StockDetailCell>{cell.updateAmount}</StockDetailCell>
-                                            <StockDetailCell>{cell.afterAmount}</StockDetailCell>
+                                            <StockDetailCell component="th" scope="cell">{cell.time.substr(0,16)}</StockDetailCell>
+                                            <StockDetailCell>{cell.employee !== null ? cell.employee.user.personName : "관리자"}</StockDetailCell>
+                                            <StockDetailCell>{cell.finalQuantity - cell.quantityChanged}</StockDetailCell>
+                                            <StockDetailCell colors = {cell.quantityChanged > 0 ? "" : "#FF0000"}>{cell.quantityChanged}</StockDetailCell>
+                                            <StockDetailCell>{cell.finalQuantity}</StockDetailCell>
                                         </StockDetailRow>
-                                    ))}
+                                    ))
+                                : <>
+                                    <StockDetailRow>
+                                        <StockDetailCell style ={{fontWeight : 'bold'}}>데이터가 없습니다. 다시 시도해주세요</StockDetailCell>
+                                    </StockDetailRow>
+                                  </>}
                                 </TableBody>
                             </StockDetailTableStyle>
                         </TableContainer>

@@ -641,6 +641,7 @@ const SalePage = () => {
             console.log(res);
             navigation('/CurrentSeatInfo');
         }).catch(e=>console.log(e));
+        
     }
     
     const orderDeleteHandler = () =>{
@@ -793,7 +794,7 @@ const SalePage = () => {
                                 </TableHead>
                                 <TableBody>
                                     {currentOrders.length>0 && currentOrders.map((cell, index) => (
-                                        index - orderSelection > -7 ? 
+                                        index - orderSelection > -6 ? 
                                         <OrderRow  id = {"order"+String(index)} onClick={(e)=>{orderInfoClickHandler(index, e)}} checked={index===orderSelection ? true: false}>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.name}</OrderCell>
