@@ -6,7 +6,7 @@ const CategoryButtonTemplate = styled.button`
     border-radius : 15px;
     color : #FFFFFF;
     height : 4.7rem;
-    width : 8.8rem;
+    width : 9rem;
     margin : 1rem;
     text-align : center;
     font-size : 1.3rem;
