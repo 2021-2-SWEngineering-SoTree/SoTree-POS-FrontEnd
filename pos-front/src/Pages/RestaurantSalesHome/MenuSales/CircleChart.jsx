@@ -1,17 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 }
-];
-
 let renderLabel=function(entry){
   return entry.name;
 }
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#FF0000", "#FF8000", "#FFFF00", "#80FF00","#00FF00","#00FF80","#00FFFF","#0080FF","#0000FF","#7F00FF","#FF00FF","#FF007F",
+"#808080"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -40,23 +34,27 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function CircleChart() {
+const CircleChart =({chartData})=> {
   return (
-    <PieChart width={400} height={400}>
-      <Pie
-        data={data}
-        cx={200}
-        cy={200}
+    <div>
+    <PieChart width={800} height={800}>
+      <Pie style={{fontSize:'1.3rem'}}
+        data={chartData}
+        cx={300}
+        cy={370}
         labelLine={false}
         label={renderLabel}
-        outerRadius={140}
+        outerRadius={240}
         fill="#8884d8"
         dataKey="value"
       >
-        {data.map((entry, index) => (
+        {chartData.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
     </PieChart>
+    </div>
   );
 }
+
+export default CircleChart;

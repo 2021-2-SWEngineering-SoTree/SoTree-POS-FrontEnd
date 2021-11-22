@@ -30,14 +30,14 @@ const LeftBottomDiv=styled.div`
 `;
 
 const RightTopDiv=styled.div`
-    height : 40.7vh;
+    height : 35vh;
     border : 1px solid black;
     border-radius : 10px;
     margin : 1.5rem;
 `;
 
 const RightBottomDiv=styled.div`
-    height : 40.7vh;
+    height : 47vh;
     border : 1px solid black;
     border-radius : 10px;
     margin : 1.5rem;
@@ -83,15 +83,13 @@ const GraphTemp=styled.div`
     width : 100%;
 `
 const GraphLeft = styled.div`
-    width : 50%;
+    width : 45%;
     height : 66vh;
-    border : 1px solid blue;
 `
 
 const GraphRight = styled.div`
     width : 50%;
     height : 66vh;
-    border : 1px solid green;
 `
 
 const GraphDiv = styled.div`
@@ -100,7 +98,7 @@ const GraphDiv = styled.div`
     width : 100%;
     height : 100%;
     align-items : center;
-    margin-left : 0.8rem;
+    margin-left : 15%;
 `;
 
 const TextDiv = styled.div`
@@ -155,7 +153,42 @@ const MenuSalesTemplate = () => {
     const [day,setDay]=useState();
 
     //통계
-    const [stats,setStats]=useState();
+    const [stats,setStats]=useState([]); //기본
+    const [sales,setSales]=useState([]); //매출 정렬
+    const [popular,setPopular]=useState([]); //판매량 정렬
+    const [sum,setSum]=useState(0); //비율을 구하기 위한 판매량의 합
+    const [sumSale,setSumSale]=useState(0);
+    const [graphData,setgraphData]=useState([]); //그래프에 들어갈 데이터
+
+    useEffect(()=>{
+        setSales(stats.concat([]).sort((a,b)=>{return a.price-b.price}));
+        setPopular(stats.concat([]).sort((a,b)=>{return b.orderQuantity-a.orderQuantity}));
+        setSum(stats.reduce(
+            (accumulator, currentValue) => accumulator + (+currentValue.orderQuantity)
+            ,0
+        ));
+        setSumSale(stats.reduce(
+            (accumulator, currentValue) => accumulator + (+currentValue.price)
+            ,0
+        ));
+    },[stats]);
+
+    //그래프에 들어갈 데이터(매출순 정렬 data=>뽑아내기) menuName->name, price->value
+    useEffect(()=>{
+        const arr=[];
+        setgraphData(sales.map((v,i)=>
+            arr.push({
+                name:v.menuName,
+                value:+v.price
+            })
+        ));
+        console.log('arr',arr);
+        setgraphData(arr);
+
+    },[sales]);
+
+    useEffect(()=>{
+    },[sales,popular]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
@@ -163,7 +196,7 @@ const MenuSalesTemplate = () => {
         const today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
         const managerId = window.localStorage.getItem('managerId');
         console.log(today);
-
+        if(category=='' || category==undefined) setStats([]);
         if(category!==''){
             let categ=category;
             if(category==='전체') categ=undefined;
@@ -269,7 +302,7 @@ const MenuSalesTemplate = () => {
                 </Div>
                 <LeftBotBotDiv>
                     <Criteria>
-                        <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                        <div style={{display : 'flex', marginTop:'1%', flexDirection : 'row', justifyContent:'center'}}>
                             {(select===1) && (
                                 <>
                                 <Selector value={year} onChange={(e)=>{setYear(e.target.value)}} style={{marginTop:'0.2%',width:'4.9rem', height :'2rem'}}>
@@ -278,7 +311,7 @@ const MenuSalesTemplate = () => {
                                     <option value="2021">2021</option>
                                 </Selector>
                                 <TextDiv>년</TextDiv>
-                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'3.5rem', height : '2rem'}}>
+                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'3.9rem', height : '2rem'}}>
                                     <option value="">-------</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -315,29 +348,41 @@ const MenuSalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphLeft>
-                            <TableContainer margin='10px' style={{marginTop :'3%',height : '70%',overflow: 'hidden',}}>
-                                <TableStyle style={{overflow:'auto'}}>
-                                    <TableHead>
+                        <Title style={{marginLeft:'15%'}}>
+                            {(select===0) &&  '전체 통계'}
+                            {(select===1) &&  '월별 통계'}
+                            {(select===2) &&  '요일별 통계'}
+                        </Title>
+                            <TableContainer style={{marginLeft:'5%',marginTop :'-3%',height : '70%',overflow: 'hidden',}}>
+                                <TableStyle style={{overflow:'auto', width:'100%'}}>
+                                    <TableHead style={{height : '4vh'}}>
                                         <OrderRow>
                                             <ColumnCell>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
-                                            <ColumnCell>매출</ColumnCell>
-                                            <ColumnCell>비율</ColumnCell>
+                                            <ColumnCell>매출(원)</ColumnCell>
+                                            <ColumnCell>비율(%)</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-
+                                    {sales.length>0 && sales.map((cell, index) => (
+                                        <OrderRow style={{height : '3.8vh'}}>
+                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
+                                            <OrderCell>{cell.menuName}</OrderCell>
+                                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
+                                            <OrderCell>{Math.floor(cell.orderQuantity/sum*100)} </OrderCell>
+                                        </OrderRow>
+                                    ))}
                                     </TableBody>
                                 </TableStyle>                
                             </TableContainer>
 
-                            <div style={{marginTop:'10%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                            <div style={{marginTop:'1%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
                             <TableContainer margin='10px' style={{width : '50%', height : '55%',overflow: 'hidden',}}>
                                 <TableStyle>
                                     <TableHead>
                                         <OrderRow>
-                                            <ColumnCell>총 매출</ColumnCell>
-                                            <Cell>1000</Cell>
+                                            <ColumnCell>총 매출(원)</ColumnCell>
+                                            <Cell>{sumSale}</Cell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
@@ -348,7 +393,7 @@ const MenuSalesTemplate = () => {
                         </GraphLeft>
                         <GraphRight>
                             <GraphDiv>
-                                <CircleChart/>
+                                <CircleChart chartData={graphData}/>
                             </GraphDiv>
                         </GraphRight>
                     </GraphTemp>
@@ -359,34 +404,48 @@ const MenuSalesTemplate = () => {
             <RightDiv>
                 <RightTopDiv>
                     <Title>인기도(TOP 3)</Title>
-                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
-                                <TableStyle>
-                                    <TableHead>
+                    <TableContainer style={{width : '100%', height : '87%', overflow: 'hidden', marginTop:'-2%'}}>
+                                <TableStyle style={{width : '90%'}}>
+                                    <TableHead style={{height : '5vh'}}>
                                         <OrderRow>
-                                            <ColumnCell>NO</ColumnCell>
-                                            <ColumnCell>메뉴</ColumnCell>
-                                            <ColumnCell>판매량</ColumnCell>
+                                            <ColumnCell style={{fontSize:'1.3rem', width : '15%'}}>NO</ColumnCell>
+                                            <ColumnCell style={{fontSize:'1.3rem'}}>메뉴</ColumnCell>
+                                            <ColumnCell style={{fontSize:'1.3rem', width:'20%'}}>판매량</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-
+                                    {popular.length>0 && popular.map((cell, index) => (
+                                        index<3 &&
+                                        <OrderRow style={{height : '5vh'}}>
+                                            <OrderCell style={{fontSize:'1.3rem'}} component="th" scope="cell">{index+1}</OrderCell>
+                                            <OrderCell style={{fontSize:'1.3rem'}}>{cell.menuName}</OrderCell>
+                                            <OrderCell style={{fontSize:'1.3rem'}}>{cell.orderQuantity}</OrderCell>
+                                        </OrderRow>
+                                    ))}
                                     </TableBody>
                                 </TableStyle>                
                     </TableContainer>
                 </RightTopDiv>
                 <RightBottomDiv>
                     <Title>판매현황</Title>
-                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
-                                <TableStyle>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-1%'}}>
+                                <TableStyle style={{width : '90%'}}>
                                     <TableHead>
                                         <OrderRow>
-                                            <ColumnCell>NO</ColumnCell>
+                                            <ColumnCell style={{width:'15%'}}>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
-                                            <ColumnCell>판매량</ColumnCell>
+                                            <ColumnCell style={{width:'20%'}}>판매량</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-
+                                    {popular.length>0 && popular.map((cell, index) => (
+                                        index<10 && 
+                                        <OrderRow>
+                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
+                                            <OrderCell>{cell.menuName}</OrderCell>
+                                            <OrderCell>{cell.orderQuantity}</OrderCell>
+                                        </OrderRow>
+                                    ))}
                                     </TableBody>
                                 </TableStyle>                
                             </TableContainer>
