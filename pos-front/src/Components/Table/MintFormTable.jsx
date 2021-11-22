@@ -4,7 +4,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
-import Tr from "./Tr";
+import ModalButton from "../../Components/Button/ModalButton";
 import {findAllByDisplayValue} from "@testing-library/react";
 
 //  I'm going to write the code first,
@@ -37,7 +37,8 @@ const EmployeeManagementTableStyle = styled.table`
 `;
 
 
-const MintFormTable = ({columnName, cells, setGetNumber, isNameButton}) => {
+
+const MintFormTable = ({columnName, cells, setGetNumber, isNameButton, clickListener}) => {
 
     //----------------- check box ---------------------------------------------------
 
@@ -54,7 +55,8 @@ const MintFormTable = ({columnName, cells, setGetNumber, isNameButton}) => {
                 <EmployeeManagementCell key={j}>
                     {cells[j]==='blink' ?
                         <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/>
-                        : cells[j]}
+                        : (cells[j] === 'approval' ?
+                            <ModalButton name={'승인'} onClick={clickListener}/> : cells[j])}
                 </EmployeeManagementCell>)
         )
     }
@@ -62,7 +64,7 @@ const MintFormTable = ({columnName, cells, setGetNumber, isNameButton}) => {
     // choice 봐야됨.
     return (
         <TableContainer component={Paper} margin='10px' style={{overflow: 'hidden',}}>
-            <EmployeeManagementTableStyle>
+            <EmployeeManagementTableStyle >
                 <TableHead>
                     <EmployeeManagementRow>
                         {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>

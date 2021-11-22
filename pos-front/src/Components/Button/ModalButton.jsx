@@ -6,8 +6,8 @@ const ModalButtonTemplate = styled.button`
     height : 3.2rem;
     font-size : 1.5rem;
     background-color : #C4C4C4;
-    margin-top : 2rem;
     margin-right : 1rem; 
+    margin-left : 1rem;
     border-radius : 0.5rem;
     padding : 0;
     

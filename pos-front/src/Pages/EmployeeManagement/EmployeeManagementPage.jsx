@@ -10,6 +10,7 @@ import EmployeeCommutingPage from "./EmployeeCommutingPage";
 import axios from "axios";
 import EmployeeModifyPage from "./EmployeeModifyPage";
 import EmployeeDeletePage from "./EmployeeDeletePage";
+import EmployeeApprovalPage from "./EmployeeApprovalPage";
 
 
 const Div = styled.div`
@@ -84,7 +85,7 @@ const CreateRowData = (choice, number, name, id, birthday, email, phone, pos) =>
 const EmployeeManagementPage = () => {
 
     const columnName = ['선택', '번호', '이름', 'ID', '생년월일', '이메일', '전화번호', '직급']
-    const [employeeManagementChange, setEmployeeManagementChange] = useState(false);
+    const [employeeManagementChange, setEmployeeManagementChange] = useState(1);
     const [employeeId, setEmployeeId] = useState([]);
 
     const [commute, setCommute] = useState(false);
@@ -94,9 +95,9 @@ const EmployeeManagementPage = () => {
 
     const [getNumber, setGetNumber] = useState(-1);
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
-    const [listOfEmployee,  setEmployeeList] = useState(false);  // 버튼 클릭시 LeftDiv 의 변경
+    const [listOfEmployee,  setEmployeeList] = useState(1);  // 버튼 클릭시 LeftDiv 의 변경
 
-    let selectedEmployee = []
+    let selectedEmployee = [];
     let selectedEmployeeId = -1;
     const [reConstruct, setReConstruct] = useState([0, '', '']);
 
@@ -118,8 +119,16 @@ const EmployeeManagementPage = () => {
     const onClickEmployeeChange = () => { setChangeEmployee(!changeEmployee); }
     const onClickEmployeeDelete = () => { setDeleteEmployee(!deleteEmployee); }
     const onClickEmployeeList = () => {
-        setEmployeeManagementChange(!employeeManagementChange);
-        setEmployeeList(!listOfEmployee);
+        setEmployeeManagementChange((employeeManagementChange === 1
+        || employeeManagementChange === 3) ? 2 : 1);
+        setEmployeeList((listOfEmployee === 1
+            || listOfEmployee === 3) ? 2 : 1);
+    }
+    const onClickEmployeeApproval = () => {
+        setEmployeeManagementChange((employeeManagementChange === 1
+        || employeeManagementChange === 2) ? 3 : 1);
+        setEmployeeList((listOfEmployee === 1
+            || listOfEmployee === 2) ? 3 : 1);
     }
 
     const onClickName = () => {
@@ -172,18 +181,21 @@ const EmployeeManagementPage = () => {
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
-                <LeftDiv visible={!listOfEmployee} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
+                <LeftDiv visible={listOfEmployee===1} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
                     <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
                 </LeftDiv>
-                <LeftDiv visible={listOfEmployee} style={{overFlow: "auto", marginTop: "2.0rem"}}>
+                <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
                     <EmployeeActivitiesListPage cello={cello}/>
+                </LeftDiv>
+                <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
+                    <EmployeeApprovalPage setGetNumber={setGetNumber}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
                         <Link to="/employeeManagement/workSchedule"><Button>근무표</Button></Link>
                         <Button2 onClick={onClickEmployeeCommute}>직원 출퇴근</Button2>
-                        <Button onClick={onClickEmployeeList}>{employeeManagementChange? "직원관리로 돌아가기" : "직원활동내역"}</Button>
-                        <Link to="/employeeManagement/employeeApproval"><Button2>직원승인</Button2></Link>
+                        <Button onClick={onClickEmployeeList}>{employeeManagementChange === 2 ? "직원관리로 돌아가기" : "직원활동내역"}</Button>
+                        <Button2 onClick={onClickEmployeeApproval}>{employeeManagementChange === 3 ? "직원관리로 돌아가기" :"직원 승인"}</Button2>
                         <Button onClick={onClickEmployeeAdd}>직원추가</Button>
                         <Button onClick={onClickEmployeeChange}>직원수정</Button>
                         <Button onClick={onClickEmployeeDelete}>직원삭제</Button>
