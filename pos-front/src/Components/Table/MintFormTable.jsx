@@ -37,7 +37,7 @@ const EmployeeManagementTableStyle = styled.table`
 `;
 
 
-const MintFormTable = ({columnName, cells, isCheckBox, setGetNumber}) => {
+const MintFormTable = ({columnName, cells, setGetNumber, isNameButton}) => {
 
     //----------------- check box ---------------------------------------------------
 
@@ -52,7 +52,9 @@ const MintFormTable = ({columnName, cells, isCheckBox, setGetNumber}) => {
         return (
             Array(cells.length).fill(undefined, undefined, undefined).map((obj, j)=>
                 <EmployeeManagementCell key={j}>
-                    {cells[j]==='blink' ? <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/> : cells[j]}
+                    {cells[j]==='blink' ?
+                        <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/>
+                        : cells[j]}
                 </EmployeeManagementCell>)
         )
     }

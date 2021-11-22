@@ -76,15 +76,16 @@ const Button2 = styled.button`
 
 
 // input data format (직원 리스트)
-const CreateRowData = (choice, number, name, id, pw, latestDate, pos) => {
-    return [choice, number, name, id, pw, latestDate, pos];
+const CreateRowData = (choice, number, name, id, birthday, email, phone, pos) => {
+    return [choice, number, name, id, birthday, email, phone, pos];
 }
 
 
 const EmployeeManagementPage = () => {
 
-    const columnName = ['선택', '번호', '이름', 'ID', '비밀번호', '최근 출근일자', '직급']
+    const columnName = ['선택', '번호', '이름', 'ID', '생년월일', '이메일', '전화번호', '직급']
     const [employeeManagementChange, setEmployeeManagementChange] = useState(false);
+    const [employeeId, setEmployeeId] = useState([]);
 
     const [commute, setCommute] = useState(false);
     const [addEmployee, setAddEmployee] = useState(false);
@@ -96,6 +97,7 @@ const EmployeeManagementPage = () => {
     const [listOfEmployee,  setEmployeeList] = useState(false);  // 버튼 클릭시 LeftDiv 의 변경
 
     let selectedEmployee = []
+    let selectedEmployeeId = -1;
     const [reConstruct, setReConstruct] = useState([0, '', '']);
 
 
@@ -105,8 +107,9 @@ const EmployeeManagementPage = () => {
         }
         else {
             selectedEmployee = cello[getNumber];
-            // index(1): number, index(2):name, index(6): pos
-            setReConstruct([selectedEmployee[1], selectedEmployee[2], selectedEmployee[6]]);
+            selectedEmployeeId = employeeId[getNumber];
+            // index(1): number, index(2):name, index(7): pos
+            setReConstruct([selectedEmployee[1], selectedEmployee[2], selectedEmployee[7], selectedEmployeeId]);
             console.log("check row", reConstruct)
             setCommute(!commute);
         }
@@ -119,24 +122,39 @@ const EmployeeManagementPage = () => {
         setEmployeeList(!listOfEmployee);
     }
 
+    const onClickName = () => {
+        cello.sort(cello[2]);
+        setCells(cello);
+    }
+
     useEffect(async () => {
         try {
-            const cells = []
+            let managerId = window.localStorage.getItem('managerId');
             // 데이터를 받아오는 동안 시간 소모. await 대기
-            const res = await axios.post('http://localhost:8080/getAllPersonName')
-            console.log(res);
-            console.log(res.data);
+            await axios.post('http://localhost:8080/getAllUser',  JSON.stringify(managerId), {
+                headers : {
+                    "Content-Type" : `application/json`,
+                }
+            }).then((res)=>{
+                const cells = [];
+                const cell2 = [];
+                console.log(res);
+                console.log(res.data);
 
-            for (let i = 0; i < res.data.length; i++) {
-                cells.push(CreateRowData('blink', res.data[i].EmployeeId, res.data[i].personName,
-                    'hello', '1234', '2021-11-03 13:00', '사장'))
-            }
-            setCells(cells);
-            console.log(cello);
+                for (let i = 0; i < res.data.length; i++) {
+                    cell2.push(res.data[i].employeeId);
+                    cells.push(CreateRowData('blink', i+1, res.data[i].personName,
+                        res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
+                }
+                setCells(cells);
+                setEmployeeId(cell2);
+                console.log(employeeId);
+                console.log(cello);
+            })
         } catch (e) {
             console.error(e.message)
         }
-    }, []);
+    }, [listOfEmployee, employeeManagementChange]);
 
     return (
         <>
@@ -155,10 +173,10 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
             <Div>
                 <LeftDiv visible={!listOfEmployee} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
-                    <MintFormTable columnName={columnName} cells={cello} isCheckBox={true} setGetNumber={setGetNumber}/>
+                    <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee} style={{overFlow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeActivitiesListPage/>
+                    <EmployeeActivitiesListPage cello={cello}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>

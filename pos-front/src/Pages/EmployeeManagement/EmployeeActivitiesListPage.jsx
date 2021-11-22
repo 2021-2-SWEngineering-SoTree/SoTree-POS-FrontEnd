@@ -23,11 +23,7 @@ const CreateStockRowData = (number, name, stockNum, stockName, changeAmount, aft
 
 
 
-const EmployeeActivitiesListPage = () => {
-
-    const testDummy = () => {
-        return 1;
-    }
+const EmployeeActivitiesListPage = ({cello}) => {
 
     const yearList = [2021, 2022];
     const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -94,10 +90,10 @@ const EmployeeActivitiesListPage = () => {
             console.log("effect day: ", selectDay);
             // 2021-10
             // 2021-10-11 두가지 경우.
-
+            let managerId = window.localStorage.getItem('managerId');
             console.log('Employee List Change');
             const new_date = formatOfTime(selectYear, selectMonth, selectDay);
-            let result = await getEmployeeList(criterion, new_date, testDummy());
+            let result = await getEmployeeList(criterion, new_date, managerId);
             console.log("result: ", result.data);
 
             let cells = [];
@@ -140,7 +136,7 @@ const EmployeeActivitiesListPage = () => {
         } catch (e) {
             console.error(e.message)
         }
-    }, [selectYear, selectMonth, selectDay, criterion]);
+    }, [selectYear, selectMonth, selectDay, criterion, cello]);
 
     // COME
     const onClickEmployeeListArrival = async () => {
@@ -223,7 +219,7 @@ const EmployeeActivitiesListPage = () => {
                 </div>
             </div>
             <div style={{overFlow: "scroll"}}>
-                <MintFormTable columnName={changeTable} cells={changeCello} isCheckBox={false}/>
+                <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}/>
             </div>
         </>
     )

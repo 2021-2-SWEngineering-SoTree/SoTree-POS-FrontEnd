@@ -96,41 +96,53 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
     }
 
     const arrivalHandleClick = async(e) => {
+        let managerId = window.localStorage.getItem('managerId');
         if (window.confirm("출근을 등록하시겠습니까?")) {
-            let arrivalData = {
-                employeeId: reConstruct[0],
-                time: date,
-                branchId: "1"
+            if(reConstruct[2] === "manager") {
+                alert("관리자는 출퇴근 등록이 불가능합니다.");
             }
-            await axios.post('http://localhost:8080/recordCome', JSON.stringify(arrivalData),
-                { headers: { "Content-Type" : `application/json`, } }).then((res)=>{
-                console.log(res);
-                alert("test, 출근 추가 되었음");
-                setCommute(!commute);
-            }).catch(error => {
-                console.log(error);
-                alert('출근 추가 오류, 다시진행해주세요');
-            })
+            else {
+                let arrivalData = {
+                    employeeId: reConstruct[3],
+                    time: date,
+                    branchId: managerId
+                }
+                await axios.post('http://localhost:8080/recordCome', JSON.stringify(arrivalData),
+                    {headers: {"Content-Type": `application/json`,}}).then((res) => {
+                    console.log(res);
+                    alert("출근 추가 되었음");
+                    setCommute(!commute);
+                }).catch(error => {
+                    console.log(error);
+                    alert('출근 추가 오류, 다시진행해주세요');
+                })
+            }
         }
         else { alert("출근 추가 오류"); }
     }
 
     const leaveHandleClick = async(e) => {
-        if (window.confirm("test, 퇴근")) {
-            let leaveDate = {
-                employeeId: reConstruct[0],
-                time: date,
-                branchId: "1"
+        if (window.confirm("퇴근을 등록하시겠습니까?")) {
+            if(reConstruct[2] === "manager") {
+                alert("관리자는 출퇴근 등록이 불가능합니다.");
             }
-            await axios.post('http://localhost:8080/recordOut', JSON.stringify(leaveDate),
-                { headers: {"Content-Type" : `application/json`,}}).then((res)=>{
-                    console.log(res);
-                    alert("test, 퇴근 추가 되었음");
-                    setCommute(!commute);
-            }).catch(error => {
-                console.log(error);
-                alert('퇴근 추가 오류, 다시 진행해주세요');
-            })
+            else {
+                let managerId = window.localStorage.getItem('managerId');
+                let leaveDate = {
+                    employeeId: reConstruct[3],
+                    time: date,
+                    branchId: managerId
+                }
+                await axios.post('http://localhost:8080/recordOut', JSON.stringify(leaveDate),
+                    { headers: {"Content-Type" : `application/json`,}}).then((res)=>{
+                        console.log(res);
+                        alert("퇴근 추가 되었음");
+                        setCommute(!commute);
+                }).catch(error => {
+                    console.log(error);
+                    alert('퇴근 추가 오류, 다시 진행해주세요');
+                })
+            }
         }
         else { alert("퇴근 추가 오류"); }
     }
