@@ -138,25 +138,11 @@ const EmployeeActivitiesListPage = ({cello}) => {
         }
     }, [selectYear, selectMonth, selectDay, criterion, cello]);
 
-    // COME
-    const onClickEmployeeListArrival = async () => {
-        setCriterion("COME");
-    }
 
-    // OUT
-    const onClickEmployeeListLeave = async () => {
-        setCriterion("OUT");
-    }
-
-    // PAY
-    const onClickEmployeeListPayment = async () => {
-        setCriterion("PAY");
-    }
-
-    // ORDER
-    const onClickEmployeeListOrder = async () => {
-        setCriterion("ORDER");
-    }
+    const onClickEmployeeListArrival = async () => { setCriterion("COME"); }    // COME
+    const onClickEmployeeListLeave = async () => { setCriterion("OUT"); }       // OUT
+    const onClickEmployeeListPayment = async () => { setCriterion("PAY"); }     // PAY
+    const onClickEmployeeListOrder = async () => { setCriterion("ORDER"); }     // ORDER
 
     // STOCK
     const onClickEmployeeListStock = async () => {
