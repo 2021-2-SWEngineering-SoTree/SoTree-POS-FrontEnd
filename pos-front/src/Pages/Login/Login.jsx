@@ -84,7 +84,7 @@ const Login = ({loginCallBack}) => {
         }}).then((res)=>{
             console.log(res.data);
             if(res.data === ""){
-                alert("로그인실패zz");
+                alert("로그인 실패");
             }else{
                 const token = res.data;
                 const user = jwt.verify(token, "webfirewood");
@@ -93,12 +93,14 @@ const Login = ({loginCallBack}) => {
 
                 }else{
                     alert("로그인 성공");
+                    console.log(user);
                     axios.defaults.headers.common['Authorization'] = `webfirewood ${res.data}`;
                     window.localStorage.setItem('Token', JSON.stringify(res.data));
                     window.localStorage.setItem('userName', user.userName);
                     window.localStorage.setItem('storeName', user.storeName);
                     window.localStorage.setItem('storePhonenumber', user.storePhoneNumber);
                     window.localStorage.setItem('managerId', user.managerId);
+                    window.localStorage.setItem('loginId',user.sub);
                     loginCallBack(true);
                     navigate('/homePage');
                 }

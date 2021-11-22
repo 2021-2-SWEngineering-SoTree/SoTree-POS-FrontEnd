@@ -40,23 +40,13 @@ const DeleteStock = ({stock, clickedIndex, onClickDelete, visible}) => {
     const deleteClickHandler = async () =>{
         console.log("Delete button Clicked");
         if(window.confirm("정말로 삭제하시겠습니까?")){
-            const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
-            const ingredients = [{
-                time: time,
-                quantityChanged: '',
-                employeeId: 99,
-            }];
-            console.log(ingredients);
             let managerId = window.localStorage.getItem('managerId');
             const data = {
                 stockName: stock[clickedIndex].stockName,
                 managerId: managerId,
-                quantity: stock[clickedIndex].quantity,
-                stockDetailList: ingredients,
-                employeeId: 99,
             }
             console.log(data);
-            await axios.delete(`http://localhost:8080/stock/${stock[clickedIndex].id}`,
+            await axios.put(`http://localhost:8080/stock/delete`,
                 JSON.stringify(data),{
                     headers : {
                         "Content-Type": `application/json`,

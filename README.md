@@ -17,6 +17,9 @@ npm i @material-ui/core
 - 11.12
 npm i jsonwebtoken
 npm i jwt-decode
+
+- 11.20
+npm i recharts
 ```
 
 # Installation

@@ -107,9 +107,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
         e.preventDefault();
         if(window.confirm("정말로 수정하시겠습니까?")){
             console.log("ok");
-            const time = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
             const ingredients = [{
-                time: time,
                 quantityChanged: +quantity,
                 employeeId: select,
             }];
@@ -118,13 +116,11 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
             const data = {
                 stockName: stock[clickedIndex].stockName,
                 managerId: managerId,
-                quantity: quantity,
                 stockDetailList: ingredients,
-                employeeId: select,
             };
             const data2 = JSON.stringify(data);
             console.log("data2: ", data2);
-            await axios.put(`http://localhost:8080/stock/${stock[clickedIndex].id}`,
+            await axios.put(`http://localhost:8080/stock/update`,
                 data2, {
                     headers : {
                         "Content-Type": 'application/json; charset=UTF-8',

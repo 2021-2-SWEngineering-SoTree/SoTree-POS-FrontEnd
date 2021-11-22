@@ -37,7 +37,7 @@ const Calculator = ({num, num2, quantity, changeQuantity, quantity2, changeQuant
             }
         }
         changeQuantity(quantity);
-        if(quantity2!==undefined) changeQuantity2(quantity2);
+        if(quantity2!==undefined) {changeQuantity2(quantity2)};
         console.log(quantity, quantity2, changeQuantity, changeQuantity2);
     }
 

@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
-import {SignUp, FindUserInfo} from './Pages/Login';
+import {SignUp, FindUserInfo, ChangeInfo, ChangePw, MyInfo } from './Pages/Login';
 import MainPage from './Pages/MainPage';
 import HomePage from './Pages/HomePage';
 import ErrorPage from './Pages/ErrorPage';
@@ -17,6 +17,8 @@ import EmployeeManagementPage from './Pages/EmployeeManagement/EmployeeManagemen
 import CurrentSeatInfoPage from './Pages/Sale/CurrentSeatInfoPage';
 import SalePage from './Pages/Sale/SalePage';
 import StockDetail from './Pages/RestaurantManagement/StockManagement/StockDetail';
+
+
 import { useState } from 'react';
 import { CashPay } from './Pages/Sale/Pay';
 
@@ -51,6 +53,9 @@ function App() {
             <Route path="/employeeManagement" element={localStorage.getItem('Token') ? <EmployeeManagementPage/>: <Navigate replace to='/'/> }/>
             <Route path="/restaurantManagement/stock/stockDetail" element={localStorage.getItem('Token') ? <StockDetail/> : <Navigate replace to='/'/> }/>
             <Route path="/sale/cashPay" element={localStorage.getItem('Token') ? <CashPay/>: <Navigate replace to='/'/> }/>
+            <Route path="/myInfo" element={localStorage.getItem('Token') ? <MyInfo/>: <Navigate replace to='/'/> }/>
+            <Route path="/myInfo/ChangeInfo" element={localStorage.getItem('Token') ? <ChangeInfo/>: <Navigate replace to='/'/> }/>
+            <Route path="/myInfo/ChangePw" element={localStorage.getItem('Token') ? <ChangePw/>: <Navigate replace to='/'/> }/>
             <Route path="*" element={<ErrorPage/>}/>
           </Routes>
       </BrowserRouter>

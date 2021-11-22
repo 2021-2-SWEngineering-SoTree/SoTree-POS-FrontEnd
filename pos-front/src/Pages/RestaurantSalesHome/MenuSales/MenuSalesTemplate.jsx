@@ -1,10 +1,398 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import Header from '../../../Components/Header';
+import styled from 'styled-components';
+import DateButton from '../../../Components/Button/DateButton';
+import {Paper, TableContainer} from "@material-ui/core";
+import TableHead from "@material-ui/core/TableHead";
+import TableBody from "@material-ui/core/TableBody";
+import CircleChart from './CircleChart';
+import axios from 'axios';
+
+const Div = styled.div`
+    display : flex;
+`;
+
+const LeftDiv = styled.div`
+    width : 65%;
+`;
+
+const RightDiv = styled.div`
+    width : 35%;
+`;
+
+const LeftTopDiv=styled.div`
+    display : flex;
+    margin : 1rem;
+`;
+
+const LeftBottomDiv=styled.div`
+    height : 30vh;
+`;
+
+const RightTopDiv=styled.div`
+    height : 40.7vh;
+    border : 1px solid black;
+    border-radius : 10px;
+    margin : 1.5rem;
+`;
+
+const RightBottomDiv=styled.div`
+    height : 40.7vh;
+    border : 1px solid black;
+    border-radius : 10px;
+    margin : 1.5rem;
+`;
+
+const Title=styled.div`
+    margin : 1rem;
+    font-size : 2rem;
+    font-weight : bold;
+`;
+
+const LeftTitle=styled.div`
+    margin-left : 2rem;
+    font-size : 1.5rem;
+`;
+
+const Selector = styled.select`
+    height : 2.4rem;
+    width : 5rem;
+    background-color : #F2F0F0;
+    font-size : 1rem;
+    border-radius : 4px;
+    line-height : 2rem;
+    padding-left : 0.5rem;
+    padding-right : 0.5rem;
+    margin-left : 0.5rem;
+`;
+
+const LeftBotBotDiv = styled.div`
+    border-radius : 10px;
+    border : 1px solid black;
+    margin: 1%;
+    height : 70vh;
+`;
+
+const Criteria = styled.div`
+    width : 100%;
+    height : 4vh;
+`
+
+const GraphTemp=styled.div`
+    display : flex;
+    width : 100%;
+`
+const GraphLeft = styled.div`
+    width : 50%;
+    height : 66vh;
+    border : 1px solid blue;
+`
+
+const GraphRight = styled.div`
+    width : 50%;
+    height : 66vh;
+    border : 1px solid green;
+`
+
+const GraphDiv = styled.div`
+    display : flex;
+    justifyContent : center;
+    width : 100%;
+    height : 100%;
+    align-items : center;
+    margin-left : 0.8rem;
+`;
+
+const TextDiv = styled.div`
+    height : 2rem;
+    font-size : 1rem;
+    line-height : 2.5rem;
+    margin-right : 0.5rem;
+    font-weight : bold;
+`;
+
+const TableStyle = styled.table`
+    width: 80%;
+    margin : 0 auto;
+    margin-top : 5%;
+    max-height : 5rem;
+`;
+
+const OrderCell = styled.td`
+    color: #000000;
+    font-size: 20px;
+    text-align: center;
+`;
+
+const OrderRow = styled.tr`
+    background-color: ${props => props.checked ? '#E4E6E7': '#F2F8F9'};
+    &:focus {
+        background: #FF0000;
+    }
+`;
+
+const ColumnCell = styled.td`
+    background-color: #8DDEE9;
+    font-size: 20px;
+    text-align: center;
+`;
+
+const Cell=styled.td`
+    font-size: 20px;
+    text-align: center;
+`
 
 const MenuSalesTemplate = () => {
+
+    const [category,setCategory]=useState('');
+    const [select,setSelect]=useState(0);
+
+    //월별->연도,월 선택
+    const [year,setYear]=useState();
+    const [month,setMonth]=useState();
+
+    //요일별->요일 선택
+    const [day,setDay]=useState();
+
+    //통계
+    const [stats,setStats]=useState();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async ()=>{
+        const date = new Date();
+        const today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        const managerId = window.localStorage.getItem('managerId');
+        console.log(today);
+
+        if(category!==''){
+            let categ=category;
+            if(category==='전체') categ=undefined;
+
+            if(select===0){//전체
+                const data={
+                    branchId : managerId,
+                    stDate : '2021-11-01',
+                    enDate : today,
+                    menuCategory : categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getAll',data,{
+                headers : {
+                "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+            }).catch(e=>{
+                console.log(e);
+            })
+            }
+            else if(select===1 && year!=='' && year!==undefined && month!=='' && month!==undefined){//월별
+                let changeMonth=month;
+                if(month.length===1) changeMonth='0'+changeMonth;
+                const date=year+'-'+changeMonth+'-';
+                console.log(date);
+                let lastD='30';
+                if(month==1||month==3||month==5||month==7||month==8||month==10||month==12) lastD='31';
+                else if(month==2) lastD='28';
+                const data={
+                    branchId : managerId,
+                    stDate : date+'01',
+                    enDate : date+lastD,
+                    menuCategory : categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getAll',data,{
+                headers : {
+                "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+            }).catch(e=>{
+                console.log(e);
+            })
+            }
+            else if(select===2 && day!=='' && day!==undefined){//요일별
+                console.log(day);
+                let dayNum;
+                if(day==='일요일') dayNum=1;
+                else if(day==='월요일') dayNum=2;
+                else if(day==='화요일') dayNum=3;
+                else if(day==='수요일') dayNum=4;
+                else if(day==='목요일') dayNum=5;
+                else if(day==='금요일') dayNum=6;
+                else if(day==='토요일') dayNum=7;
+                console.log(day,dayNum);
+                const data={
+                    branchId : managerId,
+                    day:dayNum,
+                    menuCategory:categ
+                }
+                console.log(data);
+                await axios.post('http://localhost:8080/menuStatistic/getByDay',data,{
+                headers : {
+                "Content-Type" : "application/json",
+                }}).then((res)=>{
+                console.log(res.data);
+                setStats(res.data);
+                }).catch(e=>{
+                console.log(e);
+            })
+            }
+            
+        }
+    },[category, select, year, month, day])
+
     return (
         <>
         <Header text ={"메뉴 통계"} restaurantName = {localStorage.getItem('storeName')}/>
+        <Div>
+            <LeftDiv>
+                <LeftTopDiv>
+                    <DateButton onClick={()=>setSelect(0)} name={'전체'}/>
+                    <DateButton onClick={()=>setSelect(1)} name={'월별'}/>
+                    <DateButton onClick={()=>setSelect(2)} name={'요일별'}/>
+                </LeftTopDiv>
+                <LeftBottomDiv>
+                <Div>
+                    <LeftTitle>카테고리 : </LeftTitle>
+                    <Selector style={{width : '8.4rem'}} onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
+                                <option value="">-------</option>
+                                <option value="전체">전체</option>
+                                <option value="세트메뉴">세트메뉴</option>
+                                <option value="2~3인분메뉴">2-3인분메뉴</option>
+                                <option value="식사메뉴">식사메뉴</option>
+                                <option value="사이드메뉴">사이드메뉴</option>
+                                <option value="후식메뉴">후식메뉴</option>
+                                <option value="추가메뉴">추가메뉴</option>
+                                <option value="주류/음료">주류/음료</option>
+                    </Selector>
+                </Div>
+                <LeftBotBotDiv>
+                    <Criteria>
+                        <div style={{display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                            {(select===1) && (
+                                <>
+                                <Selector value={year} onChange={(e)=>{setYear(e.target.value)}} style={{marginTop:'0.2%',width:'4.9rem', height :'2rem'}}>
+                                    <option value="">-------</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                </Selector>
+                                <TextDiv>년</TextDiv>
+                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'3.5rem', height : '2rem'}}>
+                                    <option value="">-------</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </Selector>
+                                <TextDiv>월</TextDiv>
+                                </>
+                            )}
+                            {(select===2) && (
+                                <>
+                                <Selector value={day} onChange={(e)=>{setDay(e.target.value)}} style={{marginTop:'0.2%',width:'5.4rem', height :'2rem'}}>
+                                    <option value="">-------</option>
+                                    <option value="월요일">월요일</option>
+                                    <option value="화요일">화요일</option>
+                                    <option value="수요일">수요일</option>
+                                    <option value="목요일">목요일</option>
+                                    <option value="금요일">금요일</option>
+                                    <option value="토요일">토요일</option>
+                                    <option value="일요일">일요일</option>
+                                </Selector>
+                                </>
+                            )}
+                        </div>                
+                    </Criteria>
+
+                    <GraphTemp>
+                        <GraphLeft>
+                            <TableContainer margin='10px' style={{marginTop :'3%',height : '70%',overflow: 'hidden',}}>
+                                <TableStyle style={{overflow:'auto'}}>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>NO</ColumnCell>
+                                            <ColumnCell>메뉴</ColumnCell>
+                                            <ColumnCell>매출</ColumnCell>
+                                            <ColumnCell>비율</ColumnCell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                            </TableContainer>
+
+                            <div style={{marginTop:'10%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
+                            <TableContainer margin='10px' style={{width : '50%', height : '55%',overflow: 'hidden',}}>
+                                <TableStyle>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>총 매출</ColumnCell>
+                                            <Cell>1000</Cell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    </TableBody>
+                                </TableStyle>                
+                            </TableContainer>
+                            </div>
+                        </GraphLeft>
+                        <GraphRight>
+                            <GraphDiv>
+                                <CircleChart/>
+                            </GraphDiv>
+                        </GraphRight>
+                    </GraphTemp>
+                </LeftBotBotDiv>
+                </LeftBottomDiv>
+                
+            </LeftDiv>
+            <RightDiv>
+                <RightTopDiv>
+                    <Title>인기도(TOP 3)</Title>
+                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>NO</ColumnCell>
+                                            <ColumnCell>메뉴</ColumnCell>
+                                            <ColumnCell>판매량</ColumnCell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                    </TableContainer>
+                </RightTopDiv>
+                <RightBottomDiv>
+                    <Title>판매현황</Title>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>NO</ColumnCell>
+                                            <ColumnCell>메뉴</ColumnCell>
+                                            <ColumnCell>판매량</ColumnCell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                            </TableContainer>
+                </RightBottomDiv>
+            </RightDiv>
+        </Div>
         </>
     );
 };

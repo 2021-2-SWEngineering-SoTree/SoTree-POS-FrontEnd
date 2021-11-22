@@ -1,33 +1,43 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Header from '../../Components/Header';
-import axios from 'axios';
+import styled from 'styled-components';
+import FindId from './FindId';
+import FindPw from './FindPw';
+
+const Div = styled.div`
+    flex-wrap: nowrap;
+    display: flex;
+    width : 100%;
+    height : 87vh;  
+    max-height : 56rem;
+    border : 1px solid black;
+    min-width : 90rem;
+`;
+
+const LeftDiv = styled.div`
+    width : 50%;
+    border-right: 2px dashed black;
+`
+
+const RightDiv = styled.div`
+    width : 50%;
+    border-left : 2px dashed black;
+`
 
 const FindUserInfo = () => {
 
-    const [response, setResponse] = useState('');
-
-    const testConnect = async ()=>{
-
-        await axios.post('http://localhost:8080/connectionTest').then((res)=>{
-            console.log(res.data);
-            setResponse(res.data);
-        }).catch((Error)=>{
-            console.log(Error);
-        })
-    };
-
-    useEffect(()=>{
-        testConnect();
-    },[])
 
     return (
         <>
-            <Header text ={"아이디/비밀번호 찾기"} restaurantName = {""}/>  
-            <h1>회원정보 찾기!!!!!!!!!!</h1>
-
-            <h4>통신 테스트</h4>
-            {response ? <><h2>성공</h2><h3>{response}</h3></> : <h2>통신 실패</h2>}
-            
+        <Header text ={"아이디/비밀번호 찾기"}/>
+        <Div>
+            <LeftDiv>
+                <FindId/>
+            </LeftDiv>
+            <RightDiv>
+                <FindPw/>
+            </RightDiv>
+        </Div>   
         </>
     );
 };
