@@ -248,7 +248,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 setBackPrice(0);
                 console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
-                window.location.replace("/CurrentSeatInfo")
+                alert("현금 영수증을 발급받으실 수 있습니다");
             }).catch(e=>{
                 console.log(e);
                 alert('결제가 실패하였습니다');
@@ -312,6 +312,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
     useEffect(()=>{
         console.log(checkCard, cardNum, apNum, checkApprove, checkMan);
         checkCard && cardNum && apNum && checkApprove && checkMan && alert('영수증이 출력되었습니다');
+
     },[checkApprove])
 
     return (

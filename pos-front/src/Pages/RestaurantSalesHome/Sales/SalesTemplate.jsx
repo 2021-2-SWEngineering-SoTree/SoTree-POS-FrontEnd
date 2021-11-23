@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import Header from '../../../Components/Header';
 import styled from 'styled-components';
 import DateButton from '../../../Components/Button/DateButton';
@@ -9,6 +9,7 @@ import LChart from './LineChart';
 import SaleInfoItem from '../../../Components/Box/SaleInfoItem';
 import BChart from './BarChart';
 import CircleChart from '../MenuSales/CircleChart';
+import axios from 'axios';
 
 const Div = styled.div`
     display : flex;
@@ -156,18 +157,144 @@ const SaleInfoDiv = styled.div`
 
 const SalesTemplate = () => {
 
-    const [category,setCategory]=useState('');
-    const [select,setSelect]=useState(0);
+    const [select,setSelect]=useState(0); //버튼 5
 
-    const [year,setYear]=useState();
+    const [year,setYear]=useState(); //월별
 
-    const [month,setMonth]=useState();
+    const [month,setMonth]=useState(); //주별 
 
-    const [weekmonth,setWeekmonth]=useState();
+    const [weekmonth,setWeekmonth]=useState(); //요일별
     const [week,setWeek]=useState();
 
-    const [startDate,setStartDate]=useState();
+    const [startDate,setStartDate]=useState(); //직접입력
     const [endDate,setEndDate]=useState();
+
+    //오늘요약
+    const [daySum,setDaySum]=useState([]);//오른쪽 아래 그래프
+    const [topMenu,setTopMenu]=useState([]);//top5
+    const [daySeven,setDaySeven]=useState([]);//일주일 매출 그래프
+    const [allSum,setAllSum]=useState([]); //맨 위표
+    
+    const [circle,setCircle]=useState([]);
+    const [bar,setBar]=useState([]);
+    const [line,setLine]=useState([]);
+
+    const managerId = window.localStorage.getItem('managerId');
+    const nowYear=new Date().getFullYear();
+
+    useEffect(()=>{ //원그래프에 들어갈 데이터 처리
+        const CircleData=[];
+        
+        daySum.map((v,i)=>{
+            let day='';
+            if(v.dateRange==1) day='일요일';
+            else if(v.dateRange==2) day='월요일';
+            else if(v.dateRange==3) day='화요일';
+            else if(v.dateRange==4) day='수요일';
+            else if(v.dateRange==5) day='목요일';
+            else if(v.dateRange==6) day='금요일';
+            else if(v.dateRange==7) day='토요일';
+            CircleData.push({
+                name:day,
+                value:+v.totalSale
+            })
+            }
+        );
+
+        console.log(CircleData);
+        setCircle(CircleData);
+
+    },[daySum]);
+
+
+    useEffect(()=>{
+        const BarData=[
+            {
+                name:'일요일', 매출 :0
+            },
+            {
+                name:'월요일', 매출 :0
+            },
+            {
+                name:'화요일', 매출 :0
+            },
+            {
+                name:'수요일', 매출 :0
+            },
+            {
+                name:'목요일', 매출 :0
+            },
+            {
+                name:'금요일', 매출 :0
+            },
+            {
+                name:'토요일', 매출 :0
+            },
+        ];
+
+        let start=daySeven[0];
+        let index=-1;
+        for(let i=1;i<daySeven.length;i++){
+            if(daySeven[i]>start) start=daySeven[i];
+            else{
+                index=i;
+                break;
+            }
+        }
+
+        daySeven.map((v,i)=>{
+            let day;
+            const year=new Date().getFullYear();
+            let month=new Date().getMonth()+1;
+            if(i<index) month--;
+            const format = year+'-'+month+'-';
+            //new Date('2021-11-24').getDay()
+            if((new Date(format+v.date).getDay())==0) day=0;
+            else if((new Date(format+v.date).getDay())==1) day=1;
+            else if((new Date(format+v.date).getDay())==2) day=2;
+            else if((new Date(format+v.date).getDay())==3) day=3;
+            else if((new Date(format+v.date).getDay())==4) day=4;
+            else if((new Date(format+v.date).getDay())==5) day=5;
+            else if((new Date(format+v.date).getDay())==6) day=6;
+
+            BarData[day].매출+=v.totalSale
+            }
+        );
+
+        console.log(BarData);
+        setBar(BarData);
+
+    },[daySeven]);
+    
+    useEffect(()=>{
+        setCircle([]);
+        setBar([]);
+        setLine([]);
+    },[select]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        if(select===0){
+            const data={
+                branchId : managerId,
+                start : nowYear+'-01-00',
+                end : nowYear+'-12-32'
+            }
+            console.log(data);
+            await axios.post('http://localhost:8080/payment/getTodaySummarySale',data,{
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res.data);
+                setDaySum(res.data.DaySummary);
+                setTopMenu(res.data.TopFiveMenu);
+                setDaySeven(res.data.recentSevenDays);
+                setAllSum(res.data.saleSummary);
+            }).catch(e=>{
+                console.log(e);
+            })
+        }
+    },[select,year,month,weekmonth,week,startDate,endDate]);
 
     return (
         <>
@@ -262,10 +389,10 @@ const SalesTemplate = () => {
                             {(select===0) && (
                             <>
                             <SaleDiv>
-                                <SaleInfoItem price={0} colors={"#8DDEE9"} criterion ={"오늘"} count ={0}/>
-                                <SaleInfoItem price={0} colors={"orange"} criterion ={"주간"} count ={0}/>
-                                <SaleInfoItem price={0} colors={"blue"} criterion ={"월간"} count ={0}/>
-                                <SaleInfoItem price={"22,301,300"} colors={"purple"} criterion ={"올해"} count ={"1,000,000"}/>
+                                <SaleInfoItem price={allSum.todayCardTotalSale+allSum.todayCashTotalSale} colors={"#8DDEE9"} criterion ={"오늘"} count ={allSum.todayCount}/>
+                                <SaleInfoItem price={allSum.weekSale} colors={"orange"} criterion ={"주간"} count ={allSum.weekCount}/>
+                                <SaleInfoItem price={allSum.monthSale} colors={"blue"} criterion ={"월간"} count ={allSum.monthCount}/>
+                                <SaleInfoItem price={allSum.yearSale} colors={"purple"} criterion ={"올해"} count ={allSum.yearCount}/>
 
                             </SaleDiv>
                            </>
@@ -347,7 +474,7 @@ const SalesTemplate = () => {
                             <GraphBottom>
                                 <GraphDiv>
                                     {select!==0 && <LChart/>}
-                                    {select===0 && <BChart/>}
+                                    {select===0 && <BChart barData={bar}/>}
                                 </GraphDiv>
                             </GraphBottom>
                             </>
@@ -388,7 +515,7 @@ const SalesTemplate = () => {
             <RightDiv>
                 {select!==4 && (
                 <RightTopDiv>
-                    {select!==4 && select!==0 && (
+                    {select==3 && (
                     <>
                     <Title>기간 누적매출</Title>
                     <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
@@ -414,6 +541,58 @@ const SalesTemplate = () => {
                     </TableContainer>
                     </>
                     )}
+                    {select==2 && (
+                    <>
+                    <Title>이번 주 정보</Title>
+                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                        <OrderRow>
+                                            <ColumnCell>총 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                            </OrderRow>
+                                            <OrderRow>
+                                            <ColumnCell>카드 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                            </OrderRow>
+                                            <OrderRow>
+                                            <ColumnCell>현금 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                            </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                    </TableContainer>
+                    </>
+                    )}
+                    {select==1 &&(
+                        <>
+                        <Title>이번 달 정보</Title>
+                        <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                    <TableStyle>
+                                        <TableHead>
+                                            <OrderRow>
+                                                <ColumnCell>총 매출</ColumnCell>
+                                                <Cell>12345</Cell>
+                                            </OrderRow>
+                                            <OrderRow>
+                                                <ColumnCell>카드 매출</ColumnCell>
+                                                <Cell>12345</Cell>
+                                            </OrderRow>
+                                            <OrderRow>
+                                                <ColumnCell>현금 매출</ColumnCell>
+                                                <Cell>12345</Cell>
+                                            </OrderRow>
+                                        </TableHead>
+                                        <TableBody>
+
+                                        </TableBody>
+                                    </TableStyle>                
+                        </TableContainer>
+                        </>
+                    )}
                     {select===0 && (
                     <>
                     <Title>주간 인기메뉴 TOP 5</Title>
@@ -427,7 +606,13 @@ const SalesTemplate = () => {
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-
+                                    {topMenu.length>0 && topMenu.map((cell, index) => (
+                                        <OrderRow style={{height : '3.8vh'}}>
+                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
+                                            <OrderCell>{cell.menuName}</OrderCell>
+                                            <OrderCell>{cell.quantity}</OrderCell>
+                                        </OrderRow>
+                                    ))}
                                     </TableBody>
                                 </TableStyle>                
                     </TableContainer>
@@ -437,7 +622,7 @@ const SalesTemplate = () => {
                 )}
                 {select===4 && (<div style={{height:'11%'}}/>)}
                 <RightBottomDiv>
-                    {select!==0 && (
+                    {(select==3 || select==4)&&(
                     <>
                     <Title>전체 매출</Title>
                     <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
@@ -463,11 +648,63 @@ const SalesTemplate = () => {
                             </TableContainer>
                     </>
                     )}
+                    {select==1 &&(
+                        <>
+                        <Title>연 매출</Title>
+                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                    <OrderRow>
+                                            <ColumnCell> 총 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <ColumnCell> 카드 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <ColumnCell> 현금 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                            </TableContainer>
+                        </>
+                    )}
+                    {select==2 &&(
+                        <>
+                        <Title>월 매출</Title>
+                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
+                                <TableStyle>
+                                    <TableHead>
+                                    <OrderRow>
+                                            <ColumnCell> 총 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <ColumnCell> 카드 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                        <OrderRow>
+                                            <ColumnCell> 현금 매출</ColumnCell>
+                                            <Cell>12345</Cell>
+                                        </OrderRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                    </TableBody>
+                                </TableStyle>                
+                            </TableContainer>
+                        </>
+                    )}
                     {select==0 && (
                     <>
                     <Title>요일별 매출</Title>
                     <GraphDiv>
-                        <CircleChart/>
+                    <CircleChart chartData={circle} width={800} height={800} cx={400} cy={'50%'} r={150}/>
                     </GraphDiv>
                     </>
                     )}

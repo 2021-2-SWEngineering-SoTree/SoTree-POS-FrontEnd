@@ -98,7 +98,7 @@ const GraphDiv = styled.div`
     width : 100%;
     height : 100%;
     align-items : center;
-    margin-left : 15%;
+    margin-left : 10%;
 `;
 
 const TextDiv = styled.div`
@@ -142,7 +142,7 @@ const Cell=styled.td`
 
 const MenuSalesTemplate = () => {
 
-    const [category,setCategory]=useState('');
+    const [category,setCategory]=useState('전체');
     const [select,setSelect]=useState(0);
 
     //월별->연도,월 선택
@@ -157,11 +157,11 @@ const MenuSalesTemplate = () => {
     const [sales,setSales]=useState([]); //매출 정렬
     const [popular,setPopular]=useState([]); //판매량 정렬
     const [sum,setSum]=useState(0); //비율을 구하기 위한 판매량의 합
-    const [sumSale,setSumSale]=useState(0);
+    const [sumSale,setSumSale]=useState(0); //매출의 합
     const [graphData,setgraphData]=useState([]); //그래프에 들어갈 데이터
 
     useEffect(()=>{
-        setSales(stats.concat([]).sort((a,b)=>{return a.price-b.price}));
+        setSales(stats.concat([]).sort((a,b)=>{return b.price-a.price}));
         setPopular(stats.concat([]).sort((a,b)=>{return b.orderQuantity-a.orderQuantity}));
         setSum(stats.reduce(
             (accumulator, currentValue) => accumulator + (+currentValue.orderQuantity)
@@ -176,7 +176,7 @@ const MenuSalesTemplate = () => {
     //그래프에 들어갈 데이터(매출순 정렬 data=>뽑아내기) menuName->name, price->value
     useEffect(()=>{
         const arr=[];
-        setgraphData(sales.map((v,i)=>
+        setgraphData(sales.map((v,i)=>i<11&&
             arr.push({
                 name:v.menuName,
                 value:+v.price
@@ -188,7 +188,13 @@ const MenuSalesTemplate = () => {
     },[sales]);
 
     useEffect(()=>{
-    },[sales,popular]);
+        setStats([]);
+        setSales([]);
+        setPopular([]);
+        setSum(0);
+        setSumSale(0);
+        setgraphData([]);
+    },[select]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
@@ -289,7 +295,6 @@ const MenuSalesTemplate = () => {
                 <Div>
                     <LeftTitle>카테고리 : </LeftTitle>
                     <Selector style={{width : '8.4rem'}} onChange={(e)=>{e.preventDefault(); setCategory(e.target.value)}}>
-                                <option value="">-------</option>
                                 <option value="전체">전체</option>
                                 <option value="세트메뉴">세트메뉴</option>
                                 <option value="2~3인분메뉴">2-3인분메뉴</option>
@@ -302,7 +307,7 @@ const MenuSalesTemplate = () => {
                 </Div>
                 <LeftBotBotDiv>
                     <Criteria>
-                        <div style={{display : 'flex', marginTop:'1%', flexDirection : 'row', justifyContent:'center'}}>
+                        <div style={{display : 'flex', marginLeft:'-12.5%', marginTop:'1%', flexDirection : 'row', justifyContent:'center'}}>
                             {(select===1) && (
                                 <>
                                 <Selector value={year} onChange={(e)=>{setYear(e.target.value)}} style={{marginTop:'0.2%',width:'4.9rem', height :'2rem'}}>
@@ -311,7 +316,7 @@ const MenuSalesTemplate = () => {
                                     <option value="2021">2021</option>
                                 </Selector>
                                 <TextDiv>년</TextDiv>
-                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'3.9rem', height : '2rem'}}>
+                                <Selector value={month} onChange={(e)=>{setMonth(e.target.value)}} style={{marginTop:'0.2%', width:'4.2rem', height : '2rem'}}>
                                     <option value="">-------</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -331,7 +336,7 @@ const MenuSalesTemplate = () => {
                             )}
                             {(select===2) && (
                                 <>
-                                <Selector value={day} onChange={(e)=>{setDay(e.target.value)}} style={{marginTop:'0.2%',width:'5.4rem', height :'2rem'}}>
+                                <Selector value={day} onChange={(e)=>{setDay(e.target.value)}} style={{marginTop:'0.2%',width:'5.9rem', height :'2rem'}}>
                                     <option value="">-------</option>
                                     <option value="월요일">월요일</option>
                                     <option value="화요일">화요일</option>
@@ -348,7 +353,7 @@ const MenuSalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphLeft>
-                        <Title style={{marginLeft:'15%'}}>
+                        <Title style={{marginLeft:'15%', marginTop:'-%'}}>
                             {(select===0) &&  '전체 통계'}
                             {(select===1) &&  '월별 통계'}
                             {(select===2) &&  '요일별 통계'}
@@ -360,16 +365,17 @@ const MenuSalesTemplate = () => {
                                             <ColumnCell>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
                                             <ColumnCell>매출(원)</ColumnCell>
-                                            <ColumnCell>비율(%)</ColumnCell>
+                                            <ColumnCell style={{width:'17%'}}>비율(%)</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
                                     {sales.length>0 && sales.map((cell, index) => (
+                                        index<11 &&
                                         <OrderRow style={{height : '3.8vh'}}>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.menuName}</OrderCell>
                                             <OrderCell>{cell.price.toLocaleString()}</OrderCell>
-                                            <OrderCell>{Math.floor(cell.orderQuantity/sum*100)} </OrderCell>
+                                            <OrderCell>{(cell.price/sumSale*100).toFixed(1)} </OrderCell>
                                         </OrderRow>
                                     ))}
                                     </TableBody>
@@ -377,12 +383,12 @@ const MenuSalesTemplate = () => {
                             </TableContainer>
 
                             <div style={{marginTop:'1%',display : 'flex', flexDirection : 'row', justifyContent:'center'}}>
-                            <TableContainer margin='10px' style={{width : '50%', height : '55%',overflow: 'hidden',}}>
-                                <TableStyle>
+                            <TableContainer margin='10px' style={{width : '60%', height : '55%',overflow: 'hidden',}}>
+                                <TableStyle style={{width:'90%'}}>
                                     <TableHead>
-                                        <OrderRow>
-                                            <ColumnCell>총 매출(원)</ColumnCell>
-                                            <Cell>{sumSale}</Cell>
+                                        <OrderRow style={{height : '4.3vh'}}>
+                                            <ColumnCell style={{width:'45%'}}>총 매출(원)</ColumnCell>
+                                            <Cell style={{width:'55%'}}>{sumSale}</Cell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
@@ -393,7 +399,7 @@ const MenuSalesTemplate = () => {
                         </GraphLeft>
                         <GraphRight>
                             <GraphDiv>
-                                <CircleChart chartData={graphData}/>
+                                <CircleChart chartData={graphData} width={800} height={800} cx={300} cy={370} r={200}/>
                             </GraphDiv>
                         </GraphRight>
                     </GraphTemp>
@@ -428,9 +434,9 @@ const MenuSalesTemplate = () => {
                 </RightTopDiv>
                 <RightBottomDiv>
                     <Title>판매현황</Title>
-                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-1%'}}>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-5%'}}>
                                 <TableStyle style={{width : '90%'}}>
-                                    <TableHead>
+                                    <TableHead style={{height:'4vh'}}>
                                         <OrderRow>
                                             <ColumnCell style={{width:'15%'}}>NO</ColumnCell>
                                             <ColumnCell>메뉴</ColumnCell>
@@ -439,7 +445,7 @@ const MenuSalesTemplate = () => {
                                     </TableHead>
                                     <TableBody>
                                     {popular.length>0 && popular.map((cell, index) => (
-                                        index<10 && 
+                                        index<11 && 
                                         <OrderRow>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.menuName}</OrderCell>
