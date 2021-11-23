@@ -38,13 +38,13 @@ const CircleChart =({chartData})=> {
   return (
     <div>
     <PieChart width={800} height={800}>
-      <Pie style={{fontSize:'1.3rem'}}
+      <Pie style={{fontSize:'1rem'}}
         data={chartData}
         cx={300}
         cy={370}
         labelLine={false}
         label={renderLabel}
-        outerRadius={240}
+        outerRadius={200}
         fill="#8884d8"
         dataKey="value"
       >
