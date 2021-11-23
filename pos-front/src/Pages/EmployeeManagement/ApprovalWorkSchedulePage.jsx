@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import {TableContainer} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
@@ -110,12 +110,27 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
     const rowName = ['N', 'B', 'L', 'D'];
     const date = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16);
 
+    const [savedSchedule, setSavedSchedule] = useState([]);
+    const [schedule, setSchedule] = useState('');
+    const [checkItems, setCheckItems] = useState([]);
+
     const onClickSubmit = () => {
         alert("등록 test");
     }
+    const onClickReset = (checked) => {
+        if(checked) {
+        }
+        setSavedSchedule([]);
+    }
+
+    useEffect(() => {
+        if(schedule !== '') { savedSchedule.push(schedule); }
+        console.log("쌓아가는 중", savedSchedule);
+    }, [schedule])
 
     const onChangeHandler = (e) => {
         console.log("선택된 value 값: ", e.target.value);
+        setSchedule(e.target.value);
     }
 
     return (
@@ -165,26 +180,26 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
                                         <EmployeeManagementCell key={rowName[i]}>
                                             {rowName[i]}
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'월'} id={columnName[i]+'월'} onChange={onChangeHandler}>
-                                            <input type="radio" />
+                                        <EmployeeManagementCell key={rowName[i]+'월'}>
+                                            <input type="radio" value={rowName[i]+'월'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'화'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'화'}>
+                                            <input type="radio" value={rowName[i]+'화'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'수'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'수'}>
+                                            <input type="radio" value={rowName[i]+'수'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'목'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'목'}>
+                                            <input type="radio" value={rowName[i]+'목'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'금'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'금'}>
+                                            <input type="radio" value={rowName[i]+'금'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'토'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'토'}>
+                                            <input type="radio" value={rowName[i]+'토'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={columnName[i]+'일'} onChange={onChangeHandler}>
-                                            <input type="radio"/>
+                                        <EmployeeManagementCell key={rowName[i]+'일'}>
+                                            <input type="radio" value={rowName[i]+'일'} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
                                     </EmployeeManagementRow>)
                                 }
@@ -194,6 +209,7 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
                 </InnerDiv>
                 <InnerDiv>
                     <ModalButton name={"등록"} onClick={onClickSubmit} />
+                    <input type="radio" name={"초기화"} onChange={(e)=>onClickReset(e.target.checked)} />
                 </InnerDiv>
             </WrapperDiv>
         </>
