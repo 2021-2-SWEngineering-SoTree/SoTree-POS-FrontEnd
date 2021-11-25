@@ -44,20 +44,20 @@ const BChart=({barData})=> {
   return (
     <BarChart
       width={800}
-      height={350}
+      height={500}
       data={barData}
       margin={{
         top: 20,
         right: 10,
         left: 10,
-        bottom: 10
+        bottom: 200
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />
-      <Legend />
+      <Legend wrapperStyle={{bottom :'35%', left:'5%'}}/>
       <Bar dataKey="매출" fill="#8884d8" />
     </BarChart>
   );

@@ -47,24 +47,25 @@ const data = [
   }
 ];
 
-export default function LChart() {
+const LChart=({lineData, min, max})=> {
+
   return (
     <LineChart
-      width={500}
-      height={300}
-      data={data}
+      width={900}
+      height={500}
+      data={lineData}
       margin={{
         top: 5,
         right: 30,
         left: 20,
-        bottom: 5
+        bottom: 150
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
-      <YAxis type="number" domain={[10000, 90000]}/>
+      <YAxis type="number" domain={[0, {max}]}/>
       <Tooltip />
-      <Legend />
+      <Legend wrapperStyle={{bottom :'26%', left:'5%'}}/>
       <Line
         type="monotone"
         dataKey="매출"
@@ -74,3 +75,5 @@ export default function LChart() {
       </LineChart>
   );
 }
+
+export default LChart;
