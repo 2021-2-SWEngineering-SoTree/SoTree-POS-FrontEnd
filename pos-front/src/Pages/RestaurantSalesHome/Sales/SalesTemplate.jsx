@@ -175,6 +175,8 @@ const SalesTemplate = () => {
     const managerId = window.localStorage.getItem('managerId');
     const nowYear=new Date().getFullYear(); //현재 년
     const nowMonth = new Date().getMonth()+1;//현재 월
+    const nowDay = new Date().getDate(); //현재 일
+
     const [select,setSelect]=useState(0); //버튼 5
 
     //월별통계
@@ -191,8 +193,9 @@ const SalesTemplate = () => {
     const [weekCardSum,setWeekCardSum]=useState(0);
     const [weekCashSum,setWeekCashSum]=useState(0);
 
-    const [weekmonth,setWeekmonth]=useState(); //요일별
-    const [week,setWeek]=useState();
+    //일별
+    const [dayData,setDayData]=useState([]);
+
 
     const [startDate,setStartDate]=useState(); //직접입력
     const [endDate,setEndDate]=useState();
@@ -282,11 +285,18 @@ const SalesTemplate = () => {
         }
         console.log(LineData);
 
+        let weekSum=0;
+        for(let i=1;i<month;i++){
+            console.log(weekSum);
+            weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
+            if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
+        }
+        console.log(weekSum);
         monthWeekData.map((v,i)=>{
             const sales=v.totalSale;
             if(sales>lineMax) setLineMax(sales);
             console.log(v,i);
-            LineData[len-i-1].매출+=sales;
+            LineData[+v.weeks-weekSum+1].매출+=sales;
         });
 
         console.log(LineData);
@@ -481,7 +491,8 @@ const SalesTemplate = () => {
         }
     },[year])
 
-    useEffect(()=>{
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async ()=>{
         console.log(select);
         console.log(allSum);
         //graphData 초기화.
@@ -492,6 +503,22 @@ const SalesTemplate = () => {
         setMonth('');
         if(select==2) setMonth(nowMonth);
         if(select==1) setYear(nowYear); //현재 연도로 초기화.
+        if(select==3){ //일별통계페이지
+            const data={
+                branchId : managerId,
+                start : nowYear+'-01-00',
+                end : nowYear+'-'+('0'+nowMonth).slice(-2)+'-'+('0'+nowDay).slice(-2)
+            }
+            console.log(data);
+            await axios.post('http://localhost:8080/payment/getDaySaleInfo',data,{
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                console.log(res);
+            }).catch(e=>{
+                console.log(e);
+            })
+        }
     },[select]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -516,7 +543,7 @@ const SalesTemplate = () => {
                 console.log(e);
             })
         }
-    },[select,year,month,weekmonth,week,startDate,endDate]);
+    },[select,year,month,startDate,endDate]);
 
     return (
         <>
@@ -527,7 +554,7 @@ const SalesTemplate = () => {
                     <DateButton onClick={()=>setSelect(0)} name={'오늘요약'}/>
                     <DateButton onClick={()=>setSelect(1)} name={'월별'}/>
                     <DateButton onClick={()=>setSelect(2)} name={'주별'}/>
-                    <DateButton onClick={()=>setSelect(3)} name={'요일별'}/>
+                    <DateButton onClick={()=>setSelect(3)} name={'일별'}/>
                     <DateButton onClick={()=>setSelect(4)} name={'직접입력'}/>
                 </LeftTopDiv>
                 <LeftBotBotDiv>
@@ -566,35 +593,7 @@ const SalesTemplate = () => {
                                 <TextDiv>월</TextDiv>
                                 </>
                             )}
-                            {(select===3) && (
-                                <>
-                                <Selector value={weekmonth} onChange={''} style={{marginTop:'0.2%',width:'4rem', height :'2rem'}}>
-                                <option value="">-------</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                </Selector>
-                                <TextDiv>월</TextDiv>
-                                <Selector value={week} onChange={''} style={{marginTop:'0.2%', width:'3.5rem', height : '2rem'}}>
-                                    <option value="">-------</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </Selector>
-                                <TextDiv>주</TextDiv>
-                                </>
-                            )}
+                            
                             {(select===4) && (
                                 <>
                                 <br/>
@@ -682,7 +681,7 @@ const SalesTemplate = () => {
                            )}
                            {(select===3) && (
                             <>
-                            <TableContainer margin='10px' style={{marginTop : '-3%', height : '85%',overflow: 'hidden',}}>
+                            <TableContainer margin='10px' style={{marginTop : '-4.5%', height : '85%',overflow: 'hidden',}}>
                                 <TableStyle>
                                     <TableHead>
                                         <OrderRow>
@@ -692,10 +691,18 @@ const SalesTemplate = () => {
                                             <ColumnCell>수</ColumnCell>
                                             <ColumnCell>목</ColumnCell>
                                             <ColumnCell>금</ColumnCell>
+                                            <ColumnCell>토</ColumnCell>
+                                            <ColumnCell>일</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
-                                    <TableBody>
-
+                                    <TableBody style={{height:'5vh'}}> 
+                                        <OrderRow style={{height : '3.8vh'}}>
+                                            <ColumnCell style={{width:'10%'}}>매출</ColumnCell>
+                                            {/* {line.length>0 && line.map((cell, index) => 
+                                                <OrderCell style={{width:'15%'}}>{cell.매출}</OrderCell>
+                                            )} */}
+                                        </OrderRow>
+                    
                                     </TableBody>
                                 </TableStyle>                
                             </TableContainer>
