@@ -9,7 +9,7 @@ const Div = styled.div`
     width : 100%;
     height : 87vh;  
     max-height : 56rem;
-    border : 1px solid black;
+    margin-top : 6%;
 `;
 const PageWrapper = styled.div`
     justify-content : center;
@@ -103,6 +103,12 @@ const ChangeInfo = ()=>{
     const [emailName, setEmailName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
 
+    //가게정보
+    const [storeName,setStoreName]=useState('');
+    const [firstStore,setFirstStore]=useState('02');
+    const [secondStore,setSecondStore]=useState('');
+    const [thirdStore,setThirdStore]=useState('');
+
     const nameRef = useRef();
     const monthRef=useRef();
     const yearRef=useRef();
@@ -112,7 +118,10 @@ const ChangeInfo = ()=>{
     const lastRef = useRef();
     const emailNameRef = useRef();
     const emailAddressRef = useRef();
-
+    const storeNameRef=useRef();
+    const firstStoreRef=useRef();
+    const secondStoreRef=useRef();
+    const thirdStoreRef=useRef();
     
     const getInfos = async ()=>{
         console.log(typeof loginId, loginId);
@@ -120,12 +129,12 @@ const ChangeInfo = ()=>{
             headers : {
             "Content-Type" : `text/plain`,
         }}).then((res)=>{
-            const {birthDay, phoneNumber, personName, email}=res.data;
+            const {birthDay, phoneNumber, personName, email}=res.data.user;
             
             const emailArr=email.split('@');
             const birthArr=birthDay.split('-');
             const phoneArr=phoneNumber.split('-');
-
+            const storeArr=res.data.branchPhoneNumber.split('-');
             console.log(emailArr,birthArr,phoneArr);
             
             setName(personName);
@@ -135,6 +144,10 @@ const ChangeInfo = ()=>{
             setMiddle(phoneArr[1]);
             setLast(phoneArr[2]);
             setYear(birthArr[0]);
+            setStoreName(res.data.storeName);
+            setFirstStore(storeArr[0]);
+            setSecondStore(storeArr[1]);
+            setThirdStore(storeArr[2]);
 
             if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
             setMonth(birthArr[1]);
@@ -179,7 +192,9 @@ const ChangeInfo = ()=>{
             birthDay : year+"-"+month+"-"+day,
             phoneNumber : first+"-"+middle+"-"+last,
             email : emailName+"@"+emailAddress,
-            loginId : id
+            loginId : id,
+            storeName: storeName,
+            branchPhoneNumber : firstStore+"-"+secondStore+"-"+thirdStore,
         }
         console.log(data);
         await axios.put('http://localhost:8080/updateUser',JSON.stringify(data),{
@@ -187,6 +202,9 @@ const ChangeInfo = ()=>{
                 "Content-Type" : `application/json;charset=utf8`,
             }}).then((res)=>{
                 console.log(res);
+                window.localStorage.setItem('userName', name);
+                window.localStorage.setItem('storeName', storeName);
+                window.localStorage.setItem('storePhonenumber', firstStore+"-"+secondStore+"-"+thirdStore);
                 alert('내 정보가 변경되었습니다!');
                 window.location.replace("/myInfo");
             }).catch(e=>{
@@ -201,9 +219,12 @@ const ChangeInfo = ()=>{
         else if(!year||!month||!day) alert("생년월일을 입력하세요!");
         else if(!first||!middle||!last) alert("전화번호를 입력하세요!");
         else if(!emailName||!emailAddress) alert("이메일을 입력하세요!");
+        else if(!storeName) alert("가게 이름을 입력하세요");
+        else if(!firstStore || !secondStore || !thirdStore) alert("가게 전화번호를 입력하세요");
         else if(!(validateDate(year+"-"+month+"-"+day))) alert("생년월일 형식이 올바르지 않습니다!");
         else if (!(validatePhoneNum(first+"-"+middle+"-"+last))) alert("전화번호 형식이 올바르지 않습니다!");
         else if(!(validateEmail(emailName+"@"+emailAddress))) alert("이메일 형식이 올바르지 않습니다!");
+        else if(!(validatePhoneNum(firstStore+"-"+secondStore+"-"+thirdStore))) alert("가게 전화번호 형식이 올바르지 않습니다");
         else updateInfo();
     }
 
@@ -306,8 +327,44 @@ const ChangeInfo = ()=>{
                             value={emailAddress}
                             ref={emailAddressRef}
                             onChange={(e)=>setEmailAddress(e.target.value.trim())}
+                            onKeyPress={(e)=> {if(e.key === 'Enter') storeNameRef.current.focus();}}
                             />
                         </div>
+                    </WrapperDiv>
+                    <WrapperDiv>
+                                <InputLable>가게명</InputLable>
+                                <div style={{display : 'flex', flexDirection : 'row'}}>
+                                    <Input style={{width:'100%'}} type = "text" placeholder = {"가게명"}
+                                    value={storeName}
+                                    ref={storeNameRef}
+                                    onChange={(e)=>setStoreName(e.target.value.trim())}
+                                    onKeyPress={(e)=> {if(e.key === 'Enter') firstStoreRef.current.focus();}}
+                                    />
+                                </div> 
+                            </WrapperDiv>
+                            <WrapperDiv>
+                            <InputLable>가게 전화번호</InputLable>
+                            <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
+                                <Input type = 'text' style={{width:'11.5rem'}}
+                                value = {firstStore}
+                                ref={firstStoreRef}
+                                onChange={(e)=>setFirstStore(e.target.value.trim())}
+                                onKeyPress={(e)=> {if(e.key === 'Enter') secondStoreRef.current.focus();}}
+                                />
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"1234"} style={{width:'12rem'}}
+                                value={secondStore}
+                                ref={secondStoreRef}
+                                onChange={(e)=>setSecondStore(e.target.value.trim())}
+                                onKeyPress={(e)=> {if(e.key === 'Enter') thirdStoreRef.current.focus();}}
+                                />
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"5678"} style={{width:'12rem'}} 
+                                value={thirdStore}
+                                ref={thirdStoreRef}
+                                onChange={(e)=>setThirdStore(e.target.value.trim())}
+                                />
+                            </div>
                     </WrapperDiv>
                     <div style={{display : 'flex', flexDirection : 'row', justifyContent:'flex-end', marginTop:'2rem'}}>
                         <CheckButton onClick={changeInfo}>완료</CheckButton>

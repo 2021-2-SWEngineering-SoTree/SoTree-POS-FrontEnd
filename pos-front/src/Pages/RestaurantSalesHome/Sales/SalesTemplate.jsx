@@ -196,9 +196,10 @@ const SalesTemplate = () => {
     //일별
     const [dayData,setDayData]=useState([]);
     const [monthDayData,setMonthDayData]=useState([]);
+    const [monthKindData,setMonthKindData]=useState([]);
     const [dayYear,setDayYear]=useState();
     const [dayMonth,setDayMonth]=useState();
-
+    const [dayMonthWhole,setDayMonthWhole]=useState();
 
     const [startDate,setStartDate]=useState(); //직접입력
     const [endDate,setEndDate]=useState();
@@ -332,6 +333,7 @@ const SalesTemplate = () => {
             },
         ];
 
+        
         let start=daySeven[0];
         let index=-1;
         for(let i=1;i<daySeven.length;i++){
@@ -535,6 +537,12 @@ const SalesTemplate = () => {
         setCircle(circle);
     },[dayData]);
 
+    //월별 전체 일일별 데이터
+    useEffect(async()=>{
+        
+
+    },[monthDayData]);
+
     //일일 선택 날짜 변경시, new data
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
@@ -556,6 +564,7 @@ const SalesTemplate = () => {
             console.log(res.data);
             setDayData(res.data.dayOfWeekSaleSummary);
             setMonthDayData(res.data.daySaleSummary);
+            setMonthKindData(res.data.orderTypeSummary);
         }).catch(e=>{
            console.log(e);
         })
