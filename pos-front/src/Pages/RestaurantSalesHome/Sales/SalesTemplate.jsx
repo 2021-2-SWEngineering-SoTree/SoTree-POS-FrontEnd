@@ -195,6 +195,9 @@ const SalesTemplate = () => {
 
     //일별
     const [dayData,setDayData]=useState([]);
+    const [monthDayData,setMonthDayData]=useState([]);
+    const [dayYear,setDayYear]=useState();
+    const [dayMonth,setDayMonth]=useState();
 
 
     const [startDate,setStartDate]=useState(); //직접입력
@@ -238,6 +241,7 @@ const SalesTemplate = () => {
     //주별 통계
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
+        setMonthWeekData([]);
         console.log(month);
         if(month!=''){
             let selectedMonth=month;
@@ -287,7 +291,6 @@ const SalesTemplate = () => {
 
         let weekSum=0;
         for(let i=1;i<month;i++){
-            console.log(weekSum);
             weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
             if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
         }
@@ -301,6 +304,7 @@ const SalesTemplate = () => {
 
         console.log(LineData);
         setLine(LineData);
+
     },[monthWeekData]);
 
     useEffect(()=>{
@@ -491,6 +495,77 @@ const SalesTemplate = () => {
         }
     },[year])
 
+    //날짜 변경 시 data 변경. 그래프 한달 요일 누적 매출.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        console.log(dayData);
+        const data=[
+            {
+                name:'일요일', 매출 :0
+            },
+            {
+                name:'월요일', 매출 :0
+            },
+            {
+                name:'화요일', 매출 :0
+            },
+            {
+                name:'수요일', 매출 :0
+            },
+            {
+                name:'목요일', 매출 :0
+            },
+            {
+                name:'금요일', 매출 :0
+            },
+            {
+                name:'토요일', 매출 :0
+            },
+        ];
+
+        dayData.map((v,i)=>{
+            console.log(v.dateRange);
+            data[v.dateRange-1].매출+=v.totalSale;
+        })
+        console.log(data);
+        setLine(data);
+        
+        const circle=data.filter((v)=>v.매출!=0);
+        console.log(circle);
+        setCircle(circle);
+    },[dayData]);
+
+    //일일 선택 날짜 변경시, new data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        console.log(dayYear,dayMonth);
+        let month=('0'+dayMonth).slice(-2)
+        let nextmonth;
+        if(month=='12') nextmonth='01';
+        else nextmonth=('0'+(+dayMonth+1)).slice(-2)
+        const data={
+            branchId : managerId,
+            start : dayYear+`-${month}-00`,
+            end : dayYear+`-${nextmonth}`
+        }
+        console.log(data);
+        await axios.post('http://localhost:8080/payment/getDaySaleInfo',data,{
+        headers : {
+        "Content-Type" : "application/json",
+        }}).then((res)=>{
+            console.log(res.data);
+            setDayData(res.data.dayOfWeekSaleSummary);
+            setMonthDayData(res.data.daySaleSummary);
+        }).catch(e=>{
+           console.log(e);
+        })
+    },[dayYear,dayMonth]);
+
+    useEffect(()=>{
+        console.log("line 바뀜");
+        console.log(line);
+    },[line]);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
         console.log(select);
@@ -501,23 +576,13 @@ const SalesTemplate = () => {
         setLine([]);
         setYear('');
         setMonth('');
+        setDayYear();
+        setDayMonth();
         if(select==2) setMonth(nowMonth);
         if(select==1) setYear(nowYear); //현재 연도로 초기화.
-        if(select==3){ //일별통계페이지
-            const data={
-                branchId : managerId,
-                start : nowYear+'-01-00',
-                end : nowYear+'-'+('0'+nowMonth).slice(-2)+'-'+('0'+nowDay).slice(-2)
-            }
-            console.log(data);
-            await axios.post('http://localhost:8080/payment/getDaySaleInfo',data,{
-            headers : {
-            "Content-Type" : "application/json",
-            }}).then((res)=>{
-                console.log(res);
-            }).catch(e=>{
-                console.log(e);
-            })
+        if(select==3) {
+            setDayYear(nowYear);
+            setDayMonth(nowMonth);
         }
     },[select]);
 
@@ -593,7 +658,34 @@ const SalesTemplate = () => {
                                 <TextDiv>월</TextDiv>
                                 </>
                             )}
-                            
+                            {(select===3) && (
+                                <>
+                                <Selector value={dayYear} onChange={(e)=>{setDayYear(e.target.value)}} style={{marginTop:'0.2%',width:'5rem', height :'2rem'}}>
+                                    <option value="">-------</option>
+                                    <option value={nowYear-2}>{nowYear-2}</option>
+                                    <option value={nowYear-1}>{nowYear-1}</option>
+                                    <option value={nowYear}>{nowYear}</option>
+                                </Selector>
+                                <TextDiv>년</TextDiv>
+                                
+                                <Selector value={dayMonth} onChange={(e)=>{setDayMonth(e.target.value)}} style={{marginTop:'0.2%',width:'4rem', height :'2rem'}}>
+                                    <option value="">-------</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                </Selector>
+                                <TextDiv>월</TextDiv>
+                                </>
+                            )}
                             {(select===4) && (
                                 <>
                                 <br/>
@@ -681,26 +773,26 @@ const SalesTemplate = () => {
                            )}
                            {(select===3) && (
                             <>
-                            <TableContainer margin='10px' style={{marginTop : '-4.5%', height : '85%',overflow: 'hidden',}}>
-                                <TableStyle>
+                            <TableContainer margin='10px' style={{marginTop : '-3%', height : '85%',overflow: 'hidden',}}>
+                                <TableStyle style={{width:'90%'}}>
                                     <TableHead>
                                         <OrderRow>
-                                            <ColumnCell>요일</ColumnCell>
-                                            <ColumnCell>월</ColumnCell>
-                                            <ColumnCell>화</ColumnCell>
-                                            <ColumnCell>수</ColumnCell>
-                                            <ColumnCell>목</ColumnCell>
-                                            <ColumnCell>금</ColumnCell>
-                                            <ColumnCell>토</ColumnCell>
-                                            <ColumnCell>일</ColumnCell>
+                                            <ColumnCell style={{width:'7%'}}>요일</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>일</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>월</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>화</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>수</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>목</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>금</ColumnCell>
+                                            <ColumnCell style={{width:'3rem'}}>토</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody style={{height:'5vh'}}> 
                                         <OrderRow style={{height : '3.8vh'}}>
-                                            <ColumnCell style={{width:'10%'}}>매출</ColumnCell>
-                                            {/* {line.length>0 && line.map((cell, index) => 
-                                                <OrderCell style={{width:'15%'}}>{cell.매출}</OrderCell>
-                                            )} */}
+                                            <ColumnCell style={{width:'7%'}}>매출(원)</ColumnCell>
+                                            {line.length>0 && line.map((cell, index) =>
+                                                <OrderCell style={{width:'12%'}}>{cell.매출}</OrderCell>
+                                            )}
                                         </OrderRow>
                     
                                     </TableBody>
@@ -724,7 +816,7 @@ const SalesTemplate = () => {
                         {select===4 &&
                             <>
                             <RightTopDiv style={{height : '100%', border:'none'}}>
-                            <Title>기간 누적매출</Title>
+                            <Title>요일별 매출</Title>
                             <TableContainer  margin='10px' style={{height : '50%', overflow: 'hidden', marginTop:'-4%'}}>
                                         <TableStyle>
                                             <TableHead>
@@ -759,27 +851,9 @@ const SalesTemplate = () => {
                     {select==3 && (
                     <>
                     <Title>기간 누적매출</Title>
-                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
-                                <TableStyle>
-                                    <TableHead>
-                                        <OrderRow>
-                                            <ColumnCell> 기간 총 매출</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <ColumnCell> 부가세</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <ColumnCell> 기간 순 매출</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                    </TableHead>
-                                    <TableBody>
-
-                                    </TableBody>
-                                </TableStyle>                
-                    </TableContainer>
+                    <GraphDiv>
+                    <CircleChart  value={'매출'} chartData={circle} width={500} height={500} cx={260} cy={240} r={150}/>
+                    </GraphDiv>
                     </>
                     )}
                     {select==2 && (
@@ -860,30 +934,53 @@ const SalesTemplate = () => {
                 )}
                 {select===4 && (<div style={{height:'11%'}}/>)}
                 <RightBottomDiv>
-                    {(select==3 || select==4)&&(
+                    {(select==3)&&(
                     <>
-                    <Title>전체 매출</Title>
-                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
-                                <TableStyle>
-                                    <TableHead>
-                                    <OrderRow>
-                                            <ColumnCell> 총 매출</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <ColumnCell> 부가세</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <ColumnCell> 순 매출</ColumnCell>
-                                            <Cell>12345</Cell>
-                                        </OrderRow>
-                                    </TableHead>
-                                    <TableBody>
+                    <Title>요일 누적 매출</Title>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'0%'}}>
+                                    <TableStyle>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>총 매출</ColumnCell>
+                                                <Cell></Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출</ColumnCell>
+                                                <Cell></Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출</ColumnCell>
+                                                <Cell></Cell>
+                                            </OrderRow>
+                                        <TableBody>
 
-                                    </TableBody>
-                                </TableStyle>                
-                            </TableContainer>
+                                        </TableBody>
+                                    </TableStyle>                
+                        </TableContainer>
+                        
+                    </>
+                    )}
+                    {(select==4)&&(
+                    <>
+                    <Title>요일 누적 매출</Title>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'0%'}}>
+                                    <TableStyle>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>총 매출</ColumnCell>
+                                                <Cell>{monthCashSum+monthCardSum}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출</ColumnCell>
+                                                <Cell>{monthCardSum}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'7vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출</ColumnCell>
+                                                <Cell>{monthCashSum}</Cell>
+                                            </OrderRow>
+                                        <TableBody>
+
+                                        </TableBody>
+                                    </TableStyle>                
+                        </TableContainer>
                     </>
                     )}
                     {select==1 &&(
@@ -931,14 +1028,14 @@ const SalesTemplate = () => {
 
                                         </TableBody>
                                     </TableStyle>                
-                            </TableContainer>
+                        </TableContainer>
                         </>
                     )}
                     {select==0 && (
                     <>
                     <Title>요일별 매출</Title>
                     <GraphDiv>
-                    <CircleChart chartData={circle} width={800} height={800} cx={400} cy={'50%'} r={150}/>
+                    <CircleChart  value={'value'} chartData={circle} width={800} height={800} cx={400} cy={'50%'} r={150}/>
                     </GraphDiv>
                     </>
                     )}

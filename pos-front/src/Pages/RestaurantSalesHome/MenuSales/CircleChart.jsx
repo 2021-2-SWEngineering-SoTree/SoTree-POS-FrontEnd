@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 
 let renderLabel=function(entry){
-  console.log(entry);
   return entry.name;
 }
 const COLORS = ["#FF0000", "#FF8000", "#FFFF00", "#80FF00","#00FF00","#00FF80","#00FFFF","#0080FF","#0000FF","#7F00FF","#FF00FF","#FF007F",
@@ -35,7 +34,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-const CircleChart =({chartData, width, height, cx, cy, r})=> {
+const CircleChart =({chartData, width, height, cx, cy, r, value})=> {
   return (
     <div>
     <PieChart width={width} height={height}>
@@ -47,7 +46,7 @@ const CircleChart =({chartData, width, height, cx, cy, r})=> {
         label={renderLabel}
         outerRadius={r}
         fill="#8884d8"
-        dataKey="value"
+        dataKey={value}
       >
         {chartData.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
