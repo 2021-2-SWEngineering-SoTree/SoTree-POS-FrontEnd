@@ -10,9 +10,9 @@ const Div = styled.div`
     flex-wrap: nowrap;
     display: flex;
     width : 100%;
-    height : 87vh;  
-    min-height : 45rem;
-    border : 1px solid black;
+    height : 100vh;  
+    min-height : 90vh;
+    margin-top:6.5%;
 `;
 const PageWrapper = styled.div`
     justify-content : center;
@@ -95,6 +95,12 @@ const MyInfo = ()=>{
     const [emailName, setEmailName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
 
+    //가게정보
+    const [storeName,setStoreName]=useState('');
+    const [firstStore,setFirstStore]=useState('02');
+    const [secondStore,setSecondStore]=useState('');
+    const [thirdStore,setThirdStore]=useState('');
+
     const getInfos = async ()=>{
         console.log(typeof loginId, loginId);
         await axios.post('http://localhost:8080/getUserByLoginId',loginId,{
@@ -102,11 +108,13 @@ const MyInfo = ()=>{
             "Content-Type" : `text/plain`,
         }}).then((res)=>{
             console.log(res.data);
-            const {birthDay, phoneNumber, personName, email}=res.data;
+            console.log(res.data.user);
+            const {birthDay, phoneNumber, personName, email}=res.data.user;
             
             const emailArr=email.split('@');
             const birthArr=birthDay.split('-');
             const phoneArr=phoneNumber.split('-');
+            const storeArr=res.data.branchPhoneNumber.split('-');
 
             console.log(emailArr,birthArr,phoneArr, personName);
             
@@ -117,6 +125,10 @@ const MyInfo = ()=>{
             setMiddle(phoneArr[1]);
             setLast(phoneArr[2]);
             setYear(birthArr[0]);
+            setStoreName(res.data.storeName);
+            setFirstStore(storeArr[0]);
+            setSecondStore(storeArr[1]);
+            setThirdStore(storeArr[2]);
 
             if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
             setMonth(birthArr[1]);
@@ -187,6 +199,27 @@ const MyInfo = ()=>{
                             value={emailAddress} disabled
                             />
                         </div>
+                    </WrapperDiv>
+
+                    <WrapperDiv>
+                                <InputLable>가게명</InputLable>
+                                <div style={{display : 'flex', flexDirection : 'row'}}>
+                                    <Input type = "text" placeholder = {"가게명"}
+                                    value={storeName} disabled/>
+                                </div> 
+                            </WrapperDiv>
+                            <WrapperDiv>
+                            <InputLable>가게 전화번호</InputLable>
+                            <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
+                                <Input type = 'text' style={{width:'10.8rem'}}
+                                value = {firstStore} disabled/>
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"1234"} style={{width:'10.8rem'}}
+                                value={secondStore} disabled/>
+                                <TextDiv>-</TextDiv>
+                                <Input type = "text" placeholder = {"5678"} style={{width:'10.8rem'}} 
+                                value={thirdStore} disabled/>
+                            </div>
                     </WrapperDiv>
 
                     <div style={{display : 'flex', flexDirection : 'row', justifyContent:'flex-end', marginTop:'2rem'}}>
