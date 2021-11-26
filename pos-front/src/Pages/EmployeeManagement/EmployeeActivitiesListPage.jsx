@@ -47,15 +47,18 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const leaveColumnName = ['번호', '이름', 'ID', '퇴근 일자', '직급']
     const paymentColumnName = ['결제번호', '이름', '주문 번호', '결제 종류', '결제 금액', '결제 일자', '자리 번호']
     const orderColumnName = ['주문번호', '이름', '주문 종류', '주문 합계', '주문 일자', '자리 번호']
-    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경량', '변경후 수량', '수정 일자']
+    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경량', '수정 일자']
 
+    const date = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
+    const currentMonth = date.substr(5,2);
+    const currentYear = date.substr(0,4);
+    const currentDay = '-1';
 
     const [changeCello, setChangeCells] = useState([]);   // 테이블 안에 값이 바뀜.
     const [changeTable, setChangeTable] = useState([]);     // 테이블 컬럼 명이 바뀜.
-    const [selectMonth, setSelectMonth] = useState(10);      // 선택된 월
-    const [selectDay, setSelectDay] = useState(-1);
-    const [selectYear, setSelectYear] = useState(2021);
-    const [result, setResult] = useState({});
+    const [selectMonth, setSelectMonth] = useState(currentMonth);      // 선택된 월
+    const [selectDay, setSelectDay] = useState(currentDay);
+    const [selectYear, setSelectYear] = useState(currentYear);
     const [criterion, setCriterion] = useState("COME");
 
     const changeState = (cellsElement, tableNameElement) => {
@@ -65,8 +68,8 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
     const formatOfTime = (year, month, day) => {
         let date = '';
-        if(day === "" || day === -1) { date = String(selectYear) + - + String(selectMonth); }
-        else { date = String(selectYear) + - + String(selectMonth) + - + String(selectDay) }
+        if(day === "" || day === '-1') { date = String(selectYear) + '-' + String(selectMonth); }
+        else { date = String(selectYear) + - + String(selectMonth) + '-' + String(selectDay) }
         console.log(date);
         return date;
     }
@@ -119,19 +122,27 @@ const EmployeeActivitiesListPage = ({cello}) => {
             }
             if (criterion === "PAY") {
                 for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreatePaymentRowData(i+1, result.data[i][keys[2]],
-                        result.data[i][keys[1]], result.data[i][keys[4]], result.data[i][keys[3]],
-                        result.data[i][keys[0]],  result.data[i][keys[1]]));
+                    cells.push( CreatePaymentRowData(i+1, result.data[i][keys[3]],
+                        result.data[i][keys[4]], result.data[i][keys[5]], result.data[i][keys[1]],
+                        result.data[i][keys[0]],  result.data[i][keys[2]]));
                 }
                 changeState(cells, paymentColumnName);
             }
             if (criterion === "ORDER") {
                 for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreateOrderRowData(i+1, result.data[i][keys[2]],
-                        result.data[i][keys[1]], result.data[i][keys[0]], result.data[i][keys[3]],
-                        result.data[i][keys[3]],  result.data[i][keys[4]]));
+                    cells.push( CreateOrderRowData(i+1, result.data[i][keys[3]],
+                        result.data[i][keys[2]], result.data[i][keys[0]], result.data[i][keys[1]],
+                        result.data[i][keys[4]]));
                 }
                 changeState(cells, orderColumnName);
+            }
+            if (criterion === "STOCK") {
+                for (let i = 0 ; i < result.data.length; i++) {
+                    cells.push( CreateStockRowData(i+1, result.data[i][keys[4]],
+                        result.data[i][keys[0]], result.data[i][keys[2]], result.data[i][keys[5]],
+                        result.data[i][keys[3]]))
+                }
+                changeState(cells, stockColumnName);
             }
         } catch (e) {
             console.error(e.message)
@@ -143,15 +154,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const onClickEmployeeListLeave = async () => { setCriterion("OUT"); }       // OUT
     const onClickEmployeeListPayment = async () => { setCriterion("PAY"); }     // PAY
     const onClickEmployeeListOrder = async () => { setCriterion("ORDER"); }     // ORDER
-
-    // STOCK
-    const onClickEmployeeListStock = async () => {
-        console.log('Print Stock List');
-        const stockCells = [
-            CreateStockRowData(1, 'test5', '1', '돼지고기', 100, 90,'2021-01-01')
-        ];
-        changeState(stockCells, stockColumnName);
-    }
+    const onClickEmployeeListStock = async () => { setCriterion("STOCK"); }     // STOCK
 
     // select year select
     const handleYearChangeSelect = (e) => {
@@ -163,7 +166,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const handleMonthChangeSelect = (e) => {
         console.log("선택된 월(month): ", e.target.value);
         setSelectMonth(e.target.value);
-        setSelectDay(-1);
+        setSelectDay('-1');
     }
 
     // select day select
