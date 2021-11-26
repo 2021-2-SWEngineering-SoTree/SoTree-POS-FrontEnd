@@ -6,6 +6,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import CategoryButton from "../../Components/Button/FragmentWindowButton";
 import ModalButton from "../../Components/Button/ModalButton";
+import axios from "axios";
 
 const WrapperDiv = styled.div`
     & + & {
@@ -104,7 +105,7 @@ const EmployeeManagementTableStyle = styled.table`
     width: 100%;
 `;
 
-const ApprovalWorkSchedulePage = ({reConstruct}) => {
+const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval}) => {
 
     const columnName = ['선택', '일', '월', '화', '수', '목', '금', '토'];
     const tableRowName = ['N(Non)', 'F(Full)', 'L(Lunch)', 'D(Dinner)'];
@@ -113,9 +114,24 @@ const ApprovalWorkSchedulePage = ({reConstruct}) => {
 
     const [weekState, setWeekState] = useState(['N', 'N', 'N', 'N', 'N', 'N', 'N']);
 
-    const onClickSubmit = () => {
+    const onClickSubmit = async() => {
         console.log(weekState);
-        alert("등록 test");
+        let managerId = window.localStorage.getItem('managerId');
+        if (window.confirm("해당 직원을 등록하시겠습니까?")) {
+            let approvalData = {
+                branchId: managerId,
+                employeeId: reConstruct[3],
+                workSchedule: weekState.join(''),
+            }
+            await axios.post('http://localhost:8080/allowEmployee', JSON.stringify(approvalData),
+                {headers: {"Content-Type": `application/json`,}}).then((res)=>{
+                alert("직원이 정상적으로 승인되었습니다.");
+                setApproval(!approval);
+                }).catch(error => {
+                    console.log(error);
+                    alert("직원 승인 오류, 다시 진행 바람");
+            })
+        }
     }
 
     const onChangeHandler = (e) => {
@@ -174,25 +190,25 @@ const ApprovalWorkSchedulePage = ({reConstruct}) => {
                                             {tableRowName[i]}
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'일'+rowName[i]}>
-                                            <input type="radio" name='일' value={'0'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='일' value={'0'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'월'+rowName[i]}>
-                                            <input type="radio" name='월' value={'1'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='월' value={'1'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'화'+rowName[i]}>
-                                            <input type="radio" name='화' value={'2'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='화' value={'2'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'수'+rowName[i]}>
-                                            <input type="radio" name='수' value={'3'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='수' value={'3'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'목'+rowName[i]}>
-                                            <input type="radio" name='목' value={'4'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='목' value={'4'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'금'+rowName[i]}>
-                                            <input type="radio" name='금' value={'5'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='금' value={'5'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                         <EmployeeManagementCell key={'토'+rowName[i]}>
-                                            <input type="radio" name='토' value={'6'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
+                                            <input type="radio" name='토' value={'6'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}} style={{width: 20, height: 20,}}/>
                                         </EmployeeManagementCell>
                                     </EmployeeManagementRow>)
                                 }
