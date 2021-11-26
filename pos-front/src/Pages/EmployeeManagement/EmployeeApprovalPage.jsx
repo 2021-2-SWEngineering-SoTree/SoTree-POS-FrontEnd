@@ -41,7 +41,7 @@ const EmployeeApprovalPage = ({cells, employeeIdForApproval}) => {
     return (
         <>
             <RectangleModal setSelectCategory={setApproval} visible={approval} TitleName={"직원 승인"}>
-                <ApprovalWorkSchedulePage reConstruct={reConstruct}/>
+                <ApprovalWorkSchedulePage reConstruct={reConstruct} approval={approval} setApproval={setApproval}/>
             </RectangleModal>
             <MintFormTable columnName={columnName} cells={cells} setGetNumber={setGetNumber} clickListener={approvalClickHandler}/>
         </>

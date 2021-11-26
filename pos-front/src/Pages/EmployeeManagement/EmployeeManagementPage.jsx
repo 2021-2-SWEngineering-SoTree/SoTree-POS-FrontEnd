@@ -156,8 +156,8 @@ const EmployeeManagementPage = () => {
                 const cell2 = [];
                 const cellsApproval = [];
                 const cell2Approval = [];
-                console.log(res);
-                console.log(res.data);
+                console.log("!!!!!!!!!!!!!!!",res);
+                console.log("!!!!!!!!!!!!!!!!!resdata",res.data);
                 let j = 0;
                 for (let i = 0; i < res.data.length; i++) {
                     // if (res.data[i].position === 'employee') {}
