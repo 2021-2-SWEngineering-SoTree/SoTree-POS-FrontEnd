@@ -56,7 +56,7 @@ const MintFormTable = ({columnName, cells, setGetNumber, isNameButton, clickList
                     {cells[j]==='blink' ?
                         <input name='radio' type="radio" value={ele} onChange={onChange} style={{width: 30, height: 30,}}/>
                         : (cells[j] === 'approval' ?
-                            <ModalButton name={'승인'} onClick={clickListener}/> : cells[j])}
+                            <ModalButton value={ele} name={'승인'} onClick={()=>clickListener(ele)}/> : cells[j])}
                 </EmployeeManagementCell>)
         )
     }
