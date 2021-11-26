@@ -104,34 +104,27 @@ const EmployeeManagementTableStyle = styled.table`
     width: 100%;
 `;
 
-const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReConstruct}) => {
+const ApprovalWorkSchedulePage = ({reConstruct}) => {
 
-    const columnName = ['선택', '월', '화', '수', '목', '금', '토', '일'];
-    const rowName = ['N', 'B', 'L', 'D'];
+    const columnName = ['선택', '일', '월', '화', '수', '목', '금', '토'];
+    const tableRowName = ['N(Non)', 'F(Full)', 'L(Lunch)', 'D(Dinner)'];
+    const rowName = ['N', 'F', 'L', 'D'];
     const date = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16);
 
-    const [savedSchedule, setSavedSchedule] = useState([]);
-    const [schedule, setSchedule] = useState('');
-    const [checkItems, setCheckItems] = useState([]);
+    const [weekState, setWeekState] = useState(['N', 'N', 'N', 'N', 'N', 'N', 'N']);
 
     const onClickSubmit = () => {
+        console.log(weekState);
         alert("등록 test");
     }
-    const onClickReset = (checked) => {
-        if(checked) {
-        }
-        setSavedSchedule([]);
-    }
-
-    useEffect(() => {
-        if(schedule !== '') { savedSchedule.push(schedule); }
-        console.log("쌓아가는 중", savedSchedule);
-    }, [schedule])
 
     const onChangeHandler = (e) => {
-        console.log("선택된 value 값: ", e.target.value);
-        setSchedule(e.target.value);
+        console.log(e.target.value);
+        const weekend = e.target.value.substr(0,1);
+        weekState[+weekend] = e.target.value.substr(1,1);
     }
+
+
 
     return (
         <>
@@ -141,17 +134,17 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 번&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;호
-                        <Input type="text" value={''} style={{flexGrow:3}}/>
+                        <Input type="text" value={reConstruct[0]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 이&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;름
-                        <Input type="text" value={''} style={{flexGrow:3}}/>
+                        <Input type="text" value={reConstruct[1]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 직&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;급
-                        <Input type="text" value={''} style={{flexGrow:3}}/>
+                        <Input type="text" value={reConstruct[2]} style={{flexGrow:3}}/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
@@ -178,28 +171,28 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
                                 {Array(rowName.length).fill(undefined, undefined, undefined).map((td, i)=>
                                     <EmployeeManagementRow key={i}>
                                         <EmployeeManagementCell key={rowName[i]}>
-                                            {rowName[i]}
+                                            {tableRowName[i]}
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'월'}>
-                                            <input type="radio" value={rowName[i]+'월'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'일'+rowName[i]}>
+                                            <input type="radio" name='일' value={'0'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'화'}>
-                                            <input type="radio" value={rowName[i]+'화'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'월'+rowName[i]}>
+                                            <input type="radio" name='월' value={'1'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'수'}>
-                                            <input type="radio" value={rowName[i]+'수'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'화'+rowName[i]}>
+                                            <input type="radio" name='화' value={'2'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'목'}>
-                                            <input type="radio" value={rowName[i]+'목'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'수'+rowName[i]}>
+                                            <input type="radio" name='수' value={'3'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'금'}>
-                                            <input type="radio" value={rowName[i]+'금'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'목'+rowName[i]}>
+                                            <input type="radio" name='목' value={'4'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'토'}>
-                                            <input type="radio" value={rowName[i]+'토'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'금'+rowName[i]}>
+                                            <input type="radio" name='금' value={'5'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
-                                        <EmployeeManagementCell key={rowName[i]+'일'}>
-                                            <input type="radio" value={rowName[i]+'일'} onChange={(e)=>{onChangeHandler(e)}}/>
+                                        <EmployeeManagementCell key={'토'+rowName[i]}>
+                                            <input type="radio" name='토' value={'6'+rowName[i]} onChange={(e)=>{onChangeHandler(e)}}/>
                                         </EmployeeManagementCell>
                                     </EmployeeManagementRow>)
                                 }
@@ -209,7 +202,6 @@ const ApprovalWorkSchedulePage = ({approval, setApproval, reConstruct, setReCons
                 </InnerDiv>
                 <InnerDiv>
                     <ModalButton name={"등록"} onClick={onClickSubmit} />
-                    <input type="radio" name={"초기화"} onChange={(e)=>onClickReset(e.target.checked)} />
                 </InnerDiv>
             </WrapperDiv>
         </>

@@ -81,12 +81,17 @@ const CreateRowData = (choice, number, name, id, birthday, email, phone, pos) =>
     return [choice, number, name, id, birthday, email, phone, pos];
 }
 
+const CreateApprovalRowData = (choice, number, name, id, birthday, email, phone, approval) => {
+    return [choice, number, name, id, birthday, email, phone, approval];
+}
+
 
 const EmployeeManagementPage = () => {
 
     const columnName = ['선택', '번호', '이름', 'ID', '생년월일', '이메일', '전화번호', '직급']
     const [employeeManagementChange, setEmployeeManagementChange] = useState(1);
     const [employeeId, setEmployeeId] = useState([]);
+    const [employeeIdForApproval, setEmployeeIdForApproval] = useState([]);
 
     const [commute, setCommute] = useState(false);
     const [addEmployee, setAddEmployee] = useState(false);
@@ -95,6 +100,8 @@ const EmployeeManagementPage = () => {
 
     const [getNumber, setGetNumber] = useState(-1);
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
+    const [celloApproval, setCelloApproval] = useState([]);
+
     const [listOfEmployee,  setEmployeeList] = useState(1);  // 버튼 클릭시 LeftDiv 의 변경
 
     let selectedEmployee = [];
@@ -147,16 +154,28 @@ const EmployeeManagementPage = () => {
             }).then((res)=>{
                 const cells = [];
                 const cell2 = [];
+                const cellsApproval = [];
+                const cell2Approval = [];
                 console.log(res);
                 console.log(res.data);
-
+                let j = 0;
                 for (let i = 0; i < res.data.length; i++) {
+                    // if (res.data[i].position === 'employee') {}
                     cell2.push(res.data[i].employeeId);
                     cells.push(CreateRowData('blink', i+1, res.data[i].personName,
                         res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
+                    if (res.data[i].position === 'not_granted_employee') {
+                        cell2Approval.push(res.data[i].employeeId);
+                        cellsApproval.push(CreateApprovalRowData('blink', j+1, res.data[i].personName,
+                            res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, 'approval'))
+                        j += 1;
+                    }
                 }
                 setCells(cells);
                 setEmployeeId(cell2);
+                setCelloApproval(cellsApproval);
+                setEmployeeIdForApproval(cell2Approval);
+
                 console.log(employeeId);
                 console.log(cello);
             })
@@ -179,7 +198,7 @@ const EmployeeManagementPage = () => {
             <RectangleModal setSelectCategory={setDeleteEmployee} visible={deleteEmployee} TitleName={"직원 삭제"}>
                 <EmployeeDeletePage/>
             </RectangleModal>
-            <Header text={"직원 관리"} restaurantName={"혜민이네 돈까스"}/>
+            <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>
                 <LeftDiv visible={listOfEmployee===1} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
                     <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
@@ -188,7 +207,7 @@ const EmployeeManagementPage = () => {
                     <EmployeeActivitiesListPage cello={cello}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeApprovalPage setGetNumber={setGetNumber}/>
+                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
