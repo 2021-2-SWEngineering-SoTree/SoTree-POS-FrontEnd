@@ -20,6 +20,9 @@ npm i jwt-decode
 
 - 11.20
 npm i recharts
+
+- 11.28
+npm install react-spinners
 ```
 
 # Installation
