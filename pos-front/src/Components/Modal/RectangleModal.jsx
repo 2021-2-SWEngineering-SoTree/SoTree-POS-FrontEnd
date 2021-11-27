@@ -2,8 +2,8 @@ import React from 'react';
 import styled from "styled-components";
 
 const ModalHeaderStyled = styled.div`
-    width: ${(props) => (props.mode === 'employee' ? '70rem' : '40rem')};
-    height: 50rem;
+    width: ${(props) => (props.mode === 'employee' ? '70rem' : props.mode==='delete'?'30rem':'40rem')};
+    height : ${(props) => (props.mode === 'delete' ? '34rem' :'50rem')};
     background-color: #474D4E;
     display: ${(props) => (props.visible ? 'block' : 'none')};
     position: absolute;
@@ -17,8 +17,8 @@ const ModalHeaderStyled = styled.div`
 `;
 
 const ModalContentStyled = styled.div`
-    width: ${(props) => (props.mode ? '70rem' : '40rem')};
-    height: 46rem;
+    width: ${(props) => (props.mode === 'employee' ? '70rem' : props.mode==='delete'?'30rem':'40rem')};
+    height : ${(props) => (props.mode === 'delete' ? '30rem' :'46rem')};
     background-color: white;
     display: ${(props) => (props.visible ? 'block' : 'none')};
     position: absolute;

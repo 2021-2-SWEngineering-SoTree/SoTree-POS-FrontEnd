@@ -67,6 +67,17 @@ const CheckButton = styled.button`
     padding : 0;
 `;
 
+const Button = styled.button`
+    width : 9rem;
+    height : 3.5rem;
+    font-size : 2rem;
+    background-color : #C4C4C4;
+    margin-top : 4rem;
+    margin-right : 0.8rem; 
+    border-radius : 0.5rem;
+    padding : 0;
+`;
+
 const CategorySelector = styled.select`
     height : 3.2rem;
     width : 24rem;
@@ -168,7 +179,7 @@ const ChangeMenu = ({changemenu, menu, id, menuprice, menucategory}) =>{
 
     //가격 입력
     const onChangePrice = (e)=>{
-        setPrice(+e.target.value);
+        setPrice(e.target.value);
     }
 
     //카테고리 선택
@@ -241,6 +252,17 @@ const ChangeMenu = ({changemenu, menu, id, menuprice, menucategory}) =>{
         <PageWrapper>
                 <Title>메뉴 수정</Title>
                 <Form>
+                    {!menu && (
+                        <>
+                        <Title style={{marginTop:'30%'}}>선택된 메뉴가 없습니다</Title>
+                        <div style={{display : 'flex', justifyContent:'center', marginTop:'13em'}}>
+                        {/* <CheckButton onClick={load}>Load</CheckButton> */}
+                        <Button>닫기</Button>
+                        </div>
+                        </>
+                    )}
+                    {menu && (
+                    <>
                     <WrapperDiv>
                         <InputLable>메뉴명</InputLable>
                         <Input placeholder = {menu} style={{flexGrow:3}} value={name} disabled/>
@@ -321,6 +343,8 @@ const ChangeMenu = ({changemenu, menu, id, menuprice, menucategory}) =>{
                         <CheckButton onClick = {changeMenu}>수정</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>
+                    </>
+                    )}
                 </Form>
             </PageWrapper>
 
