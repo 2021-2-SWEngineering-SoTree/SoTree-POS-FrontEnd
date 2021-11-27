@@ -3,6 +3,7 @@ import ScaleLoader from 'react-spinners/ScaleLoader';
 import styled from "styled-components";
 
 const LargeDiv = styled.div`
+  
     min-width: 700px;
     width: 100%;
     text-align: center;
