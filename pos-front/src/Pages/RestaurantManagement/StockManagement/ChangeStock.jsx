@@ -80,6 +80,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
     const [stockCell, setStockCells] = useState([{}]);
     const [select, setSelect] = useState("");
     const [quantity , setQuantity] = useState('');
+    const [message, setMessage] = useState('제고수정');
 
     const handleChange = async(e) => {
         setSelect(e.target.value);
@@ -110,6 +111,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
             const ingredients = [{
                 quantityChanged: +quantity,
                 employeeId: select,
+                memo : message,
             }];
             console.log(ingredients);
             let managerId = window.localStorage.getItem('managerId');
@@ -157,6 +159,13 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <Calculator num={"3.0rem"} num2={"6.0rem"} quantity={quantity} changeQuantity={changeQuantity}/>
+                    </WrapperDiv>
+                    <WrapperDiv>
+                        <InputLable>변경사유
+                        <Input placeholder = {"0"} style={{flexGrow:3}}
+                               value = {message}
+                               onChange={(e)=>setMessage(e.target.value)} />인분
+                        </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>담당
