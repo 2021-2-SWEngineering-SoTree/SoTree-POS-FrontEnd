@@ -17,6 +17,7 @@ import SmallTable from "../../Components/Table/SmallTable";
 import {CardPay, MultiPay, CashPay} from './Pay';
 import SaleDefaultMenuPage from "./RightDivComponents/SaleDefaultMenuPage";
 import DisCount from "./Discount/DisCount";
+import Event from "./Discount/Event";
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
@@ -552,6 +553,10 @@ const SalePage = () => {
         }
     }
 
+    const getEventHandler = async () =>{
+
+    }
+
 
     const takeOutOrderHandler = async () =>{
         let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
@@ -884,7 +889,7 @@ const SalePage = () => {
                                 <BottomBottomRightDiv>
                                     
                                     <CircledRectButton name={'포장'} size={'6rem'} size2={'4.2rem'}radius={'20px'} onClick={takeOutOrderHandler}/>
-                                    <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
+                                    <CircledRectButton name={'이벤트'} size={'6rem'} size2={'4.2rem'}radius={'20px'} onClick={(e)=>{btnClick(5)}}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={''} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
                                     <CircledRectButton name={'기타'} size={'6rem'} size2={'4.2rem'}radius={'20px'}/>
@@ -903,6 +908,8 @@ const SalePage = () => {
                 {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
+                {(click===5) && <Event orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }
+
                 </RightDiv>
 
             </Div>

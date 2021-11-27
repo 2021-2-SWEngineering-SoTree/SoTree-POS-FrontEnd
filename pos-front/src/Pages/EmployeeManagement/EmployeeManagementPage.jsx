@@ -200,7 +200,7 @@ const EmployeeManagementPage = () => {
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>
-                <LeftDiv visible={listOfEmployee===1} style={{paddingTop: "2.0rem", overFlow: "scroll"}}>
+                <LeftDiv visible={listOfEmployee===1} style={{overflow: "auto", paddingTop: "2.0rem"}}>
                     <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
