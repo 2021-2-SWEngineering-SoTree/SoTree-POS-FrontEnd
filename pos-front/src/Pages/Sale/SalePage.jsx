@@ -230,18 +230,9 @@ const SalePage = () => {
     const [changeQuantity, setChangeQuantity] = useState('');
 
 
-    // {name : '왕돈까스',
-    // price : 12000,
-    // quantity : 1,
-    // discount : 0,
-    // totalprice : 12000,
-    // message : '',},
-    // {name : '치즈돈까스',
-    // price : 12000,
-    // quantity : 1,
-    // discount : 0,
-    // totalprice : 12000,
-    // message : '',}
+    //
+    const [discountMessage, setDiscountMessage] = useState('');
+
 
     // 오더 states
     const [totalAmount, setTotalAmount] = useState(0);
@@ -777,6 +768,12 @@ const SalePage = () => {
 
     useEffect(()=>{},[changeQuantity])
 
+    const updateDiscount = (finalPrice, previousPrice, message) =>{
+        setToltalPrice(finalPrice);
+        setDiscountMessage(message);
+        setTotalDiscount(previousPrice);
+    };
+
     return (
         <>
             
@@ -819,11 +816,11 @@ const SalePage = () => {
                             <TableStyle>
                                 <TableHead>
                                     <ResultRow>
-                                        <th style ={{width:'53%', color:'white'}}>합계</th>
+                                        <th style ={{width:'43%', color:'white'}}>합계</th>
                                         <th style ={{width:'10%', color:'white'}}>{totalAmount}</th>
                                         <th style ={{width:'10%', color:'white'}}>{totalDiscount}</th>
                                         <th style ={{width:'16%', color:'white'}}>{totalPrice}</th>
-                                        <th></th>
+                                        <th style ={{width:'16%', color:'white'}}>{discountMessage}</th>
                                     </ResultRow>
                                 </TableHead>
                             </TableStyle>
@@ -846,7 +843,7 @@ const SalePage = () => {
                                 <InfoContent>
                                     <b>Payment Requirement</b>
                                 </InfoContent>
-                                <InfoSpace name={'총 금 액'} value={totalPrice} color={'white'}/>
+                                <InfoSpace name={'총 금 액'} value={totalPrice+totalDiscount} color={'white'}/>
                                 <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
                                 <InfoSpace name={'받을금액'} value={nottotalPrice} color={'yellow'}/>
                                 <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
@@ -910,8 +907,9 @@ const SalePage = () => {
                 {(click===1) && <CashPay payedPrice={payedPrice} orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===4) && <DisCount orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
                 {(click===5) && <Event orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }
+
                 </RightDiv>
 
             </Div>

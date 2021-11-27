@@ -7,6 +7,7 @@ import ErrorPage from './Pages/ErrorPage';
 import MenuTemplate from './Pages/RestaurantManagement/MenuManagement/MenuTemplate';
 import SeatTemplate from './Pages/RestaurantManagement/SeatManangement/SeatTemplate';
 import StockTemplate from './Pages/RestaurantManagement/StockManagement/StockTemplate';
+import EventTemplate from './Pages/RestaurantManagement/EventManagement/EventTemplate';
 import RestaurantManagementPage from './Pages/RestaurantManagement/ResturantManagementPage';
 import RestaurantSalesHomePage from './Pages/RestaurantSalesHome/RestaurantSalesHomePage';
 import MenuAvgTimeTemplate from './Pages/RestaurantSalesHome/MenuAvgTime/MenuAvgTimeTemplate';
@@ -42,6 +43,7 @@ function App() {
             <Route path="/restaurantManagement/menu" element={localStorage.getItem('Token') ? <MenuTemplate/> : <Navigate replace to='/'/> } />
             <Route path="/restaurantManagement/stock" element={localStorage.getItem('Token') ?  <StockTemplate/> : <Navigate replace to='/'/>} />
             <Route path="/restaurantManagement/seat" element={localStorage.getItem('Token') ?  <SeatTemplate/> : <Navigate replace to='/'/>} />  
+            <Route path="/restaurantManagement/event" element={localStorage.getItem('Token') ?  <EventTemplate/> : <Navigate replace to='/'/>} />  
             <Route path="/restaurantManagement" element={localStorage.getItem('Token') ? <RestaurantManagementPage/> : <Navigate replace to='/'/> } />
             <Route path="/restaurantSalesHome" element={localStorage.getItem('Token') ? <RestaurantSalesHomePage/> : <Navigate replace to='/'/> } />
             <Route path="/restaurantSalesHome/menuavgtime" element={localStorage.getItem('Token') ? <MenuAvgTimeTemplate/> : <Navigate replace to='/'/> } />

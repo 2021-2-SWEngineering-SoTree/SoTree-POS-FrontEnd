@@ -5,6 +5,8 @@ import { Route, Link, Routes } from 'react-router-dom';
 import MenuTemplate from './MenuManagement/MenuTemplate';
 import SeatTemplate from './SeatManangement/SeatTemplate';
 import StockTemplate from './StockManagement/StockTemplate';
+import EventTemplate from './EventManagement/EventTemplate';
+
 import Header from '../../Components/Header';
 
 
@@ -40,7 +42,7 @@ const RightDiv = styled.div`
 const InnerRightDiv = styled.div`
     vertical-align : middle;
     text-align: center;
-    margin-top : 202px;
+    margin-top : 18vh;
     align-items : center;
 `;
 
@@ -65,7 +67,7 @@ const Button = styled.button`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 0.8rem;
     font-size : 1.3rem;
-    margin-bottom : 3rem;
+    margin-bottom : 2.5rem;
     
 `;
 
@@ -83,6 +85,7 @@ const RestaurantManagementPage = () => {
                 <InnerRightDiv>
                     <Link to = "/restaurantManagement/menu"><Button>메뉴 관리</Button></Link>
                     <Link to = "/restaurantManagement/stock"><Button>재고 관리</Button></Link>
+                    <Link to = "/restaurantManagement/event"><Button>이벤트 관리</Button></Link>
                     <Link to = "/restaurantManagement/seat"><Button>좌석 관리</Button></Link>
                 </InnerRightDiv>
             </RightDiv>
@@ -90,6 +93,7 @@ const RestaurantManagementPage = () => {
                 <Route path="/restaurantManagement/menu" element={<MenuTemplate/>} />
                 <Route path="/restaurantManagement/stock" element={<StockTemplate/>} />
                 <Route path="/restaurantManagement/seat" element={<SeatTemplate/>} />  
+                <Route path="/restaurantManagement/event" element={<EventTemplate/>} />  
             </Routes>
         </Div>
         </>
