@@ -11,7 +11,7 @@ import axios from "axios";
 import EmployeeModifyPage from "./EmployeeModifyPage";
 import EmployeeDeletePage from "./EmployeeDeletePage";
 import EmployeeApprovalPage from "./EmployeeApprovalPage";
-
+import Spinner from "../../Components/Spinner/Spinner"
 
 const Div = styled.div`
     max-width: 1980px;
@@ -88,6 +88,8 @@ const CreateApprovalRowData = (choice, number, name, id, birthday, email, phone,
 
 const EmployeeManagementPage = () => {
 
+    const [loading, setLoading] = useState(false);
+
     const columnName = ['선택', '번호', '이름', 'ID', '생년월일', '이메일', '전화번호', '직급']
     const [employeeManagementChange, setEmployeeManagementChange] = useState(1);
     const [employeeId, setEmployeeId] = useState([]);
@@ -143,6 +145,11 @@ const EmployeeManagementPage = () => {
         setCells(cello);
     }
 
+    function sleep(ms) {
+        const wakeUpTime = Date.now() + ms;
+        while (Date.now() < wakeUpTime) {}
+    }
+
     useEffect(async () => {
         try {
             let managerId = window.localStorage.getItem('managerId');
@@ -178,11 +185,17 @@ const EmployeeManagementPage = () => {
 
                 console.log(employeeId);
                 console.log(cello);
+                sleep(1000);
+                setLoading(true);
             })
         } catch (e) {
             console.error(e.message);
         }
     }, [listOfEmployee, employeeManagementChange]);
+
+    useEffect(async () => {
+
+    }, [loading])
 
     return (
         <>
@@ -201,7 +214,10 @@ const EmployeeManagementPage = () => {
             <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>
                 <LeftDiv visible={listOfEmployee===1} style={{overflow: "auto", paddingTop: "2.0rem"}}>
-                    <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
+                    {!loading ? <Spinner/> :
+                        <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber}
+                                       isNameButton={false}/>
+                    }
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
                     <EmployeeActivitiesListPage cello={cello} isNameButton={true}/>

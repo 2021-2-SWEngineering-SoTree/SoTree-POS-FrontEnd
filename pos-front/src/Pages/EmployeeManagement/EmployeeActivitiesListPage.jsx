@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import ModalButton from "../../Components/Button/ModalButton";
 import MintFormTable from "../../Components/Table/MintFormTable";
 import axios from "axios";
+import Spinner from "../../Components/Spinner/Spinner"
 
 
 // input data format (직원 활동 리스트)
@@ -24,6 +25,8 @@ const CreateStockRowData = (number, name, stockNum, stockName, changeAmount, aft
 
 
 const EmployeeActivitiesListPage = ({cello}) => {
+
+    const [loading, setLoading] = useState(false);
 
     const yearList = [2021, 2022];
     const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -158,6 +161,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
                     changeState(cells, stockColumnName);
                 }
             }
+            setLoading(true);
         } catch (e) {
             console.error(e.message)
         }
@@ -193,6 +197,10 @@ const EmployeeActivitiesListPage = ({cello}) => {
             return a[i] < b[i] ? -1 : a[i] > b[i] ? 1 : 0;
         });
     }
+
+    useEffect(async () => {
+
+    }, [loading])
 
     useEffect(async () => {
         console.log("2번째 useEffect sortedCategoryCello 값: ", sortedCategoryCello);
@@ -248,11 +256,12 @@ const EmployeeActivitiesListPage = ({cello}) => {
                     </div>
                 </div>
             </div>
+            {!loading ? <Spinner/> :
             <div>
                 <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}
                                sortedClickHandler={sortedClickHandler} sorted={sorted}
                                emptyFlag={emptyFlag}/>
-            </div>
+            </div>}
         </>
     )
 }
