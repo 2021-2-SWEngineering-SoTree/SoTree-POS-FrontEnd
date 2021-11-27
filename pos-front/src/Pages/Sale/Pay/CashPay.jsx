@@ -223,7 +223,8 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
             employeeId : 1,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-            method : '현금'
+            method : '현금',
+            finalPrice : totalPrice,
         });
 
         await axios.post('http://localhost:8080/payment/makePayment',data, {
