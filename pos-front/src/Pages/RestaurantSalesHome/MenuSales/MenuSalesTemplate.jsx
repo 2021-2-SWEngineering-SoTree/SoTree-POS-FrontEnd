@@ -399,7 +399,7 @@ const MenuSalesTemplate = () => {
                         </GraphLeft>
                         <GraphRight>
                             <GraphDiv>
-                                <CircleChart value={'value'} chartData={graphData} width={800} height={800} cx={300} cy={370} r={200}/>
+                                <CircleChart chartData={graphData} width={800} height={800} cx={240} cy={370} r={200}/>
                             </GraphDiv>
                         </GraphRight>
                     </GraphTemp>

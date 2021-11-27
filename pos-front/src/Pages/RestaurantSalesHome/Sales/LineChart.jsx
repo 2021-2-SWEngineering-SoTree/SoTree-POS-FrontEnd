@@ -51,21 +51,21 @@ const LChart=({lineData, min, max})=> {
 
   return (
     <LineChart
-      width={900}
-      height={500}
+      width={850}
+      height={440}
       data={lineData}
       margin={{
         top: 5,
         right: 30,
         left: 20,
-        bottom: 150
+        bottom: 200
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
       <YAxis type="number" domain={[0, {max}]}/>
       <Tooltip />
-      <Legend wrapperStyle={{bottom :'26%', left:'5%'}}/>
+      <Legend wrapperStyle={{bottom :'45%', left:'10%'}}/>
       <Line
         type="monotone"
         dataKey="매출"
