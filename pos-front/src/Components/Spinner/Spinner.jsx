@@ -12,9 +12,11 @@ const LargeDiv = styled.div`
 const Spinner = () => {
 
     return (
+
         <LargeDiv>
             <ScaleLoader height="160" width="32" color="#6b5ce7" radius="8"/>
         </LargeDiv>
+
     );
 }
 
