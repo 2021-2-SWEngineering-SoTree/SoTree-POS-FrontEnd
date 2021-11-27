@@ -89,7 +89,7 @@ const ErrorText = styled.div`
     font-weight : bold;
 `;
 
-const SignUpComponent = ({mode}) => {
+const SignUpComponent = ({mode, setSelectCategory, visible}) => {
 
     const [id, setId] = useState('');  const [idDuplicationCheck, setIdDuplicationCheck] = useState(false);
     const [pwd, setPwd] = useState(''); const [pwdErrorMessage, setPwdErrorMessage] = useState("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
@@ -269,8 +269,13 @@ const SignUpComponent = ({mode}) => {
         mode !== 'employee' ? setType(false) : setType(true);
         mode !== 'employee' ? setWorkStoreName('') : setWorkStoreName(window.localStorage.getItem('storeName'));
         mode !== 'employee' ? setCheckWorkStore('') : setCheckWorkStore(true);
+        mode !== 'employee' ? setCheckWorkStore('') : setManagerId(window.localStorage.getItem('managerId'));
 
     },[])
+
+    const cancelClickHandler = () => {
+        setSelectCategory(!visible);
+    }
 
     const handleSubmit = async(e) =>{
         if(!type){
@@ -298,7 +303,9 @@ const SignUpComponent = ({mode}) => {
                 }}).then((res)=>{
                     console.log(res);
                     alert("회원가입이 완료되었습니다!");
-                    navigate('/');
+                    if(mode!=='employee'){
+                        navigate('/');
+                    }
                 }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
             }else{
                 alert("입력을 확인해주세요!");
@@ -326,7 +333,18 @@ const SignUpComponent = ({mode}) => {
                     "Content-Type" : `application/json`,
                 }}).then((res)=>{
                     console.log(res);
-                    navigate('/');
+                    if(mode!=='employee'){
+                        navigate('/');
+                    }else{
+                        setId('');
+                        setYear(''); setMonth(); setDay('');
+                        setName(''); setEmailName(''); setEmailAddress('');
+                        setFirst(''); setMiddle(''); setLast('');
+                        setPwd(''); setErrorMessage('에러메시지 위치');
+                        setPwdErrorMessage("8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+                        setIdDuplicationCheck(''); setPwdCheckMessage("비밀번호가 일치하지 않습니다.");
+                        cancelClickHandler(); setPwdCheck('');
+                    }
                 }).catch(error => {console.log(error); alert("회원가입오류! 다시진행해주세요");});
             }else{
                 alert("입력을 확인해주세요!");

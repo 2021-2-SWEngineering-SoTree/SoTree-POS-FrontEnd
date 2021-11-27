@@ -190,7 +190,7 @@ const EmployeeManagementPage = () => {
                 <EmployeeCommutingPage visible={commute} setCommute={setCommute} reConstruct={reConstruct} setReConstruct={setReConstruct}/>
             </RectangleModal>
             <RectangleModal setSelectCategory={setAddEmployee} visible={addEmployee} TitleName={"직원 추가"} mode = {'employee'}>
-                <EmployeeAddPage visible={addEmployee}/>
+                <EmployeeAddPage visible={addEmployee} setSelectCategory={setAddEmployee} />
             </RectangleModal>
             <RectangleModal setSelectCategory={setChangeEmployee} visible={changeEmployee} TitleName={"직원 수정"}>
                 <EmployeeModifyPage/>

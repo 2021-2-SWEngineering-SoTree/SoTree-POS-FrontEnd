@@ -78,6 +78,7 @@ const AddStock = ({onClickAdd}) => {
 
     const [cello, setCells] = useState([]);
     const [select, setSelect] = useState("");
+    const [message, setMessage] = useState('최초 재고 추가');
 
     const handleClick = async (e) =>{
         e.preventDefault();
@@ -102,6 +103,7 @@ const AddStock = ({onClickAdd}) => {
         const ingredients = [{
             quantityChanged : +quantity,
             employeeId : employeeIdInfo,
+            memo : message,
         }];
         let managerId = window.localStorage.getItem('managerId');
         const data = {
@@ -162,6 +164,12 @@ const AddStock = ({onClickAdd}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <Calculator num={"3.0rem"} num2={"6.0rem"} quantity={quantity} changeQuantity={changeQuantity}/>
+                    </WrapperDiv>
+                    <WrapperDiv>
+                        <InputLable>메&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;모
+                            <Input type="text" placeholder = {"메모입력"} style={{flexGrow:3}}
+                                   onChange={(e)=>{setMessage(e.target.value)}} value={message} />
+                        </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>담당
