@@ -40,7 +40,7 @@ const data = [
   }
 ];
 
-const BChart=({barData,legend, bot})=> {
+const BChart=({barData,legend,sp})=> {
   return (
     <BarChart
       width={800}

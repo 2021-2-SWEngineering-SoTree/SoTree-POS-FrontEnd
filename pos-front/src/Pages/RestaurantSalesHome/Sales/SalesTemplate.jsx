@@ -8,6 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import LChart from './LineChart';
 import SaleInfoItem from '../../../Components/Box/SaleInfoItem';
 import BChart from './BarChart';
+import BChart2 from './DateBarChart ';
 import CircleChart from '../MenuSales/CircleChart';
 import axios from 'axios';
 import SaleTable from '../../../Components/Table/SaleTable';
@@ -1045,11 +1046,20 @@ const SalesTemplate = () => {
                             </div>
                            </>
                            )}
+                           {
+                               (select==4 && (startDate==undefined || endDate==undefined)) && (
+                                   <>
+                                   <center>
+                                   <Title>날짜를 입력해주세요</Title>
+                                   </center>
+                                   </>
+                               )
+                           }
                            {(select==4 && startDate!=undefined && endDate!=undefined) && (
                                <>
                                <Title>일별 매출</Title>
                                <GraphDiv style={{marginTop:'12%', minWidth:'10rem'}}>
-                                    <BChart barData={bars} legend={'43%'}/>
+                                    <BChart2 barData={bars} legend={'3%'} sp={true}/>
                                 </GraphDiv>
                                </>
                            )}
