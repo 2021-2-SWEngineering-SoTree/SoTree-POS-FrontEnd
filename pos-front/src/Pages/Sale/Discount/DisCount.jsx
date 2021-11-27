@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import React, {useState, useEffect} from 'react';
 import Sign from '../../../Assets/sign.png';
 import axios from 'axios';
+import { useRef } from 'react';
 
 
 const Templet = styled.div`
@@ -50,6 +51,9 @@ const MidBtn = styled.button`
     &:hover {
         background: #8DDEE9;
     }
+    &:focus {
+        background: #8DDEE9;
+    }
 `
 
 const BlockDiv = styled.div`
@@ -64,7 +68,7 @@ const BottomBottomRightDiv = styled.div`
     display : flex;
     flexDirection : column;
     justify-content : center;
-    margin-top : 2rem;
+    margin-top : 3vh;
 `;
 
 const BottomRightBtn = styled.button`
@@ -74,8 +78,9 @@ const BottomRightBtn = styled.button`
     font-size : 1.5rem;
     background : #474D4E;
     color : white;
-    margin-left : 3.5rem;
-    margin-right : 3.5rem;
+    margin-top : 1vh;
+    margin-left : 2vw;
+    margin-right : 2vw;
 `
 const TextDiv = styled.h2`
     margin-left : 10rem;
@@ -87,11 +92,53 @@ const ItemDiv = styled.div`
     width : 100%;
 `;
 
-const DisCount = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const DisCount = ({updateDiscount, totalPrice, setClick, setDisplay, totalDiscount}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
+    const [discountSelection, setDisCountSelection] = useState('');
+
+    const discountHandler = () =>{
+        if(totalDiscount!==0){
+            alert("먼저 적용된 할인을 취소해주세요");
+        }else{
+            if(discountSelection===''){
+                alert("적용할 할인을 선택해주세요");
+            }else{
+                let prviousPrice = totalPrice;
+                let discount_price = discountSelection < 1 ? Math.floor(totalPrice * discountSelection) : totalPrice - discountSelection;
+                let message = discountSelection < 1 ? '%할인적용' : '고정할인적용';
+                if(discount_price < 0){
+                    alert("할인금액은 총 금액을 초과할 수 없습니다.");
+                }else{
+                    updateDiscount(discount_price, prviousPrice-discount_price, message);
+                    setDisCountSelection('');
+                    exitHandler();
+                }
+            }
+        }  
+    }
     
+    const discountRollBackHandler = () =>{
+        if(totalDiscount===0){
+            updateDiscount(totalPrice,0,'');
+        }else{
+            updateDiscount(totalPrice+totalDiscount,0,'');
+        }
+    }
+    
+    const exitHandler = ()=>{
+        setDisplay && setDisplay(0);
+        !setDisplay && setClick(0);
+    }
+
+    let ref =  useRef();
       
+
+    useEffect(()=>{
+        if(discountSelection){
+            ref.current.focus();
+        }
+    },[])
     return (
         <>
             <Templet>
@@ -107,49 +154,49 @@ const DisCount = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPr
                             
                             <TextDiv style={{paddingTop:'5vh'}}>+ 전체 고정 할인</TextDiv>
                             <MidContent>
-                                    <MidBtn onClick={''}>1,000원</MidBtn>
-                                    <MidBtn onClick={''}>2,000원</MidBtn>
-                                    <MidBtn onClick={''}>3,000원</MidBtn>
-                                    <MidBtn onClick={''}>4,000원</MidBtn>
-                                    <MidBtn onClick={''}>5,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(1000)}>1,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(2000)}>2,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(3000)}>3,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(4000)}>4,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(5000)}>5,000원</MidBtn>
                             </MidContent>
                         </BlockDiv>
                         <BlockDiv>
-                            <TextDiv>+ 전체 비율 할인</TextDiv>
+                            <TextDiv style={{paddingTop:'2vh'}}>+ 전체 고정 할인</TextDiv>
                             <MidContent>
-                                    <MidBtn onClick={''}>5%</MidBtn>
-                                    <MidBtn onClick={''}>10%</MidBtn>
-                                    <MidBtn onClick={''}>15%</MidBtn>
-                                    <MidBtn onClick={''}>20%</MidBtn>
-                                    <MidBtn onClick={''}>25%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(6000)}>6,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(7000)}>7,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(8000)}>8,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(9000)}>9,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(10000)}>10,000원</MidBtn>
+                            </MidContent>
+                        </BlockDiv>
+                        <BlockDiv>
+                            <TextDiv style={{paddingTop:'2vh'}}>+ 전체 고정 할인</TextDiv>
+                            <MidContent>
+                                    <MidBtn onClick={()=>setDisCountSelection(15000)}>15,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(20000)}>20,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(30000)}>30,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(40000)}>40,000원</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(50000)}>50,000원</MidBtn>
                             </MidContent>
                         </BlockDiv>
                         <div style={{
                             textAlign : 'center',
                             width : '85%', borderBottom : '1px solid black', margin : '2rem 5rem'}}/>
                         <BlockDiv>
-                            <TextDiv>+ 선택 고정 할인</TextDiv>
+                            <TextDiv>+ 전체 비율 할인</TextDiv>
                             <MidContent>
-                                    <MidBtn onClick={''}>1,000원</MidBtn>
-                                    <MidBtn onClick={''}>2,000원</MidBtn>
-                                    <MidBtn onClick={''}>3,000원</MidBtn>
-                                    <MidBtn onClick={''}>4,000원</MidBtn>
-                                    <MidBtn onClick={''}>5,000원</MidBtn>
-                            </MidContent>
-                        </BlockDiv>
-                        <BlockDiv>
-                            <TextDiv>+ 선택 비율 할인</TextDiv>
-                            <MidContent>
-                                    <MidBtn onClick={''}>5%</MidBtn>
-                                    <MidBtn onClick={''}>10%</MidBtn>
-                                    <MidBtn onClick={''}>15%</MidBtn>
-                                    <MidBtn onClick={''}>20%</MidBtn>
-                                    <MidBtn onClick={''}>25%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(0.95)}>5%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(0.9)}>10%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(0.85)}>15%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(0.8)}>20%</MidBtn>
+                                    <MidBtn onClick={()=>setDisCountSelection(0.75)}>25%</MidBtn>
                             </MidContent>
                         </BlockDiv>
                         <BottomBottomRightDiv>
-                            <BottomRightBtn>전체 할인 취소</BottomRightBtn>
-                            <BottomRightBtn>선택 할인 취소</BottomRightBtn>
+                            <BottomRightBtn onClick={discountHandler}>전체 할인 적용</BottomRightBtn>
+                            <BottomRightBtn onClick={discountRollBackHandler}>전체 할인 취소</BottomRightBtn>
                         </BottomBottomRightDiv> 
                     </ItemDiv>
                  </Center>

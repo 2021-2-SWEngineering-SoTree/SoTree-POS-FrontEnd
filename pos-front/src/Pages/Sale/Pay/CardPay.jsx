@@ -148,7 +148,8 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
             employeeId : 1,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-            method : '카드'
+            method : '카드',
+            finalPrice : totalPrice,
         });
 
         await axios.post('http://localhost:8080/payment/makePayment',data, {
