@@ -16,6 +16,7 @@ import axios from 'axios';
 import SmallTable from "../../Components/Table/SmallTable";
 import {CardPay, MultiPay, CashPay} from './Pay';
 import SaleDefaultMenuPage from "./RightDivComponents/SaleDefaultMenuPage";
+import DisCount from "./Discount/DisCount";
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
@@ -444,23 +445,23 @@ const SalePage = () => {
 
     const minus = (a,b) => a-b;
 
-    const makeOrderHandler = (e) =>{
+    const makeOrderHandler = async (e) =>{
         e.preventDefault();
         let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
         if(deleteflag === currentOrders.length){
-            orderDeleteHandler();
+            await orderDeleteHandler();
         }else{
             if(orderId!==''){
-                updateTableOrder();
+                await updateTableOrder();
             }else{
-                makeOrder();
+                await makeOrder();
             }
         }
         navigation('/CurrentSeatInfo');
     }
 
 
-    const makeOrder = () =>{
+    const makeOrder = async() =>{
         let managerId = window.localStorage.getItem('managerId');
         const orderDetails = makeOrdetailMap(newOrders);
         const data = {
@@ -474,7 +475,7 @@ const SalePage = () => {
             orderDetails : orderDetails,
         };
         console.log(data);
-        axios.post('http://localhost:8080/order/addTableOrder', JSON.stringify(data), {
+        await axios.post('http://localhost:8080/order/addTableOrder', JSON.stringify(data), {
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
@@ -561,21 +562,21 @@ const SalePage = () => {
     }
 
 
-    const takeOutOrderHandler = () =>{
+    const takeOutOrderHandler = async () =>{
         let deleteflag = currentOrders.reduce((ac, arr)=>{return arr.quantity===0 ? ac+1 : ac+0},0)
         if(deleteflag === currentOrders.length){
-            orderDeleteHandler();
+            await orderDeleteHandler();
         }else{
             if(orderId !== ''){
-                updateTakeOutOrder();
+                await updateTakeOutOrder();
             }else{
-                makeTakeOutOrder();
+                await  makeTakeOutOrder();
             }
         }
         navigation('/CurrentSeatInfo');
     }
 
-    const makeTakeOutOrder = () =>{
+    const makeTakeOutOrder = async () =>{
         let managerId = window.localStorage.getItem('managerId');
         const orderDetails = makeOrdetailMap(newOrders);
         const data = {
@@ -588,7 +589,7 @@ const SalePage = () => {
             orderDetails : orderDetails,
         };
         console.log(data);
-        axios.post('http://localhost:8080/order/addTakeoutOrder', JSON.stringify(data), {
+        await axios.post('http://localhost:8080/order/addTakeoutOrder', JSON.stringify(data), {
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
@@ -596,7 +597,7 @@ const SalePage = () => {
         }).catch(e=>console.log(e));
     }
 
-    const updateTableOrder = ()=>{
+    const updateTableOrder = async ()=>{
         let managerId = window.localStorage.getItem('managerId');
         const orderDetails = makeOrdetailMap(currentOrders);
         const data = {
@@ -611,7 +612,7 @@ const SalePage = () => {
             orderDetails : orderDetails,
         };
         console.log(data);
-        axios.put('http://localhost:8080/order/updateTableOrder', JSON.stringify(data), {
+      await axios.put('http://localhost:8080/order/updateTableOrder', JSON.stringify(data), {
             headers : {
             "Content-Type" : `application/json`,
         }}).then((res)=>{
@@ -644,14 +645,14 @@ const SalePage = () => {
         
     }
     
-    const orderDeleteHandler = () =>{
+    const orderDeleteHandler = async () =>{
         let managerId = window.localStorage.getItem('managerId');
         const data = JSON.stringify({
             orderId : orderId,
             managerId: managerId,  
         });
         const url = seatNum < 100 ?  'http://localhost:8080/order/deleteTableOrder' : 'http://localhost:8080/order/deleteTakeoutOrder';
-        axios.delete(url, {
+       await axios.delete(url, {
             data : data,
             headers : {
             "Content-Type" : `application/json; charset=UTF-8`,
@@ -829,7 +830,7 @@ const SalePage = () => {
                             <LeftBottomTopDiv>
                                 <CircledRectButton name={'전체\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={allCancleHandler}/>
                                 <CircledRectButton name={'선택\n취소'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={selectCancleHander}/>
-                                <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'}/>
+                                <CircledRectButton name={'할인\n적용'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={(e)=>{btnClick(4)}}/>
                                 <CircledRectButton name={'수량\n변경'} size={'5rem'} size2={'5rem'} radius={'30px'} onClick={quantityChangeButtonHandler}/>
                             </LeftBottomTopDiv>
                             <Button onClick={()=>setLeftBot(true)}>결제 내역</Button>
@@ -904,7 +905,7 @@ const SalePage = () => {
                 {(click===1) && <CashPay payedPrice={payedPrice} orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                
+                {(click===4) && <DisCount orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 </RightDiv>
 
             </Div>

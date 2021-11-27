@@ -2,7 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 
 const ModalHeaderStyled = styled.div`
-    width: 40rem;
+    width: ${(props) => (props.mode === 'employee' ? '70rem' : '40rem')};
     height: 50rem;
     background-color: #474D4E;
     display: ${(props) => (props.visible ? 'block' : 'none')};
@@ -13,10 +13,11 @@ const ModalHeaderStyled = styled.div`
     z-index: 9999;
     border: 8px solid #474D4E;
     border-bottom: 0px;
+    overflow : auto;
 `;
 
 const ModalContentStyled = styled.div`
-    width: 40rem;
+    width: ${(props) => (props.mode ? '70rem' : '40rem')};
     height: 46rem;
     background-color: white;
     display: ${(props) => (props.visible ? 'block' : 'none')};
@@ -27,6 +28,7 @@ const ModalContentStyled = styled.div`
     z-index: 9999;
     border: 8px solid #474D4E;
     border-top: 0px;
+    overflow : auto;
 `;
 
 const ModalStyledContainer = styled.div`
@@ -54,7 +56,7 @@ const StringStyle = styled.div`
     font-size: 35px;
 `;
 
-const RectangleModal = ({setSelectCategory, visible, children, TitleName}) => {
+const RectangleModal = ({setSelectCategory, visible, children, TitleName, mode}) => {
 
     const cancelClickHandler = () => {
         setSelectCategory(!visible);
@@ -63,11 +65,11 @@ const RectangleModal = ({setSelectCategory, visible, children, TitleName}) => {
     return (
         <>
             <ModalStyledContainer visible={visible}>
-                <ModalHeaderStyled visible={visible}>
+                <ModalHeaderStyled visible={visible} mode = {mode}>
                     <StringStyle>{TitleName}</StringStyle>
                     <ModalRightButton onClick={cancelClickHandler}>X</ModalRightButton>
                 </ModalHeaderStyled>
-                <ModalContentStyled visible={visible}>
+                <ModalContentStyled visible={visible} mode = {mode}>
                     {children}
                 </ModalContentStyled>
             </ModalStyledContainer>
