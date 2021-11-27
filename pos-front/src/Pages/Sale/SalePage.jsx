@@ -18,6 +18,7 @@ import {CardPay, MultiPay, CashPay} from './Pay';
 import SaleDefaultMenuPage from "./RightDivComponents/SaleDefaultMenuPage";
 import DisCount from "./Discount/DisCount";
 import Event from "./Discount/Event";
+import Receipt from "./Pay/Receipt";
 
 const Div = styled.div`
     margin : 0.5rem 1rem;
@@ -909,6 +910,7 @@ const SalePage = () => {
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
                 {(click===5) && <Event orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }
+                {(click===6) && <Receipt orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }
 
                 </RightDiv>
 

@@ -180,7 +180,7 @@ const EmployeeManagementPage = () => {
                 console.log(cello);
             })
         } catch (e) {
-            console.error(e.message)
+            console.error(e.message);
         }
     }, [listOfEmployee, employeeManagementChange]);
 
@@ -204,10 +204,10 @@ const EmployeeManagementPage = () => {
                     <MintFormTable columnName={columnName} cells={cello} setGetNumber={setGetNumber} isNameButton={false}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeActivitiesListPage cello={cello}/>
+                    <EmployeeActivitiesListPage cello={cello} isNameButton={true}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}/>
+                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval} isNameButton={false}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
