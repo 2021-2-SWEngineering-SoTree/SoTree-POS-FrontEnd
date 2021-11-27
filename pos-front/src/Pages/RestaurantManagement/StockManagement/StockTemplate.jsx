@@ -83,7 +83,7 @@ const StockTemplate = () => {
     }
 
     const onClickDelete = () => {
-        if(clickedIndex){
+        if(clickedIndex >= '0'){
             setDeleteStock(!deleteStock);
         }else{
             alert("재고를 선택하고 삭제해주세요!");

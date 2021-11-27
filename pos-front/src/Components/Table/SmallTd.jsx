@@ -29,7 +29,7 @@ const SmallTd = ({rowIndex, cellIndex, menu, getIndex}) => {
                     {(index+1>menu.length)? null:menu[index].menuName}
                 </div>
                 <div>
-                    {(index+1>menu.length)? null:menu[index].price}
+                    {(index+1>menu.length)? null:menu[index].price.toLocaleString() + "원"}
                 </div>
             </div>
             </Menu>

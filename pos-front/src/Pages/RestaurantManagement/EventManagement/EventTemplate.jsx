@@ -16,7 +16,7 @@ const LeftDiv = styled.div`
     width : 50vw;
     margin : 2rem 2rem;
     gap : 1em;
-    height : 44rem;
+    height : 50vh;
     float : left;
     text-align:center; //중앙정렬
     margin-left : 12em;
@@ -40,7 +40,7 @@ const RightDiv = styled.div`
     margin : 2rem 2rem;
     flex-wrap: nowrap;
     gap: 1em;
-    height : 44rem;
+    height : 50vh;
     float:right;
     padding-top : 13rem;
     padding-left : 3rem;
@@ -62,7 +62,7 @@ const Button = styled.button`
 
 const Title=styled.div`
     margin : 1rem;
-    font-size : 2rem;
+    font-size : 2.5rem;
     font-weight : bold;
 `;
 
@@ -71,25 +71,28 @@ const TableStyle = styled.table`
     margin : 0 auto;
     margin-top : 5%;
     max-height : 5rem;
+    overflow : auto;
 `;
 
 const OrderCell = styled.td`
     color: #000000;
     font-size: 20px;
     text-align: center;
+    height : 6vh;
 `;
 
 const OrderRow = styled.tr`
     background-color: ${props => props.checked ? '#E4E6E7': '#F2F8F9'};
-    &:focus {
+    &:focus&:within {
         background: #FF0000;
-    }
+    };
 `;
 
 const ColumnCell = styled.td`
     background-color: #8DDEE9;
-    font-size: 20px;
+    font-size: 25px;
     text-align: center;
+    font-weight : bold;
 `;
 
 const EventTemplate = () => {
@@ -100,40 +103,62 @@ const EventTemplate = () => {
     const [deleteEvent, setDeleteEvent] = useState(false);
 
     //테이블에서 선택한 메뉴의 인덱스
-    const [index, setIndex]=useState(-1);
+    const [index, setIndex]=useState('');
     const [selectedEvent, setSelectedEvent]=useState('');
 
     const getIndex=(index)=>{
         setIndex(index);
     }
 
-    // useEffect(()=>{
-    //     if(index>-1 && index<categoryMenus.length) {
-    //         console.log('바뀜');
-    //         setSelectedMenu(categoryMenus[index].menuName);
-    //         setSelectedId(categoryMenus[index].id);
-    //         setSelectedPrice(categoryMenus[index].price);
-    //         setSelectedCategory(categoryMenus[index].menuCategory);
-    //     }
-    //     else {
-    //         setSelectedMenu('');
-    //         setSelectedId(-1);
-    //         setSelectedPrice(0);
-    //         setSelectedCategory('');
-    //     }
-    // },[index])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        let managerId = window.localStorage.getItem('managerId');
+        await axios.post(`http://localhost:8080/event/getAllEvent/${managerId}`,{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            setEvents(res.data);
+            console.log("가져온 Event 값 :",res.data);
+        }).catch(e=>{
+            console.log(e);
+        })
+    },[])
 
     const onClickAdd = () => {
         setAddEvent(!addEvent);
     }
 
     const onClickChange = () => {
-        setChangeEvent(!changeEvent);
+        if(index >= '0'){
+            setChangeEvent(!changeEvent);
+        }else{
+            alert("이벤트를 선택해주세요")
+        }
     }
 
     const onClickDelete = () => {
-        setDeleteEvent(!deleteEvent);
+        if(index >= '0'){
+            setDeleteEvent(!deleteEvent);
+        }else{
+            alert("이벤트를 선택해주세요")
+        }
     }
+
+    const eventSelectHandler = (index, e) =>{
+        e.preventDefault();
+        setIndex(index);
+        console.log("event Select", index)
+    }
+
+    useEffect(()=>{
+        if(index){
+            ref.current.focus();
+            console.log(ref)
+        }
+    },[index])
+
+
+    let ref = useRef();
 
     return (
         <>
@@ -142,43 +167,39 @@ const EventTemplate = () => {
             <AddEvent/>
         </MidModal>
         <MidModal visible={changeEvent}>
-            <ChangeEvent menu={selectedEvent}/>
+            <ChangeEvent event={events} index = {index === '0' ? +0 : index}/>
         </MidModal>
 
         <SmallModal visible={deleteEvent}>
-            <DeleteEvent menu={selectedEvent}/>
+            <DeleteEvent event={events} index = {index=== '0' ? +0 : index}/>
         </SmallModal>
         
         <Header text ={"이벤트 관리"} restaurantName = {localStorage.getItem('storeName')}/>
         <LeftDiv>
-            <LeftTopDiv style={{marginTop:'3%'}}>
+            <LeftTopDiv style={{marginTop:'10vh'}}>
                 <Title>현재 이벤트 목록</Title>
             </LeftTopDiv>
             <LeftBottomDiv>
                             <TableContainer style={{marginTop:'-5%',overflow: 'hidden'}}>
-                                <TableStyle style={{overflow:'auto', width:'60%'}}>
+                                <TableStyle style={{overflow:'auto', width:'80%'}}>
                                     <TableHead style={{height : '4vh'}}>
                                         <OrderRow>
                                             <ColumnCell>NO</ColumnCell>
                                             <ColumnCell>이벤트</ColumnCell>
                                             <ColumnCell>할인</ColumnCell>
+                                            <ColumnCell>최소충족금액</ColumnCell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-                                    {/* event 목록 나열.
-                                        {sales.length>0 && sales.map((cell, index) => (
+                                        {events.length>0 && events.map((cell, index) => (
                                         index<11 &&
-                                        <OrderRow style={{height : '3.8vh'}}>
+                                        <OrderRow style={{height : '3.8vh'}} onClick={(e)=>{eventSelectHandler(index,e)}} ref={ref}>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
-                                            <OrderCell>{cell.menuName}</OrderCell>
-                                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
+                                            <OrderCell>{cell.eventName}</OrderCell>
+                                            <OrderCell>{cell.eventDiscountValue === null ? cell.eventDiscountRate*100+"%" : cell.eventDiscountValue.toLocaleString()}</OrderCell>
+                                            <OrderCell>{cell.criticalPoint.toLocaleString()+"원"}</OrderCell>
                                         </OrderRow>
-                                    ))} */}
-                                    <OrderRow style={{height : '3.8vh'}}>
-                                            <OrderCell onClick={(e)=>{console.log("##")}}>1</OrderCell>
-                                            <OrderCell>{'11월 행사'}</OrderCell>
-                                            <OrderCell>{'30%'}</OrderCell>
-                                        </OrderRow>
+                                    ))}
                                     </TableBody>
                                 </TableStyle>                
                             </TableContainer>

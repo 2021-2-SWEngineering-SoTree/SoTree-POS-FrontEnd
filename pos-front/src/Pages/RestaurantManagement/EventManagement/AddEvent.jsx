@@ -24,7 +24,9 @@ const InWrapperDiv = styled.div`
 `;
 
 const InputLable = styled.label`
+    margin-top : 1.5rem;
     font-size : 1.5rem;
+    margin-right : 1.5rem;
 `;
 
 const Input = styled.input`
@@ -83,10 +85,17 @@ const Title = styled.h1`
     margin-top:-2rem;
 `
 
+const RowDiv = styled.div`
+    display : flex;
+    flexDirection : row;
+`;
+
 const AddEvent = () =>{
     const [name, setName]=useState('');
     const [price, setPrice] = useState('');
     const [percent,setPercent]=useState('');
+    const [selection, setSelection] = useState(true);
+    const [criticalPoint, setCriticalPoint] = useState('0');
     
     const checkNull = () =>{
         
@@ -104,7 +113,7 @@ const AddEvent = () =>{
 
     //퍼센트 입력
     const onChangePercent = (e)=>{
-        setPrice(+e.target.value);
+        setPercent(e.target.value);
     }
    
     const success = (e)=>{
@@ -124,20 +133,29 @@ const AddEvent = () =>{
     const addEvent = (e) =>{
 
         e.preventDefault();
-        // let managerId = window.localStorage.getItem('managerId');
-        // const data = JSON.stringify({
-        //     menuName : name,
-        //     price : price,
-        //     percent : percent
-        // });
-        // console.log(data);
-        // !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', data, {
-        //     headers : {
-        //     'Content-Type' : 'application/json',
-        // }}).then((res)=>{
-        //     console.log(res);
-        //     success();
-        // }).catch(e=>console.log(e));
+        var input;
+        let managerId = window.localStorage.getItem('managerId');
+        const data = JSON.stringify({
+            managerId : managerId,
+            eventName : name,
+            eventDiscountRate : percent,
+            criticalPoint : criticalPoint,
+        });
+        const data2 = JSON.stringify({
+            managerId : managerId,
+            eventName : name,
+            eventDiscountValue : +price,
+            criticalPoint : criticalPoint,
+        });
+        input = selection ? data : data2; 
+        console.log(input);
+        !nullCheck() ? fail() : axios.post('http://localhost:8080/event/addEvent', input, {
+            headers : {
+            'Content-Type' : 'application/json',
+        }}).then((res)=>{
+            console.log(res);
+            success();
+        }).catch(e=>console.log(e));
     };
 
     return (
@@ -150,14 +168,35 @@ const AddEvent = () =>{
                         <Input placeholder = {"이벤트 명"} style={{flexGrow:3}} onChange={onChangeName} value={name}/>
                     </WrapperDiv>
                     <WrapperDiv>
-                        <InputLable>할인 가격<span style={{marginLeft:'1rem', color:'red', fontSize:'1rem'}}>퍼센트나 가격 중 하나만 입력해주세요</span></InputLable>
-                        <InWrapperDiv>
-                        <SmallInput placeholder = {"퍼센트(%)"} onChange={onChangePrice} value={price}/>
-                        <SmallInput placeholder = {"가격(원)"} onChange={onChangePrice} value={percent}/>
-                        </InWrapperDiv>
+                        <InputLable style={{marginTop:'-2vh', marginBottom:'1vh'}}>할인 정책선택</InputLable>
+                        <div style={{display : 'flex', flexDirection:'row', }}>
+                            <input type='radio' name="eventType" id="percent" onClick={()=>setSelection(true)} checked={selection === true} style={{marginTop:'0.6vh'}}/>
+                                <label htmlFor="percent">비율할인</label>
+                            <input type="radio"  name="eventType" id="fixed" onClick={()=>setSelection(false)} checked={selection === false} style={{marginTop:'0.6vh'}}/>
+                                <label htmlFor="fixed">고정금액할인</label>
+                        </div>
+                        {selection ? 
+                            <>
+                                <RowDiv>
+                                    <InputLable>할인 비율 %&nbsp;&nbsp;&nbsp;&nbsp;</InputLable>
+                                    <SmallInput placeholder = {"0~1사이값으로 표현"} onChange={onChangePercent} value={percent} type='text' />
+                                </RowDiv>
+                            </>
+                            :
+                            <>
+                                <RowDiv>
+                                    <InputLable>고정 할인액&nbsp;&nbsp;&nbsp;&nbsp;</InputLable>
+                                    <SmallInput placeholder = {"가격(원)"} onChange={onChangePrice} value={price} type='text'/>
+                                </RowDiv>
+                            </>
+                        }
+                        <RowDiv>
+                            <InputLable>최소 충족 금액</InputLable>
+                            <SmallInput placeholder = {"원"} onChange={(e)=>setCriticalPoint(e.target.value)} value={criticalPoint}/>
+                        </RowDiv>
                     </WrapperDiv>
 
-                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em', marginTop :'3rem'}}>
+                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em', marginTop :'2vh'}}>
                         <CheckButton onClick = {addEvent}>생성</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>

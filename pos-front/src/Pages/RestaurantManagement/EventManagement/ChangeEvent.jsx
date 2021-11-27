@@ -24,7 +24,9 @@ const InWrapperDiv = styled.div`
 `;
 
 const InputLable = styled.label`
+    margin-top : 1.5rem;
     font-size : 1.5rem;
+    margin-right : 1.5rem;
 `;
 
 const Input = styled.input`
@@ -83,10 +85,17 @@ const Title = styled.h1`
     margin-top:-2rem;
 `
 
-const ChangeEvent = () =>{
+const RowDiv = styled.div`
+    display : flex;
+    flexDirection : row;
+`;
+
+const ChangeEvent = ({event, index}) =>{
     const [name, setName]=useState('');
     const [price, setPrice] = useState('');
     const [percent,setPercent]=useState('');
+    const [selection, setSelection] = useState(true);
+    const [criticalPoint, setCriticalPoint] = useState('');
     
     const checkNull = () =>{
         
@@ -104,7 +113,7 @@ const ChangeEvent = () =>{
 
     //퍼센트 입력
     const onChangePercent = (e)=>{
-        setPrice(+e.target.value);
+        setPercent(e.target.value);
     }
    
     const success = (e)=>{
@@ -121,44 +130,89 @@ const ChangeEvent = () =>{
         return true;
     }
 
-    const changeEvent = (e) =>{
+    const updateEvent = (e) =>{
 
         e.preventDefault();
-        // let managerId = window.localStorage.getItem('managerId');
-        // const data = JSON.stringify({
-        //     menuName : name,
-        //     price : price,
-        //     percent : percent
-        // });
-        // console.log(data);
-        // !nullCheck() ? fail() : axios.post('http://localhost:8080/menu/add', data, {
-        //     headers : {
-        //     'Content-Type' : 'application/json',
-        // }}).then((res)=>{
-        //     console.log(res);
-        //     success();
-        // }).catch(e=>console.log(e));
+        var input;
+        let managerId = window.localStorage.getItem('managerId');
+        const data = JSON.stringify({
+            managerId : managerId,
+            eventName : name,
+            eventDiscountRate : percent,
+            criticalPoint : criticalPoint,
+            id : event[index].id,
+        });
+        const data2 = JSON.stringify({
+            managerId : managerId,
+            eventName : name,
+            eventDiscountValue : +price,
+            criticalPoint : criticalPoint,
+            id : event[index].id,
+        });
+        input = selection ? data : data2; 
+        console.log(input);
+        !nullCheck() ? fail() : axios.put('http://localhost:8080/event/updateEvent', input, {
+            headers : {
+            'Content-Type' : 'application/json',
+        }}).then((res)=>{
+            console.log(res);
+            success();
+        }).catch(e=>console.log(e));
     };
+
+
+
+    useEffect(()=>{
+        if(index>='0'){
+            event[index].eventDiscountValue === null ? setPercent(event[index].eventDiscountRate) : setPrice(event[index].eventDiscountValue);
+            console.log("event check", event);
+            setName(event[index].eventName);
+            event[index].eventDiscountValue === null ? setSelection(true) : setSelection(false);
+            setCriticalPoint(event[index].criticalPoint)
+        }
+        
+    },[index])
 
     return (
         <>
         <PageWrapper>
-                <Title>이벤트 변경</Title>
+                <Title>이벤트 수정</Title>
                 <Form>
                     <WrapperDiv>
                         <InputLable>이벤트 명</InputLable>
-                        <Input placeholder = {""} style={{flexGrow:3}} onChange={onChangeName} value={name}/>
+                        <Input placeholder = {"이벤트 명"} style={{flexGrow:3}} onChange={onChangeName} value={name}/>
                     </WrapperDiv>
                     <WrapperDiv>
-                        <InputLable>할인 가격<span style={{marginLeft:'1rem', color:'red', fontSize:'1rem'}}>퍼센트나 가격 중 하나만 입력해주세요</span></InputLable>
-                        <InWrapperDiv>
-                        <SmallInput placeholder = {""} onChange={onChangePrice} value={price}/>
-                        <SmallInput placeholder = {""} onChange={onChangePrice} value={percent}/>
-                        </InWrapperDiv>
+                        <InputLable style={{marginTop:'-2vh', marginBottom:'1vh'}}>할인 정책선택</InputLable>
+                        <div style={{display : 'flex', flexDirection:'row', }}>
+                            <input type='radio' name="eventType" id="percent" onClick={()=>setSelection(true)} checked={selection === true} style={{marginTop:'0.6vh'}}/>
+                                <label htmlFor="percent">비율할인</label>
+                            <input type="radio"  name="eventType" id="fixed" onClick={()=>setSelection(false)} checked={selection === false} style={{marginTop:'0.6vh'}}/>
+                                <label htmlFor="fixed">고정금액할인</label>
+                        </div>
+                        {selection ? 
+                            <>
+                                <RowDiv>
+                                    <InputLable>할인 비율 %&nbsp;&nbsp;&nbsp;&nbsp;</InputLable>
+                                    <SmallInput placeholder = {"0~1사이값으로 표현"} onChange={onChangePercent} value={percent} type='text' />
+                                </RowDiv>
+                            </>
+                            :
+                            <>
+                                <RowDiv>
+                                    <InputLable>고정 할인액&nbsp;&nbsp;&nbsp;&nbsp;</InputLable>
+                                    <SmallInput placeholder = {"가격(원)"} onChange={onChangePrice} value={price} type='text'/>
+                                </RowDiv>
+                            </>
+                        }
+                        <RowDiv>
+                            <InputLable>최소 충족 금액</InputLable>
+                            <SmallInput placeholder = {"원"} onChange={(e)=>setCriticalPoint(e.target.value)} value={criticalPoint}/>
+                        </RowDiv>
                     </WrapperDiv>
 
-                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em', marginTop :'3rem'}}>
-                        <CheckButton onClick = {changeEvent}>생성</CheckButton>
+                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em', marginTop :'2vh'}}>
+                        <CheckButton onClick = {updateEvent}>수정</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>
                 </Form>

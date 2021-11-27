@@ -803,8 +803,8 @@ const SalePage = () => {
                                             <OrderCell>{cell.name}</OrderCell>
                                             <OrderCell>{cell.price.toLocaleString()}</OrderCell>
                                             <OrderCell>{cell.quantity}</OrderCell>
-                                            <OrderCell>{cell.discount}</OrderCell>
-                                            <OrderCell>{cell.totalprice}</OrderCell>
+                                            <OrderCell>{cell.discount.toLocaleString()}</OrderCell>
+                                            <OrderCell>{cell.totalprice.toLocaleString()}</OrderCell>
                                             <OrderCell>{cell.message}</OrderCell>
                                         </OrderRow>
                                         : null
@@ -817,9 +817,9 @@ const SalePage = () => {
                                 <TableHead>
                                     <ResultRow>
                                         <th style ={{width:'43%', color:'white'}}>합계</th>
-                                        <th style ={{width:'10%', color:'white'}}>{totalAmount}</th>
-                                        <th style ={{width:'10%', color:'white'}}>{totalDiscount}</th>
-                                        <th style ={{width:'16%', color:'white'}}>{totalPrice}</th>
+                                        <th style ={{width:'10%', color:'white'}}>{totalAmount.toLocaleString()}</th>
+                                        <th style ={{width:'10%', color:'white'}}>{totalDiscount.toLocaleString()}</th>
+                                        <th style ={{width:'16%', color:'white'}}>{totalPrice.toLocaleString()}</th>
                                         <th style ={{width:'16%', color:'white'}}>{discountMessage}</th>
                                     </ResultRow>
                                 </TableHead>
@@ -843,11 +843,11 @@ const SalePage = () => {
                                 <InfoContent>
                                     <b>Payment Requirement</b>
                                 </InfoContent>
-                                <InfoSpace name={'총 금 액'} value={totalPrice+totalDiscount} color={'white'}/>
-                                <InfoSpace name={'할인금액'} value={totalDiscount} color={'white'}/>
-                                <InfoSpace name={'받을금액'} value={nottotalPrice} color={'yellow'}/>
-                                <InfoSpace name={'받은금액'} value={payedPrice} color={'white'}/>
-                                <InfoSpace name={'거스름돈'} value={totalPrice===payedPrice?'0':minus(payedPrice,nottotalPrice)>0 ? minus(payedPrice,nottotalPrice):'0'} color={'yellow'}/> 
+                                <InfoSpace name={'총 금 액'} value={(totalPrice+totalDiscount).toLocaleString()} color={'white'}/>
+                                <InfoSpace name={'할인금액'} value={totalDiscount.toLocaleString()} color={'white'}/>
+                                <InfoSpace name={'받을금액'} value={nottotalPrice.toLocaleString()} color={'yellow'}/>
+                                <InfoSpace name={'받은금액'} value={payedPrice.toLocaleString()} color={'white'}/>
+                                <InfoSpace name={'거스름돈'} value={totalPrice===payedPrice?'0':minus(payedPrice,nottotalPrice)>0 ? minus(payedPrice,nottotalPrice).toLocaleString():'0'} color={'yellow'}/> 
                                 </>
                             )}
 
@@ -908,7 +908,7 @@ const SalePage = () => {
                 {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
-                {(click===5) && <Event orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }
+                {(click===5) && <Event totalPrice={totalPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount} /> }
 
                 </RightDiv>
 

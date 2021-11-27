@@ -26,7 +26,11 @@ const EventCell = styled.td`
 
 // tr style
 const EventRow = styled.tr`
-    background-color: #FFFFFF
+    background-color: #FFFFFF;
+    height : 4vh;
+    &:focus {
+        background-color : #FF0000;
+    }
 `;
 
 // table style
@@ -42,7 +46,7 @@ const TableButton = styled.button`
     background-color: aliceblue;
 `;
 
-const EventTable = ({columnName, cells, eventApply, setEventId}) => {
+const EventTable = ({columnName, cells, eventApply, setEventId, selectIndex}) => {
 
     //----------------- check box ---------------------------------------------------
 
@@ -65,26 +69,39 @@ const EventTable = ({columnName, cells, eventApply, setEventId}) => {
                 </EventCell>)
         )
     }
+    
+    const ClickHandler = (index,e)=>{
+        e.preventDefault();
+        selectIndex(index);
+    }
 
     // choice 봐야됨.
     return (
-        <TableContainer component={Paper} margin='10px'>
-            <EventTableStyle>
-                <TableHead>
-                    <EventRow>
-                        {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>
-                            <ColumnCell key={i}>{columnName[i]}</ColumnCell>)}
-                    </EventRow>
-                </TableHead>
-                <TableBody >
-                    {Array(cells.length).fill(undefined, undefined, undefined).map((td, i)=>
-                        <EventRow key={i}>
-                            {showRow(cells[i], i)}
-                        </EventRow>)
-                    }
-                </TableBody>
-            </EventTableStyle>
-        </TableContainer>
+        cells ? 
+        <>
+            <TableContainer component={Paper} margin='10px'>
+                <EventTableStyle>
+                    <TableHead>
+                        <EventRow>
+                            {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>
+                                <ColumnCell key={i}>{columnName[i]}</ColumnCell>)}
+                        </EventRow>
+                    </TableHead>
+                    <TableBody >
+                        {cells.length ===0 ? <EventCell>이벤트가 존재하지 않습니다.</EventCell> : null}
+                        {cells.map((td, i)=>
+                            <EventRow key={i} onClick={(e)=>{ClickHandler(i,e)}}>
+                                <EventCell>{i+1}</EventCell>
+                                <EventCell>{td.eventName}</EventCell>
+                                <EventCell>{td.eventDiscountRate === null ? td.eventDiscountValue.toLocaleString()+"원" : td.eventDiscountRate*100 + "%"}</EventCell>
+                                <EventCell>{td.criticalPoint.toLocaleString()}원</EventCell>
+                            </EventRow>)
+                        }
+                    </TableBody>
+                </EventTableStyle>
+            </TableContainer>
+        </>
+        : null
     );
 };
 
