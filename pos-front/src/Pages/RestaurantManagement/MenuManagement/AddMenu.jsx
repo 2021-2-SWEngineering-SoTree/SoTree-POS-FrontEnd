@@ -102,7 +102,7 @@ const Title = styled.h1`
 const AddMenu = () =>{
     const [name, setName]=useState('');
     const [category, setCategory] = useState('');
-    const [price, setPrice] = useState(null);
+    const [price, setPrice] = useState();
     const [ingredients,setIngredients]=useState([
         {
             ingredientName:'',
@@ -164,7 +164,7 @@ const AddMenu = () =>{
 
     //가격 입력
     const onChangePrice = (e)=>{
-        setPrice(+e.target.value);
+        setPrice(e.target.value);
     }
 
     //카테고리 선택
@@ -223,7 +223,7 @@ const AddMenu = () =>{
         }}).then((res)=>{
             console.log(res);
             success();
-        }).catch(e=>console.log(e));
+        }).catch(e=>fail());
     };
 
     return (
