@@ -167,7 +167,7 @@ const AddStock = ({onClickAdd}) => {
                         <InputLable>담당
                             <CategorySelector value={select} onChange={handleChange}>
                                 {Array(cello.length).fill(undefined, undefined, undefined).map((index, i) =>
-                                    <option key={i} value={cello[i].EmployeeId !== undefined ? cello[i].EmployeeId: cello[i].ManagerId}>{cello[i].personName}</option>)}
+                                    <option key={i} value={cello[i].EmployeeId !== undefined ? cello[i].EmployeeId: -1}>{cello[i].personName}</option>)}
                             </CategorySelector>
                             <CheckButton onClick = {handleClick}>추가</CheckButton>
                             <CheckButton>닫기</CheckButton>
