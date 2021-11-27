@@ -107,7 +107,7 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
                     time: date,
                     branchId: managerId
                 }
-                await axios.post('http://localhost:8080/recordCome', JSON.stringify(arrivalData),
+                await axios.post('http://localhost:8080/commute/recordCome', JSON.stringify(arrivalData),
                     {headers: {"Content-Type": `application/json`,}}).then((res) => {
                     console.log(res);
                     alert("출근 추가 되었음");
@@ -133,7 +133,7 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
                     time: date,
                     branchId: managerId
                 }
-                await axios.post('http://localhost:8080/recordOut', JSON.stringify(leaveDate),
+                await axios.post('http://localhost:8080/commute/recordOut', JSON.stringify(leaveDate),
                     { headers: {"Content-Type" : `application/json`,}}).then((res)=>{
                         console.log(res);
                         alert("퇴근 추가 되었음");

@@ -206,7 +206,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
                     </div>
                 </div>
             </div>
-            <div style={{overFlow: "scroll"}}>
+            <div>
                 <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}/>
             </div>
         </>
