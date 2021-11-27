@@ -44,31 +44,33 @@ const Input = styled.input`
 `;
 
 
-const DeleteMenu=({event})=>{
-
-    const [ingredients,setIngredients]=useState([]);
-    const [check,setCheck]=useState(false);
-
-    useEffect(()=>{
-    },[]);
+const DeleteMenu=({event, index})=>{
 
     const success = (e)=>{
         alert('이벤트가 삭제되었습니다');
-        window.location.replace("/restaurantManagement/menu")
+        window.location.replace("/restaurantManagement/event")
     }
 
     const fail = () =>{
         alert('이벤트를 삭제할 수 없습니다');
     }
 
-    const handleCheck = async(e)=>{
-        e.preventDefault();
-        setCheck(!check);
-    }
-
     const handleClick = async (e) =>{
         e.preventDefault();
-        let managerId = window.localStorage.getItem('managerId');
+        if(window.confirm("정말로 삭제하시겠습니까?")){
+            let id = index>='0' ? event[index].id : '';
+            let managerId = window.localStorage.getItem('managerId');
+            await axios.delete(`http://localhost:8080/event/deleteEvent/${managerId}/${id}`,
+                null,{
+                    headers : {
+                        "Content-Type": `application/json`,
+                    }
+            }).then((res) => {
+                console.log(res);
+                success();
+            }).catch(e=>{console.log(e.message); fail();})
+        }else{
+        }
     };  
 
     return(
@@ -76,16 +78,15 @@ const DeleteMenu=({event})=>{
         <Form>
         <Title>이벤트 삭제</Title>
         <Text>
-        <Menu>{event ? event : '이벤트 선택 필수!'}</Menu><TextByMenu>{event?'이벤트를':''}</TextByMenu>
+        <Menu>{index>='0' && event[index].eventName}</Menu><TextByMenu>{index>='0' ? '이벤트를':''}</TextByMenu>
         </Text>
         <UnderText>
-            {event?'선택하신 게 맞습니까':'삭제할 이벤트를 선택해주세요!'}
-            {event && <Input type="checkbox" checked={check} onChange={handleCheck} />}
+            {index>='0' ?'삭제하시겠습니까?':'삭제할 메뉴를 선택해주세요!'}
         </UnderText>
-        <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
-            {event && <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>}
-            <ModalButton name={'닫기'}></ModalButton>
-        </div>
+            <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
+                {event && <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>}
+                <ModalButton name={'닫기'}></ModalButton>
+            </div> 
         </Form>
         </>
     )

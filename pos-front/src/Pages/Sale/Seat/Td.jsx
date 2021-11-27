@@ -77,7 +77,7 @@ const Td = ({rowIndex, cellIndex, size, top, tableData}) => {
                     </>
                     : Array(3).fill().map(()=><><li style={{display:'flex', justifyContent:'space-between'}}><dv style={{height:'100%'}}><br/></dv></li></>)}
                     <div>
-                        <div style={{textAlign:'right', marginRight:'2rem'}}>전체 가격 : {tableData.length > index ? tableData[index].totalPrice > 0 ? tableData[index].totalPrice+"원" : "0원" : "0원"}</div>
+                        <div style={{textAlign:'right', marginRight:'2rem'}}>전체 가격 : {tableData.length > index ? tableData[index].totalPrice > 0 ? tableData[index].totalPrice.toLocaleString()+"원" : "0원" : "0원"}</div>
                     </div>
                 </div>
             </Seat>

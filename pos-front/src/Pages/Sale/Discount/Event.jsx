@@ -30,7 +30,7 @@ const Center = styled.div`
 `;
 
 const Content = styled.div`
-    width : 60%;
+    width : 80%;
     height : 80%;
     margin : 0 auto;
 `
@@ -38,25 +38,16 @@ const Content = styled.div`
 const TopContent = styled.div`
     height : 55%;
     width : 100%;
-    border-bottom : 1px solid black;
     align-items : center;
-    justify-content : center;
-    margin-left : -4%;
-    
+    justify-content : center;    
 `;
 
 const BottomContent = styled.div`
-    height : auto;
-    width : auto;
-    padding-top: 2.0rem;
+    width : 100%;
+    display : flex;
+    justify-content : center;
+    margin-top : 3vh;
 `;
-
-const BottomInContent = styled.div`
-    width : 73%;
-    height : 60%;
-    margin : 0 auto;
-    margin-top : 9%;
-`
 
 const BottomRightBtn = styled.button`
     height : 8vh;
@@ -67,6 +58,7 @@ const BottomRightBtn = styled.button`
     color : white;
     margin-left : 3.5rem;
     margin-right : 3.5rem;
+
 `
 const TextDiv = styled.h2`
     width : 100%;
@@ -76,41 +68,86 @@ const CreateRowData = (number, list) => {
     return [number, list];
 }
 
-const Event = ({orderId, totalPrice, setClick}) => {
+const Event = ({updateDiscount, totalPrice, setClick,totalDiscount}) => {
 
+    const [events, setEvents] = useState([]);
     const [discountPrice, setDiscountPrice] = useState(totalPrice);
     const [eventId, setEventId] = useState(-1);
-    const columnName = ['번호', '이벤트 목록'];
-    const Dummy = [
-        CreateRowData(1, '더미 이벤트1'),
-        CreateRowData(2, '더미2'),
-        CreateRowData(3, '더미 이벤트3'),
-        CreateRowData(4, '더미4'),
-        CreateRowData(5, '5월 이벤트'),
-        CreateRowData(6, '10월 이벤트'),
-        CreateRowData(7, '더미 이벤트'),
-        CreateRowData(8, '더미 이벤트'),
-        CreateRowData(9, '더미 이벤트'),
-        CreateRowData(10, '더미 이벤트'),
+    const [selectIndex, setSelectIndex] = useState('');
+    const columnName = ['번호', '이벤트 이름', '할인가격','최소 충족 금액'];
 
-    ];
+    const [totalprice,setTotalprice]=useState(totalPrice);
 
+    const discountHandler = () =>{
+        if(totalDiscount!==0){
+            alert("먼저 적용된 할인을 취소해주세요");
+        }else{
+            if(selectIndex===''){
+                alert("적용할 할인을 선택해주세요");
+            }else{
+                if(events[selectIndex].criticalPoint > totalPrice+totalDiscount){
+                    alert("최소 충족 금액을 만족해야합니다!")
+                }else{
+                    let prviousPrice = totalPrice;
+                    let discount_price = events[selectIndex].eventDiscountRate !== null ? Math.floor(totalPrice * (1-events[selectIndex].eventDiscountRate)) : totalPrice - events[selectIndex].eventDiscountValue;
+                    let message = events[selectIndex].eventDiscountRate !== null ? '%할인적용' : '고정할인적용';
+                    if(discount_price < 0){
+                        alert("할인금액은 총 금액을 초과할 수 없습니다.");
+                    }else{
+                        updateDiscount(discount_price, prviousPrice-discount_price, message);
+                        setSelectIndex('');
+                        setClick(0);
+                    }
+                }
+            }
+        }  
+    }
+
+    const discountRollBackHandler = () =>{
+        if(totalDiscount===0){
+            updateDiscount(totalPrice,0,'');
+        }else{
+            updateDiscount(totalPrice+totalDiscount,0,'');
+        }
+    }
 
     const eventCancel=()=>{
         // 이벤트 아이디로 선택된 value 값 취소 시키는 초기화 시키는 과정.
-        setDiscountPrice(0);
+        discountRollBackHandler();
+        setSelectIndex('');
+        
     }
 
     const eventApply=()=>{
         // 이벤트 아이디로 선택된 이벤트 값 가져오기.
         // EventTable 에서 eventId 변경되서 가져옴.
+        if(selectIndex>='0'){
+            discountHandler();
+        }else{
+            alert("적용할 이벤트를 선택하세요!");
+        }
     }
 
-    useEffect(()=>{
-
-    },[]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+        let managerId = window.localStorage.getItem('managerId');
+        await axios.post(`http://localhost:8080/event/getAllEvent/${managerId}`,{
+            headers : {
+            "Content-Type" : `application/json`,
+        }}).then((res)=>{
+            setEvents(res.data);
+            console.log("가져온 Event 값 :",res.data);
+        }).catch(e=>{
+            console.log(e);
+        })
+    },[])
 
     const [display,setDisplay]=useState(0);
+
+    const indexHandler = (index) =>{
+        setSelectIndex(index);
+        console.log("index Check", index);
+    }
 
     return (
         <>
@@ -124,12 +161,12 @@ const Event = ({orderId, totalPrice, setClick}) => {
                         <TextDiv style={{paddingTop:'5vh'}}>+ 진행중인 이벤트</TextDiv>
                         <TopContent style={{overflow: 'auto'}}>
                             <div >
-                                <EventTable columnName={columnName} cells={Dummy} setEventId={setEventId} eventApply={eventApply}/>
+                                <EventTable columnName={columnName} cells={events} setEventId={setEventId} eventApply={eventApply} selectIndex={indexHandler} />
                             </div>
                         </TopContent>
                         <BottomContent>
-                            <BottomRightBtn onClick={eventCancel}>이벤트 적용<br/> 취소</BottomRightBtn>
-                            <BottomRightBtn onClick={eventApply}>이벤트 적용<br/> 확인</BottomRightBtn>
+                            <BottomRightBtn onClick={eventApply}>이벤트 적용</BottomRightBtn>
+                            <BottomRightBtn onClick={eventCancel}>이벤트 적용 취소</BottomRightBtn>
                         </BottomContent>
                     </Content>
                 </Center>
