@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import ModalButton from "../../Components/Button/ModalButton";
 import MintFormTable from "../../Components/Table/MintFormTable";
 import axios from "axios";
+import Spinner from "../../Components/Spinner/Spinner"
 
 
 // input data format (직원 활동 리스트)
@@ -24,6 +25,8 @@ const CreateStockRowData = (number, name, stockNum, stockName, changeAmount, aft
 
 
 const EmployeeActivitiesListPage = ({cello}) => {
+
+    const [loading, setLoading] = useState(false);
 
     const yearList = [2021, 2022];
     const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -56,14 +59,21 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
     const [changeCello, setChangeCells] = useState([]);   // 테이블 안에 값이 바뀜.
     const [changeTable, setChangeTable] = useState([]);     // 테이블 컬럼 명이 바뀜.
+    const [emptyFlag, setEmptyFlag] = useState(false);
+
     const [selectMonth, setSelectMonth] = useState(currentMonth);      // 선택된 월
     const [selectDay, setSelectDay] = useState(currentDay);
     const [selectYear, setSelectYear] = useState(currentYear);
     const [criterion, setCriterion] = useState("COME");
+    const [sorted, setSorted] = useState(false);
+    const [sortedCategoryCello, setSortedCategoryCello] = useState([]);
+    const [saveChangeCello, setSaveChangeCello] = useState([]);
+    const [sortedCategory, setSortedCategory] = useState(0);
 
     const changeState = (cellsElement, tableNameElement) => {
         setChangeCells(cellsElement);
         setChangeTable(tableNameElement);
+        setSaveChangeCello(cellsElement);
     }
 
     const formatOfTime = (year, month, day) => {
@@ -88,6 +98,9 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
     useEffect(async () => {
         try {
+            if (sorted) {
+                setSorted(false);
+            }
             console.log("effect year: ", selectYear);
             console.log("effect month: ", selectMonth);
             console.log("effect day: ", selectDay);
@@ -101,53 +114,58 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
             let cells = [];
             if(result.data[0] === undefined) {
-                changeState([], ['데이터가 존재하지 않습니다.'])
+                changeState([''], [''])
+                setEmptyFlag(true);
             }
-            let keys = Object.keys(result.data[0]);
-            console.log("keys: ",keys);
+            else {
+                setEmptyFlag(false)
+                let keys = Object.keys(result.data[0]);
 
-            if (criterion === "COME") {
-                for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreateArrivalRowData(i+1, result.data[i][keys[0]],
-                        result.data[i][keys[1]], result.data[i][keys[2]], '직원'));
+                console.log("keys: ",keys);
+
+                if (criterion === "COME") {
+                    for (let i = 0 ; i < result.data.length; i++){
+                        cells.push( CreateArrivalRowData(i+1, result.data[i][keys[0]],
+                            result.data[i][keys[1]], result.data[i][keys[2]], '직원'));
+                    }
+                    changeState(cells, arriveColumnName);
                 }
-                changeState(cells, arriveColumnName);
-            }
-            if (criterion === "OUT") {
-                for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreateLeaveRowData(i+1, result.data[i][keys[0]],
-                        result.data[i][keys[1]], result.data[i][keys[2]], '직원'));
+                if (criterion === "OUT") {
+                    for (let i = 0 ; i < result.data.length; i++){
+                        cells.push( CreateLeaveRowData(i+1, result.data[i][keys[0]],
+                            result.data[i][keys[1]], result.data[i][keys[2]], '직원'));
+                    }
+                    changeState(cells, leaveColumnName);
                 }
-                changeState(cells, leaveColumnName);
-            }
-            if (criterion === "PAY") {
-                for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreatePaymentRowData(i+1, result.data[i][keys[3]],
-                        result.data[i][keys[4]], result.data[i][keys[5]], result.data[i][keys[1]],
-                        result.data[i][keys[0]]));
+                if (criterion === "PAY") {
+                    for (let i = 0 ; i < result.data.length; i++){
+                        cells.push( CreatePaymentRowData(i+1, result.data[i][keys[3]],
+                            result.data[i][keys[4]], result.data[i][keys[5]], result.data[i][keys[1]],
+                            result.data[i][keys[0]]));
+                    }
+                    changeState(cells, paymentColumnName);
                 }
-                changeState(cells, paymentColumnName);
-            }
-            if (criterion === "ORDER") {
-                for (let i = 0 ; i < result.data.length; i++){
-                    cells.push( CreateOrderRowData(i+1, result.data[i][keys[3]],
-                        result.data[i][keys[2]], result.data[i][keys[0]], result.data[i][keys[1]]));
+                if (criterion === "ORDER") {
+                    for (let i = 0 ; i < result.data.length; i++){
+                        cells.push( CreateOrderRowData(i+1, result.data[i][keys[3]],
+                            result.data[i][keys[2]], result.data[i][keys[0]], result.data[i][keys[1]]));
+                    }
+                    changeState(cells, orderColumnName);
                 }
-                changeState(cells, orderColumnName);
-            }
-            if (criterion === "STOCK") {
-                for (let i = 0 ; i < result.data.length; i++) {
-                    cells.push( CreateStockRowData(i+1, result.data[i][keys[4]],
-                        result.data[i][keys[0]], result.data[i][keys[2]], result.data[i][keys[5]],
-                        result.data[i][keys[3]]))
+                if (criterion === "STOCK") {
+                    for (let i = 0 ; i < result.data.length; i++) {
+                        cells.push( CreateStockRowData(i+1, result.data[i][keys[4]],
+                            result.data[i][keys[0]], result.data[i][keys[2]], result.data[i][keys[5]],
+                            result.data[i][keys[3]]))
+                    }
+                    changeState(cells, stockColumnName);
                 }
-                changeState(cells, stockColumnName);
             }
+            setLoading(true);
         } catch (e) {
             console.error(e.message)
         }
     }, [selectYear, selectMonth, selectDay, criterion, cello]);
-
 
     const onClickEmployeeListArrival = async () => { setCriterion("COME"); }    // COME
     const onClickEmployeeListLeave = async () => { setCriterion("OUT"); }       // OUT
@@ -173,7 +191,39 @@ const EmployeeActivitiesListPage = ({cello}) => {
         console.log("선택된 일(day): ", e.target.value);
         setSelectDay(e.target.value);
     }
+    // sorted
+    const copySorted = (arr, i) =>{
+        return arr.slice().sort((a, b) => {
+            return a[i] < b[i] ? -1 : a[i] > b[i] ? 1 : 0;
+        });
+    }
 
+    useEffect(async () => {
+
+    }, [loading])
+
+    useEffect(async () => {
+        console.log("2번째 useEffect sortedCategoryCello 값: ", sortedCategoryCello);
+        setSaveChangeCello(changeCello);
+        await setSortedCategoryCello(copySorted(saveChangeCello, sortedCategory));
+    }, [sortedCategory, sorted])
+
+    useEffect(async () => {
+        if (!sorted) {
+            await setChangeCells(sortedCategoryCello);
+        }
+        else {
+            // 원래대로
+            await setChangeCells(saveChangeCello);
+        }
+    },[sortedCategoryCello])
+
+    const sortedClickHandler = async(i) => {
+        console.log("이름순 정렬 클릭");
+        setSortedCategory(i);
+        await setSorted(sorted);
+    }
+    //
     return (
         <>
             <div>
@@ -206,9 +256,12 @@ const EmployeeActivitiesListPage = ({cello}) => {
                     </div>
                 </div>
             </div>
+            {!loading ? <Spinner/> :
             <div>
-                <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}/>
-            </div>
+                <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}
+                               sortedClickHandler={sortedClickHandler} sorted={sorted}
+                               emptyFlag={emptyFlag}/>
+            </div>}
         </>
     )
 }
