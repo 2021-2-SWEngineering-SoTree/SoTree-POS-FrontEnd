@@ -87,7 +87,7 @@ const SaleDefaultMenuPage = ({onClickCategoryButton, categoryMenus, getIndex, ma
                         <BottomButton onClick={()=>btnClick(2)}><GiMoneyStack/>신용카드</BottomButton>
                         <BottomButton onClick={()=>btnClick(3)}>복합결제</BottomButton>
                         <BottomButton onClick={backClickHandler}><IoMdArrowRoundBack/>돌아가기</BottomButton>
-                        <BottomButton>영수증관리</BottomButton>
+                        <BottomButton onClick={()=>btnClick(6)}>영수증관리</BottomButton>
                         <BottomButton>음식완성알림</BottomButton>
         </RightBottomDiv>
         </>
