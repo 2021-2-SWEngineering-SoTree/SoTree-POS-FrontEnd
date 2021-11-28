@@ -103,6 +103,7 @@ const EmployeeManagementPage = () => {
     const [getNumber, setGetNumber] = useState(-1);
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
     const [celloApproval, setCelloApproval] = useState([]);
+    const [emptyApprovalFlag, setEmptyApprovalFlag] = useState(false);
 
     const [listOfEmployee,  setEmployeeList] = useState(1);  // 버튼 클릭시 LeftDiv 의 변경
 
@@ -138,6 +139,9 @@ const EmployeeManagementPage = () => {
         || employeeManagementChange === 2) ? 3 : 1);
         setEmployeeList((listOfEmployee === 1
             || listOfEmployee === 2) ? 3 : 1);
+        if (celloApproval.length === 0) {
+            setEmptyApprovalFlag(true);
+        }
     }
 
     const onClickName = () => {
@@ -220,10 +224,12 @@ const EmployeeManagementPage = () => {
                     }
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeActivitiesListPage cello={cello} isNameButton={true}/>
+                    <EmployeeActivitiesListPage cello={cello}
+                                                isNameButton={true}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval} isNameButton={false}/>
+                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}
+                                          emptyApprovalFlag={emptyApprovalFlag} isNameButton={false}/>
                 </LeftDiv>
                 <RightDiv>
                     <InnerRightDiv>
