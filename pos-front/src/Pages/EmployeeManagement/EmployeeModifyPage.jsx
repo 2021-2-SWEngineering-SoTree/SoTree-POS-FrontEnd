@@ -12,11 +12,9 @@ const Div = styled.div`
 `;
 const PageWrapper = styled.div`
     justify-content : center;
-    margin : 2rem;
     height : 70vh;
     display : flex;
     margin : 0 auto;
-    margin-top:4%;
 `;
 
 const WrapperDiv = styled.div`
@@ -212,7 +210,7 @@ const EmployeeModifyPage = ({}) => {
                         <InputLable>ID</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', flexGrow: 1}}>
                         <Input type = "text" placeholder = {"아이디"} style={{flexGrow:3}}
-                            value={id}
+                            value={id || ''}
                             onKeyPress={(e)=> {if(e.key === 'Enter') nameRef.current.focus();}}
                             disabled/>
                         </div>
@@ -220,7 +218,7 @@ const EmployeeModifyPage = ({}) => {
                     <WrapperDiv>
                         <InputLable >성명</InputLable>
                         <Input type = "text" placeholder = {"성명"} ref={nameRef}
-                        value={name} onChange={(e)=>setName(e.target.value)}
+                        value={name || ''} onChange={(e)=>setName(e.target.value)}
                         onKeyPress={(e)=> {if(e.key === 'Enter') yearRef.current.focus();}}
                         />
                     </WrapperDiv>
@@ -228,13 +226,13 @@ const EmployeeModifyPage = ({}) => {
                         <InputLable >생년월일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
                             <Input  type = "text" placeholder = {"년(4자)"}
-                            value={year}
+                            value={year || ''}
                             ref={yearRef}
                             onChange={(e)=>setYear(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') monthRef.current.focus();}}
                             />
                             <MonthSelector id="mm" 
-                            value={month}
+                            value={month || ''}
                             ref={monthRef}
                             onChange={(e)=> {setMonth(e.target.value)}}
                             onKeyPress={(e)=> {if(e.key === 'Enter') dayRef.current.focus();}}
@@ -254,7 +252,7 @@ const EmployeeModifyPage = ({}) => {
                                     <option value="12">12</option>
                                 </MonthSelector>
                             <Input type = "text" placeholder = {"일"}
-                            value={day}
+                            value={day || ''}
                             ref={dayRef}
                             onChange={(e)=>setDay(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') firstRef.current.focus();}}
@@ -265,21 +263,21 @@ const EmployeeModifyPage = ({}) => {
                         <InputLable>전화번호</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row', alignItems:'center'}}>
                             <Input type = 'text' style={{width:'11.5rem'}}
-                            value = {first}
+                            value = {first || ''}
                             ref={firstRef}
                             onChange={(e)=>setFirst(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') middleRef.current.focus();}}
                             />
                             <TextDiv>-</TextDiv>
                             <Input type = "text" placeholder = {"1234"} style={{width:'12rem'}}
-                            value={middle}
+                            value={middle || ''}
                             ref={middleRef}
                             onChange={(e)=>setMiddle(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') lastRef.current.focus();}}
                             />
                             <TextDiv>-</TextDiv>
                             <Input type = "text" placeholder = {"5678"} style={{width:'12rem'}} 
-                            value={last}
+                            value={last || ''}
                             ref={lastRef}
                             onChange={(e)=>setLast(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') emailNameRef.current.focus();}}
@@ -290,14 +288,14 @@ const EmployeeModifyPage = ({}) => {
                         <InputLable>이메일</InputLable>
                         <div style={{display : 'flex', flexDirection : 'row'}}>
                             <Input type = "text" placeholder = {"admin12"} style={{width:'19.2rem'}} 
-                            value={emailName}
+                            value={emailName || ''}
                             ref={emailNameRef}
                             onChange={(e)=>setEmailName(e.target.value.trim())}
                             onKeyPress={(e)=> {if(e.key === 'Enter') emailAddressRef.current.focus();}}
                             />
                             <TextDiv> @ </TextDiv>
                             <Input type = "text" placeholder = {"naver.com"} style={{width:'19.15rem'}} 
-                            value={emailAddress}
+                            value={emailAddress || ''}
                             ref={emailAddressRef}
                             onChange={(e)=>setEmailAddress(e.target.value.trim())}
                             />

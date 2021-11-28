@@ -65,15 +65,14 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const [selectDay, setSelectDay] = useState(currentDay);
     const [selectYear, setSelectYear] = useState(currentYear);
     const [criterion, setCriterion] = useState("COME");
-    const [sorted, setSorted] = useState(false);
     const [sortedCategoryCello, setSortedCategoryCello] = useState([]);
     const [saveChangeCello, setSaveChangeCello] = useState([]);
-    const [sortedCategory, setSortedCategory] = useState(0);
+    const [sortedCategory, setSortedCategory] = useState(-1);
 
     const changeState = (cellsElement, tableNameElement) => {
         setChangeCells(cellsElement);
         setChangeTable(tableNameElement);
-        setSaveChangeCello(cellsElement);
+        setSaveChangeCello(copySorted(cellsElement, sortedCategory));
     }
 
     const formatOfTime = (year, month, day) => {
@@ -98,9 +97,6 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
     useEffect(async () => {
         try {
-            if (sorted) {
-                setSorted(false);
-            }
             console.log("effect year: ", selectYear);
             console.log("effect month: ", selectMonth);
             console.log("effect day: ", selectDay);
@@ -200,29 +196,22 @@ const EmployeeActivitiesListPage = ({cello}) => {
     }
 
     useEffect(async () => {
-
-    }, [loading])
+        await sortedClickHandler(0);
+    }, [loading, changeTable])
 
     useEffect(async () => {
         console.log("2번째 useEffect sortedCategoryCello 값: ", sortedCategoryCello);
-        setSaveChangeCello(changeCello);
         await setSortedCategoryCello(copySorted(saveChangeCello, sortedCategory));
-    }, [sortedCategory, sorted])
+        setSaveChangeCello(changeCello);
+    }, [sortedCategory])
 
     useEffect(async () => {
-        if (!sorted) {
-            await setChangeCells(sortedCategoryCello);
-        }
-        else {
-            // 원래대로
-            await setChangeCells(saveChangeCello);
-        }
+        await setChangeCells(sortedCategoryCello);
     },[sortedCategoryCello])
 
     const sortedClickHandler = async(i) => {
         console.log("이름순 정렬 클릭");
         setSortedCategory(i);
-        await setSorted(sorted);
     }
     //
     return (
@@ -237,22 +226,22 @@ const EmployeeActivitiesListPage = ({cello}) => {
                 </div>
                 <div>
                     <div style={{float: 'Right', margin: '1.0rem', marginRight: '0.5rem'}}>
-                        <select onChange={handleDayChangeSelect} value={selectDay} style={{marginTop: '2.0rem'}}>
-                            <option value="-1">전체</option>
+                        <select onChange={handleDayChangeSelect} value={selectDay || ''} style={{marginTop: '2.0rem'}}>
+                            <option value={"-1" || ''}>전체</option>
                             {getDayOfMonth(selectYear).map((day) =>
-                                <option key={day} value={day}>{day}일</option>)}
+                                <option key={day} value={day || ''}>{day}일</option>)}
                         </select>
                     </div>
                     <div style={{float: 'Right', margin: '1.0rem', marginRight: '0.5rem'}}>
-                        <select onChange={handleMonthChangeSelect} value={selectMonth} style={{marginTop: '2.0rem'}}>
+                        <select onChange={handleMonthChangeSelect} value={selectMonth || ''} style={{marginTop: '2.0rem'}}>
                             {monthList.map((month) =>
-                                <option key={month} value={month}>{month}월</option>)}
+                                <option key={month} value={month || ''}>{month}월</option>)}
                         </select>
                     </div>
                     <div style={{float: 'Right', margin: '1.0rem', marginRight: '0.5rem'}}>
-                        <select onChange={handleYearChangeSelect} value={selectYear} style={{marginTop: '2.0rem'}}>
+                        <select onChange={handleYearChangeSelect} value={selectYear || ''} style={{marginTop: '2.0rem'}}>
                             {yearList.map((year) =>
-                                <option key={year} value={year}>{year}년</option>)}
+                                <option key={year} value={year || ''}>{year}년</option>)}
                         </select>
                     </div>
                 </div>
@@ -260,8 +249,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
             {!loading ? <Spinner/> :
             <div>
                 <MintFormTable columnName={changeTable} cells={changeCello} isNameButton={true}
-                               sortedClickHandler={sortedClickHandler} sorted={sorted}
-                               emptyFlag={emptyFlag}/>
+                               sortedClickHandler={sortedClickHandler} emptyFlag={emptyFlag}/>
             </div>}
         </>
     )

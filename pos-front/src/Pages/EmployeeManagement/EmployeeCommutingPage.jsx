@@ -160,22 +160,22 @@ const EmployeeCommutingPage = ({commute, setCommute, reConstruct, setReConstruct
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 번&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;호
-                        <Input type="text" value={''||reConstruct[0]} style={{flexGrow:3}}/>
+                        <Input type="text" value={''||reConstruct[0]} style={{flexGrow:3}} readOnly/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 이&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;름
-                        <Input type="text" value={''||reConstruct[1]} style={{flexGrow:3}}/>
+                        <Input type="text" value={''||reConstruct[1]} style={{flexGrow:3}} readOnly/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 직&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;급
-                        <Input type="text" value={''||reConstruct[2]} style={{flexGrow:3}}/>
+                        <Input type="text" value={''||reConstruct[2]} style={{flexGrow:3}} readOnly/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
                     <ContentLabel>+ 현재 시간
-                        <Input type="text" value={''||date} onClick={CancelClick} style={{flexGrow:3}}/>
+                        <Input type="text" value={''||date} onClick={CancelClick} style={{flexGrow:3}} readOnly/>
                     </ContentLabel>
                 </InnerDiv>
                 <InnerDiv>
