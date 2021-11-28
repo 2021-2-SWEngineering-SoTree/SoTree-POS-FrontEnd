@@ -136,7 +136,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
                 if (criterion === "PAY") {
                     for (let i = 0 ; i < result.data.length; i++){
                         cells.push( CreatePaymentRowData(i+1, result.data[i][keys[3]],
-                            result.data[i][keys[4]], result.data[i][keys[5]], result.data[i][keys[1]],
+                            result.data[i][keys[4]], result.data[i][keys[5]], Number(result.data[i][keys[1]]).toLocaleString(),
                             result.data[i][keys[0]]));
                     }
                     changeState(cells, paymentColumnName);
@@ -144,7 +144,8 @@ const EmployeeActivitiesListPage = ({cello}) => {
                 if (criterion === "ORDER") {
                     for (let i = 0 ; i < result.data.length; i++){
                         cells.push( CreateOrderRowData(result.data[i][keys[6]], result.data[i][keys[4]],
-                            result.data[i][keys[3]], result.data[i][keys[0]], result.data[i][keys[1]]));
+                            result.data[i][keys[3]], Number(result.data[i][keys[0]]).toLocaleString(), result.data[i][keys[1]]));
+
                     }
                     changeState(cells, orderColumnName);
                 }

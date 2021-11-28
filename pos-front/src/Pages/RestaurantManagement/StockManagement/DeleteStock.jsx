@@ -66,7 +66,7 @@ const Input = styled.input`
 
 const DeleteStock = ({stock, clickedIndex, onClickDelete, visible}) => {
 
-    const [message, setMessage] = useState('제고삭제');
+    const [message, setMessage] = useState('재고삭제');
 
     const deleteClickHandler = async () =>{
         console.log("Delete button Clicked");

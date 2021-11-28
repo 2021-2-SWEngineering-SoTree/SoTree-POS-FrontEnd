@@ -80,7 +80,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
     const [stockCell, setStockCells] = useState([{}]);
     const [select, setSelect] = useState("");
     const [quantity , setQuantity] = useState('');
-    const [message, setMessage] = useState('제고수정');
+    const [message, setMessage] = useState('재고수정');
 
     const handleChange = async(e) => {
         setSelect(e.target.value);
@@ -91,7 +91,8 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
         try {
             console.log("select clickedIndex: " + clickedIndex);
             const getEmployee = []
-            const res = await axios.get('http://localhost:8080/getAllPersonName')
+            const res = await axios.post('http://localhost:8080/getComingEmployee',window.localStorage.getItem('managerId'),
+            {headers:{"Content-Type" : "text/plain"}})
             console.log('가져온 직원 값들' + res.data);
             for (let i = 0 ; i < res.data.length; i++) {
                 getEmployee.push(res.data[i]);
