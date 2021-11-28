@@ -162,9 +162,9 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                     </WrapperDiv>
                     <WrapperDiv>
                         <InputLable>변경사유
-                        <Input placeholder = {"0"} style={{flexGrow:3}}
+                        <Input placeholder = {"사유"} style={{flexGrow:3}}
                                value = {message}
-                               onChange={(e)=>setMessage(e.target.value)} />인분
+                               onChange={(e)=>setMessage(e.target.value)} />
                         </InputLable>
                     </WrapperDiv>
                     <WrapperDiv>
