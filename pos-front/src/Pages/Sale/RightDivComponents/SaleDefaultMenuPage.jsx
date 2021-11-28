@@ -54,7 +54,7 @@ const RightBottomDiv = styled.div`
     height : 20%;
     border : 1px solid black;
 `;
-const SaleDefaultMenuPage = ({onClickCategoryButton, categoryMenus, getIndex, makeOrderHandler, backClickHandler, changeDiv, btnClick}) => {
+const SaleDefaultMenuPage = ({onClickCategoryButton, categoryMenus, getIndex, makeOrderHandler, backClickHandler, changeDiv, btnClick, orderFinishButtonHandler}) => {
 
     const categoryButtonHandler = (e)=> onClickCategoryButton(e);
 
@@ -88,7 +88,7 @@ const SaleDefaultMenuPage = ({onClickCategoryButton, categoryMenus, getIndex, ma
                         <BottomButton onClick={()=>btnClick(3)}>복합결제</BottomButton>
                         <BottomButton onClick={backClickHandler}><IoMdArrowRoundBack/>돌아가기</BottomButton>
                         <BottomButton onClick={()=>btnClick(6)}>영수증관리</BottomButton>
-                        <BottomButton>음식완성알림</BottomButton>
+                        <BottomButton onClick={orderFinishButtonHandler}>음식완성알림</BottomButton>
         </RightBottomDiv>
         </>
     );
