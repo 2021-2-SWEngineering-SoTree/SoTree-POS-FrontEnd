@@ -7,8 +7,8 @@ let renderLabel=function(entry){
   return entry.name;
 }
 
-const COLORS = ["#FF0000", "#FF8000", "#FFFF00", "#80FF00","#00FF00","#00FF80","#00FFFF","#0080FF","#0000FF","#7F00FF","#FF00FF","#FF007F",
-"#808080"];
+const COLORS = ["#DA6969", "#DA9E69", "#DAD669", "#BFDA69","#87DA69","#69DA9A","#69DADA","#699ADA","#7469DA","#9E69DA","#D669DA","#DA698F",
+"#DA6969"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -46,7 +46,6 @@ const CircleChart =({chartData, width, height, cx, cy, r, value, legend})=> {
         cx={cx}
         cy={cy}
         labelLine={false}
-        label={renderLabel}
         outerRadius={r}
         fill="#8884d8"
         dataKey={value}
@@ -56,7 +55,8 @@ const CircleChart =({chartData, width, height, cx, cy, r, value, legend})=> {
         ))}
       </Pie>
       {legend==1 && <Legend wrapperStyle={{bottom :'29%', left:'5%'}}/>}
-      {legend==2 && <Legend wrapperStyle={{bottom :'15%', left:'5%'}}/>}
+      {legend==2 && <Legend width={600} wrapperStyle={{bottom :'16%', left:'-9%'}}/>}
+      {legend==3 && <Legend width={500} wrapperStyle={{bottom :'16%', left:'5%', fontSize:'1rem'}}/>}
     </PieChart>
     
     </div>
