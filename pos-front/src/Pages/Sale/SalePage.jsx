@@ -229,7 +229,7 @@ const SalePage = () => {
     const [orderId, setOrderId]=useState('');
     const [click,setClick]=useState(0);
     const [changeQuantity, setChangeQuantity] = useState('');
-
+    
 
     //
     const [discountMessage, setDiscountMessage] = useState('');
@@ -254,17 +254,23 @@ const SalePage = () => {
     const [leftBot,setLeftBot]=useState(true);
     
     //담당자
-    const [pickEmployee,setPickEmployee]=useState();
+    const [selectEmployee,setSelectEmployee]=useState('-1');
     //선택된 담당자
-    const [employee,setEmployee]=useState();
-    const [employeeId, setEmployeeId]=useState();
+    const [employeeName, setEmployeeName] = useState(window.localStorage.getItem('userName'))
+    const [employeeId, setEmployeeId] = useState(-1);
+    const [employeeList, setEmployeeList] = useState([]);
 
     const onChangeEmployee=(e)=>{
-        setPickEmployee(e.target.value);
+        setSelectEmployee(e.target.value);
+        console.log("employeeSelect", e.target.value);
     };
 
     const changeEmployee=()=>{
-        setEmployee(pickEmployee)
+        console.log("직원", employeeList);
+        if(selectEmployee>='0'){
+            setEmployeeId(employeeList[selectEmployee].personName !== window.localStorage.getItem('userName') ? employeeList[selectEmployee].EmployeeId : -1);
+            setEmployeeName(employeeList[selectEmployee].personName);
+        }
     };
 
     let navigation = useNavigate();
@@ -276,8 +282,9 @@ const SalePage = () => {
             "Content-Type" : `application/json`,
         }}).then(async (res)=>{
             let CurrentTableInfo;
+            let employeeInfo;
             console.log("zz",params.state[0].seatNum-100);
-            
+            employeeInfo = await getEmployeeList();
             if(params.state[0].seatNum < 100){
                 CurrentTableInfo = await getCurrentTableInfo();
                 if(CurrentTableInfo.data.orderId>=0){
@@ -307,6 +314,7 @@ const SalePage = () => {
                 } 
             }
             setMenus(()=>res.data);
+            setEmployeeList(employeeInfo.data);
         }).catch(e=>{
             console.log(e);
         })
@@ -345,6 +353,7 @@ const SalePage = () => {
     useEffect(async ()=>{
         console.log('get menu useeffect');
         await getMenus();
+        console.log('직원', employeeList);
         console.log(menus);
         setCategory('세트메뉴')
         document.getElementById('세트메뉴').focus();
@@ -464,7 +473,7 @@ const SalePage = () => {
             seatNumber : seatNum+1,
             isSeated : "True",
             managerId: managerId,
-            employeeId : 1,
+            employeeId : employeeId,
             orderDetails : orderDetails,
         };
         console.log(data);
@@ -582,7 +591,7 @@ const SalePage = () => {
             orderType : "TAKEOUT_ORDER",
             takeoutTickNumber : seatNum+1,
             managerId: managerId,
-            employeeId : 1,
+            employeeId : employeeId,
             orderDetails : orderDetails,
         };
         console.log(data);
@@ -605,7 +614,7 @@ const SalePage = () => {
             seatNumber : seatNum+1,
             isSeated : "True",
             managerId: managerId,
-            employeeId : 1,
+            employeeId : employeeId,
             orderDetails : orderDetails,
         };
         console.log(data);
@@ -628,7 +637,7 @@ const SalePage = () => {
             seatNumber : seatNum+1,
             isSeated : "True",
             managerId: managerId,
-            employeeId : 1,
+            employeeId : employeeId,
             orderDetails : orderDetails,
         };
         console.log(data);
@@ -656,6 +665,28 @@ const SalePage = () => {
         }}).then((res)=>{
             console.log(res);
         }).catch(e=>console.log(e));
+    }
+
+    const orderFinishButtonHandler = () =>{
+        let managerId = window.localStorage.getItem('managerId');
+        const data = JSON.stringify({
+            orderId : orderId,
+            branchId: managerId,
+            finishTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16)
+        });
+        axios.post('http://localhost:8080/order/finishAlarm', data,{
+             headers : {
+             "Content-Type" : `application/json; charset=UTF-8`,
+         }}).then((res)=>{
+             console.log(res);
+             alert("음식완성알림성공");
+         }).catch(e=>console.log(e));
+    }
+
+    const getEmployeeList = async() =>{
+        let managerId = window.localStorage.getItem('managerId');
+     return axios.post('http://localhost:8080/getComingEmployee', managerId,{headers:{"Content-Type" : "text/plain"}}
+            )
     }
     
     const allCancleHandler = (e)=>{
@@ -857,14 +888,16 @@ const SalePage = () => {
                                 <InfoContent>
                                     <b>Information about the person<br/>in charge</b>
                                 </InfoContent>
-                                <InfoSpace name={'직원번호'} value={employeeId} color={'white'}/>
-                                <InfoSpace name={'직 원 명'} value={employee} color={'white'}/>
+                                <InfoSpace name={'담당자직급'} value={employeeId === -1 ? "관리자" : "직원"} color={'white'}/>
+                                <InfoSpace name={'직 원 명'} value={employeeName} color={'white'}/>
                                 
                                 <LeftBottomBottomDiv>
                                     <StaffSelector onChange={onChangeEmployee}>
-                                        <option value={''}>{''}</option> 
-                                        <option value={'홍길동'}>{'홍길동'}</option> 
-                                        <option value={'서혜민'}>{'서혜민'}</option> 
+                                        {employeeList && employeeList.map((arr, i)=>
+                                            <>
+                                                <option value={i} key={i+arr.personName}>{arr.personName}</option> 
+                                            </>
+                                        )}
                                     </StaffSelector>
                                     <ChangeButton onClick={changeEmployee}>담당자 변경</ChangeButton>
                                 </LeftBottomBottomDiv>
@@ -904,10 +937,10 @@ const SalePage = () => {
                 <RightDiv>
                 {(click===0) && <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
                     categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
-                    changeDiv={changeDiv}/>}
-                {(click===1) && <CashPay payedPrice={payedPrice} orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employee} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                    changeDiv={changeDiv} orderFinishButtonHandler={orderFinishButtonHandler}/>}
+                {(click===1) && <CashPay eId={employeeId} payedPrice={payedPrice} orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===2)  &&<CardPay eId={employeeId} payedPrice={payedPrice}orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===3) && <MultiPay eId={employeeId} orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
                 {(click===5) && <Event totalPrice={totalPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount} /> }
                 {(click===6) && <Receipt orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }

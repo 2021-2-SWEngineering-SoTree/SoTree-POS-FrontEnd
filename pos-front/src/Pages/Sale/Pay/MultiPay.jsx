@@ -101,11 +101,13 @@ const InputNumber = styled.input`
 `;
 
 
-const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}) => {
+const MultiPay = ({eId, orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, setClick}) => {
 
     const [totalprice,setTotalPrice]=useState(totalPrice);
     const [cash,setCash]=useState();
     const [card,setCard]=useState();
+
+    const [end,setEnd]=useState(false);
 
     const onChangeCash=(e)=>{
         setCash(e.target.value);
@@ -122,9 +124,10 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
 
         const data = JSON.stringify({
             orderId : orderId,
-            employeeId : 1,
+            employeeId : eId,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            finalPrice : totalPrice,
             method : '복합'
         });
 
@@ -132,10 +135,10 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
             headers : {
             "Content-Type" : "application/json",
         }}).then(async (res)=>{
+            console.log(res.data);
             const data2 = JSON.stringify({
                 paymentId: res.data,
                 branchId : managerId
-            
             });
             console.log(data2);
             await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
@@ -143,6 +146,7 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
             "Content-Type" : "application/json",
             }}).then((res)=>{
                 alert('결제가 모두 완료되었습니다');
+                setEnd(true);
                 window.location.replace("/CurrentSeatInfo")
             }).catch(e=>{
                 console.log(e);
@@ -154,18 +158,28 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
         })
         setClick(0);
     }
+
+    //남은 금액 0 되면 결제 종료. api=>복합
     useEffect(()=>{
         totalprice===0 && finish();
+        setCash(0);
+        setCard(0);
     },[totalprice]);
 
     const [display,setDisplay]=useState(0);
 
+    const xclick=()=>{
+        if(totalprice==totalPrice) setClick(0);
+        else if(!end) alert("결제가 아직 완료되지 않았습니다");
+        else setClick(0);
+    }
+    
     return (
         <>
             {display===0 && 
                 <Templet>
                     <Header>&nbsp;복합 결제
-                        <ExitBtn onClick={()=>setClick(0)}>X</ExitBtn>
+                        <ExitBtn onClick={xclick}>X</ExitBtn>
                     </Header>
                     <Center>
                         <Content>
@@ -185,15 +199,15 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
                                     </InputDiv>                                    
                                 </BottomInContent>
                                 <center>
-                                    <h3>현금 클릭시, 현금결제 UI로 이동<br/>신용카드 클릭 시, 신용카드결제 UI로 이동</h3>
+                                    <h3>현금 클릭시, 현금결제 페이지로 이동<br/>신용카드 클릭 시, 신용카드결제 페이지로 이동</h3>
                                 </center>
                             </BottomContent>
                         </Content>
                     </Center>
                 </Templet>
             }
-            {display===1 && <CashPay all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={cash} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
-            {display===2 && <CardPay all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={card} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
+            {display===1 && <CashPay eId={eId} all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={cash} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
+            {display===2 && <CardPay eId={eId} all={totalprice} payedPrice={payedPrice} notTotalPrice={notTotalPrice} totalPrice={card} setAllprice={setTotalPrice} setpayPrice={setpayPrice} setDisplay={setDisplay}/>}
         </>
     )
 };

@@ -160,7 +160,7 @@ const Event = ({updateDiscount, totalPrice, setClick,totalDiscount}) => {
                     <Content>
                         <TextDiv style={{paddingTop:'5vh'}}>+ 진행중인 이벤트</TextDiv>
                         <TopContent style={{overflow: 'auto'}}>
-                            <div >
+                            <div>
                                 <EventTable columnName={columnName} cells={events} setEventId={setEventId} eventApply={eventApply} selectIndex={indexHandler} />
                             </div>
                         </TopContent>
