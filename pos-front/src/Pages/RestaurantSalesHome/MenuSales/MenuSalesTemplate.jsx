@@ -374,7 +374,7 @@ const MenuSalesTemplate = () => {
                                         <OrderRow style={{height : '3.8vh'}}>
                                             <OrderCell component="th" scope="cell">{index+1}</OrderCell>
                                             <OrderCell>{cell.menuName}</OrderCell>
-                                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
+                                            <OrderCell>{Number(cell.price).toLocaleString()}</OrderCell>
                                             <OrderCell>{(cell.price/sumSale*100).toFixed(1)} </OrderCell>
                                         </OrderRow>
                                     ))}
@@ -388,7 +388,7 @@ const MenuSalesTemplate = () => {
                                     <TableHead>
                                         <OrderRow style={{height : '4.3vh'}}>
                                             <ColumnCell style={{width:'45%'}}>총 매출(원)</ColumnCell>
-                                            <Cell style={{width:'55%'}}>{sumSale}</Cell>
+                                            <Cell style={{width:'55%'}}>{sumSale.toLocaleString()}</Cell>
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>

@@ -104,14 +104,11 @@ const DeleteMenu=({menu, id, price, category})=>{
 
         const data2=JSON.stringify(data);
         console.log(data2);
-        check ? axios.delete(`http://localhost:8080/menu/${id}`,
-            {
-                data : data2,
+        check ? axios.put(`http://localhost:8080/menu/delete`, data2,{
                 headers : {
                     'Content-type': 'application/json; charset=UTF-8'
                 }
             }
-    
         ).then((res)=>{
                 console.log('id='+id,res);
                 check && success();

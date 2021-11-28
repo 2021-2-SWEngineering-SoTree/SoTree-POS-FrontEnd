@@ -131,7 +131,8 @@ const AddStock = ({onClickAdd}) => {
     useEffect(async () => {
         try {
             const getEmployee = []
-            const res = await axios.get('http://localhost:8080/getAllPersonName')
+            const res = await axios.post('http://localhost:8080/getComingEmployee',window.localStorage.getItem('managerId'),
+            {headers:{"Content-Type" : "text/plain"}})
             console.log('가져온 직원 값들', res.data);
             for (let i = 0 ; i < res.data.length; i++) {
                 getEmployee.push(res.data[i]);

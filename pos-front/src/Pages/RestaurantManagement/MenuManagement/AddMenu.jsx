@@ -256,9 +256,6 @@ const AddMenu = () =>{
                         <InputLable>식재료</InputLable>
                         <div className={0} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[0].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -269,9 +266,6 @@ const AddMenu = () =>{
 
                          <div className={1} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[1].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -292,9 +286,6 @@ const AddMenu = () =>{
 
                          <div className={3} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[3].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}

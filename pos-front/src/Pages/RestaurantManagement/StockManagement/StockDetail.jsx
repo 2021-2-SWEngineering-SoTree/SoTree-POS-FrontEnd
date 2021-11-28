@@ -33,7 +33,7 @@ const WrapperDiv = styled.div`
 
 const CategorySelector = styled.select`
     height : 3.2rem;
-    width : 10rem;
+    width : 15rem;
     background-color : #F2F0F0;
     font-size : 1.5rem;
     border-radius : 10px;
@@ -183,7 +183,7 @@ const getStocksWithOutActive =  async() =>{
                     </WrapperDiv>
                     <Div>
                     <WrapperDiv>
-                        <TableContainer component={Paper} margin='10px' style={{overflow:'scroll',}}>
+                        <TableContainer component={Paper} margin='10px' style={{overflow:'scroll', width : '80vw'}}>
                             <StockDetailTableStyle>
                                 <TableHead>
                                     <StockDetailRow>
@@ -192,6 +192,7 @@ const getStocksWithOutActive =  async() =>{
                                         <ColumnCell>이전 수량</ColumnCell>
                                         <ColumnCell>변경 수량</ColumnCell>
                                         <ColumnCell>변경 후 수량</ColumnCell>
+                                        <ColumnCell>메모</ColumnCell>
                                     </StockDetailRow>
                                 </TableHead>
                                 <TableBody>
@@ -204,6 +205,7 @@ const getStocksWithOutActive =  async() =>{
                                             <StockDetailCell>{cell.finalQuantity - cell.quantityChanged}</StockDetailCell>
                                             <StockDetailCell colors = {cell.quantityChanged > 0 ? "" : "#FF0000"}>{cell.quantityChanged}</StockDetailCell>
                                             <StockDetailCell>{cell.finalQuantity}</StockDetailCell>
+                                            <StockDetailCell>{cell.memo}</StockDetailCell>
                                         </StockDetailRow>
                                     ))
                                 : <>
