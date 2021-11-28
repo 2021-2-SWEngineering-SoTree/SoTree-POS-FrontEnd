@@ -80,6 +80,15 @@ const AverageRow = styled.tr`
     }
 `;
 
+const NotExistDataDiv = styled.div`
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 200px;
+`;
+
 // table style
 const AverageTableStyle = styled.table`
     min-width: 580px;
@@ -136,8 +145,15 @@ const MenuAvgTimeTemplate = () => {
                 let i = 0;
                 for(let key in res.data) {
                     i += 1;
+                    let menu = "";
+                    if(res.data[key] === -1) {
+                        menu = "준비시간이 존재하지 않습니다."
+                    }
+                    else {
+                        menu = res.data[key];
+                    }
                     leftCells.push(
-                        createLeftRowData(i, key, res.data[key])
+                        createLeftRowData(i, key, menu)
                     )
                 }
                 setLeftCell(leftCells);
@@ -186,6 +202,7 @@ const MenuAvgTimeTemplate = () => {
                     <CategoryButton id = '추가메뉴' name={'추가메뉴'} onClick={categoryButtonHandler}>추가<br/>메뉴</CategoryButton>
                     <CategoryButton id = '주류/음료' name={'주류/음료'} onClick={categoryButtonHandler}>주류/<br/>음료</CategoryButton>
                 </ButtonDiv>
+                {leftCell.length ===0 ? <NotExistDataDiv>메뉴가 존재하지 않습니다.</NotExistDataDiv> :
                 <TableContainer component={Paper} style={{marginTop: '30px'}}>
                     <AverageTableStyle>
                         <TableHead>
@@ -195,7 +212,6 @@ const MenuAvgTimeTemplate = () => {
                             </AverageRow>
                         </TableHead>
                         <TableBody >
-                            {leftCell.length ===0 ? <AverageCell>메뉴가 존재하지 않습니다.</AverageCell> : null}
                             {leftCell.map((td, i)=>
                                 <AverageRow key={i}>
                                     {showRow(leftCell[i], i)}
@@ -203,10 +219,11 @@ const MenuAvgTimeTemplate = () => {
                             }
                         </TableBody>
                     </AverageTableStyle>
-                </TableContainer>
+                </TableContainer>}
             </LeftSideDiv>
             <RightSideDiv>
                 <LargeTitle>+ 고객 평균 소요 시간</LargeTitle>
+                {rightCells.length ===0 ? <NotExistDataDiv>메뉴가 존재하지 않습니다.</NotExistDataDiv> :
                     <TableContainer component={Paper} style={{marginTop: '30px'}}>
                         <AverageTableStyle>
                             <TableHead>
@@ -216,7 +233,6 @@ const MenuAvgTimeTemplate = () => {
                                 </AverageRow>
                             </TableHead>
                             <TableBody >
-                                {rightCells.length ===0 ? <AverageCell>메뉴가 존재하지 않습니다.</AverageCell> : null}
                                 {rightCells.map((td, i)=>
                                     <AverageRow key={i}>
                                         {showRow(rightCells[i], i)}
@@ -224,7 +240,7 @@ const MenuAvgTimeTemplate = () => {
                                 }
                             </TableBody>
                         </AverageTableStyle>
-                    </TableContainer>
+                    </TableContainer>}
             </RightSideDiv>
             </Div>
         </>
