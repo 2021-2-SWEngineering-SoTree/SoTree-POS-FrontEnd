@@ -680,6 +680,9 @@ const SalePage = () => {
          }}).then((res)=>{
              console.log(res);
              alert("음식완성알림성공");
+             if(params.state[0].seatNum >= 100){
+                navigation('/CurrentSeatInfo');
+             }
          }).catch(e=>console.log(e));
     }
 

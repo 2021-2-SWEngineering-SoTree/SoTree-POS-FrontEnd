@@ -51,7 +51,7 @@ const BottomContent = styled.div`
 
 const BottomRightBtn = styled.button`
     height : 8vh;
-    width : 20vh;
+    width : 15vw;
     border-radius : 12px;
     font-size : 1.5rem;
     background : #474D4E;
