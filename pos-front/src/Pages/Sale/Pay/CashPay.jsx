@@ -189,6 +189,8 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
     const [price, setPrice]=useState(0); //받은 금액
     const [backPrice, setBackPrice]=useState(0); //거스름 돈
 
+    const [pay,setPay]=useState(false);//결제 완료
+
     //부모 컴포넌트의 
     const setpayprice = (i) =>{
         console.log('i='+i);
@@ -249,6 +251,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 setBackPrice(0);
                 console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
+                setPay(true);//결제 완료
                 alert("현금 영수증을 발급받으실 수 있습니다");
             }).catch(e=>{
                 console.log(e);
@@ -261,15 +264,36 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
         
     }
 
-    const getPay=()=>{
+    const getPay=async()=>{
         if(price>=totalprice && !notTotalPrice) getPaid();
         else if(price>=totalprice) {
-            {setAllprice && setAllprice(all-totalPrice);}
-            {notTotalPrice && notTotalPrice(all-totalprice);}
-            setTotalprice(0);
-            setPrice(0);
-            setBackPrice(0);
-            alert('현금결제가 완료되었습니다');
+            //복합결제
+            //totalprice
+            const managerId = window.localStorage.getItem('managerId');
+            const data = JSON.stringify(
+                {
+                    payTime:new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+                    method : '현금',
+                    price : totalprice,
+                    branchId : managerId
+                }
+            );
+            console.log(data);
+            await axios.post('http://localhost:8080/payment/combinePay',data, {
+            headers : {
+            "Content-Type" : "application/json",
+            }}).then((res)=>{
+                {setAllprice && setAllprice(all-totalPrice);}
+                {notTotalPrice && notTotalPrice(all-totalprice);}
+                setTotalprice(0);
+                setPrice(0);
+                setBackPrice(0);
+                console.log(res,res.data);
+                alert('현금결제가 완료되었습니다');
+            }).catch(e=>{
+                console.log(e);
+                alert('결제가 실패하였습니다');
+            })
         }
         else if(price===0 || totalprice===0 || price<totalprice) alert('금액이 부족합니다!');
     }
@@ -376,7 +400,12 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                                         <BottomRightBtn onClick={onClickBtn} style={{backgroundColor:'#474D4E', color:'white'}}>입력 요청</BottomRightBtn>
                                         <BottomRightBtn onClick={()=>{setApnum(new Date().getTime());setCheckApprove(true)}} style={{backgroundColor:'#D7FAFF', color:'black'}}>승인 요청</BottomRightBtn>
                                     </BottomBottomRightDiv>
+                                    
                                 </BottomBottomDiv>
+                                {pay &&<BottomRightBtn onClick={()=>{
+                                    alert("결제가 완료되어 좌석 화면으로 이동합니다");
+                                    window.location.replace("/CurrentSeatInfo"
+                                )}} style={{marginTop:'6%', marginLeft:'87%', width:'25%', height:'15%',backgroundColor:'#505D5E', color:'white'}}>나가기</BottomRightBtn>}
                             </BottomInContent>
                         </BottomContent>
                     </Content>
