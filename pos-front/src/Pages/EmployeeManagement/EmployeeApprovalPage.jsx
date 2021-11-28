@@ -1,12 +1,7 @@
-import styled from 'styled-components';
 import React, {useEffect, useState} from "react";
 import MintFormTable from "../../Components/Table/MintFormTable";
 import RectangleModal from "../../Components/Modal/RectangleModal";
-import EmployeeCommutingPage from "./EmployeeCommutingPage";
 import ApprovalWorkSchedulePage from "./ApprovalWorkSchedulePage";
-
-
-
 
 const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag}) => {
 
