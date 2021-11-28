@@ -125,6 +125,7 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
             employeeId : 1,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+            finalPrice : totalPrice,
             method : '복합'
         });
 
@@ -132,10 +133,10 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
             headers : {
             "Content-Type" : "application/json",
         }}).then(async (res)=>{
+            console.log(res.data);
             const data2 = JSON.stringify({
                 paymentId: res.data,
                 branchId : managerId
-            
             });
             console.log(data2);
             await axios.post('http://localhost:8080/payment/sendToCompany',data2, {
@@ -154,6 +155,8 @@ const MultiPay = ({orderId, payedPrice, notTotalPrice, totalPrice, setpayPrice, 
         })
         setClick(0);
     }
+
+    //남은 금액 0 되면 결제 종료. api=>복합
     useEffect(()=>{
         totalprice===0 && finish();
     },[totalprice]);
