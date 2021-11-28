@@ -10,7 +10,7 @@ const SaleTr = ({arr, rowIndex}) => {
         <>
         <Tr>
             {Array(7).fill().map((td, i)=>
-            <SaleTd arr={arr} rowIndex={rowIndex} cellIndex={i}/>
+            <SaleTd arr={arr} rowIndex={rowIndex} cellIndex={i}></SaleTd>
             )}
         </Tr>
         </>

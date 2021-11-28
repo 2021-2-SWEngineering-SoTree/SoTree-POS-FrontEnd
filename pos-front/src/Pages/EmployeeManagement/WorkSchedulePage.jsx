@@ -1,17 +1,17 @@
 import React,{useState,useEffect} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import SaleTable from '../../Components/Table/SaleTable';
 
 const TopDiv = styled.div`
     display : flex;
     height : 5vh;
-    border : 1px solid black;
+    margin-left :10%
 `;
 
 const LeftDiv = styled.div`
 height : 100%;
 width : 80%;
-border : 1px solid blue;
 justify-content: center;
 text-align:center;
 `;
@@ -19,14 +19,13 @@ text-align:center;
 const RightDiv = styled.div`
     height : 100%;
     width : 20%;
-    border : 1px solid green;
     display : flex;
     justify-content : flex-end;
 `;
 
 const BottomDiv = styled.div`
     height : 65vh;
-    border : 1px solid red;
+    margin-left:10%;
 `
 
 const Selector = styled.select`
@@ -49,6 +48,15 @@ const TextDiv = styled.div`
     font-weight : bold;
 `;
 
+const getWeekCount =(dateStr)=>{
+    var year  = Number(dateStr.substring(0, 4));
+    var month = Number(dateStr.substring(4, 6));  
+    var nowDate =new Date(year, month-1, 1);
+    var lastDate =new Date(year, month, 0).getDate();
+    var monthSWeek = nowDate.getDay();
+    var weekSeq = parseInt((parseInt(lastDate) + monthSWeek - 1)/7) + 1;
+    return weekSeq;
+}
 
 const WorkSchedulePage = () => {
 
@@ -57,11 +65,15 @@ const WorkSchedulePage = () => {
     const [list, setList]=useState([]);
     const [year,setYear]=useState(nowYear);
     const [month, setMonth]=useState(nowMonth);
+    const [data,setData]=useState([]);
+    const [num,setNum]=useState();
     const managerId = window.localStorage.getItem('managerId');
-
     
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
+        setData([]);
+        setList([]);
         await axios.post('http://localhost:8080/commute/findCommuteByEmployee',managerId,{
             headers : {
             "Content-Type" : `application/json`,
@@ -72,6 +84,7 @@ const WorkSchedulePage = () => {
             console.log(e);
         })
 
+        setNum(getWeekCount(year+''+month));
     },[month]);
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,9 +130,18 @@ const WorkSchedulePage = () => {
             }
         }
         console.log(whole);
-        //달력에 맞춰서 앞에 빈 배열 추가 601줄
+        console.log(year,month);
+        const firstday = new Date(year,month-1,1).getDay();
+        console.log(firstday);//해당 월의 첫날의 요일
+        const newArr=[];
+        for(let i=1;i<=firstday;i++){
+            newArr.push({day:0});
+        }
+        setData(newArr.concat(whole));
 
     },[list]);
+
+    useEffect(()=>console.log(data),[data]);
 
     return(
         <>
@@ -129,8 +151,8 @@ const WorkSchedulePage = () => {
             </LeftDiv>
             <RightDiv>
                 
-                <TextDiv>월</TextDiv>
-                <Selector value={month} onChange={(e)=>setMonth(e.target.value)} style={{marginTop:'0.2%',width:'4rem', height :'2rem'}}>
+                <TextDiv>월:</TextDiv>
+                <Selector value={month} onChange={(e)=>setMonth(+e.target.value)} style={{marginTop:'1.5%',width:'4rem', height :'2rem'}}>
                     <option value="">-------</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -148,7 +170,7 @@ const WorkSchedulePage = () => {
             </RightDiv>
         </TopDiv>
         <BottomDiv>
-
+            < SaleTable week={num} arr={data} width={'100%'} height={'100%'}/>
         </BottomDiv>
         </>
     )
