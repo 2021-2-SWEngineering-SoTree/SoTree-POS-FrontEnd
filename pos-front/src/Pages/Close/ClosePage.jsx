@@ -118,63 +118,69 @@ const ClosePage = () => {
     return (
         <>
         <Header text ={"마감"} restaurantName = {localStorage.getItem('storeName')}/>
-        
-        <TableContainer style={{marginLeft:'5%',marginTop :'-3%',height : '70%',overflow: 'hidden',}}>
-                                <TableStyle style={{overflow:'auto', width:'100%'}}>
-                                    <TableHead style={{height : '4vh'}}>
-                                        <OrderRow>
-                                            <ColumnCell>NO</ColumnCell>
-                                            <ColumnCell>메뉴</ColumnCell>
-                                            <ColumnCell>수량</ColumnCell>
-                                            <ColumnCell>판매금액</ColumnCell>
-                                        </OrderRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    {stats.length>0 && stats.map((cell, index) => (
-                                        <OrderRow style={{height : '3.8vh'}}>
-                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
-                                            <OrderCell>{cell.menuName}</OrderCell>
-                                            <OrderCell>{cell.orderQuantity}</OrderCell>
-                                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
-                                        </OrderRow>
-                                    ))}
-                                    </TableBody>
-                                </TableStyle>                
-                            </TableContainer>
+        <div style={{width : '80%', display:'flex', flexDirection : 'row'}}>
+        <TableContainer style={{marginLeft:'5%',marginTop :'10vh',height : '70%',overflow: 'hidden', width : "100%"}}>
+            <TableStyle style={{overflow:'auto', width:'100%'}}>
+                <TableHead style={{height : '4vh'}}>
+                    <OrderRow>
+                        <ColumnCell>NO</ColumnCell>
+                        <ColumnCell>메뉴</ColumnCell>
+                        <ColumnCell>수량</ColumnCell>
+                        <ColumnCell>판매금액</ColumnCell>
+                    </OrderRow>
+                </TableHead>
+                <TableBody>
+                    {stats.length>0 && stats.map((cell, index) => (
+                        <OrderRow style={{height : '3.8vh'}}>
+                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
+                            <OrderCell>{cell.menuName}</OrderCell>
+                            <OrderCell>{cell.orderQuantity}</OrderCell>
+                            <OrderCell>{cell.price.toLocaleString()}</OrderCell>
+                        </OrderRow>
+                    ))}
+                </TableBody>
+            </TableStyle>                                    
+        </TableContainer>
+        <div style={{width : "20%",marginLeft : "10vw",display :'flex', flexDirection : 'column', justifyContent : 'center',
+            alignItems:'center' }}>
+            <TableContainer style={{marginLeft:'5%',marginTop :'10vh',height : '70%',overflow: 'hidden',}}>
+                <TableStyle style={{overflow:'auto', width:'100%'}}>
+                    <TableHead style={{height : '4vh'}}>
+                        <OrderRow>
+                            <OrderCell>총 매출</OrderCell>
+                            <OrderCell>{total.toLocaleString()}</OrderCell>
+                        </OrderRow>
+                    </TableHead>
+                    <TableBody>
+                    <OrderRow>
+                            <OrderCell>부가세</OrderCell>
+                            <OrderCell>{(total*0.1).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                        <OrderRow>
+                            <OrderCell>순매출</OrderCell>
+                            <OrderCell>{(total*0.9).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                    </TableBody>
+                </TableStyle>                
+            </TableContainer>   
+                                
 
-                            <TableContainer style={{marginLeft:'5%',marginTop :'-3%',height : '70%',overflow: 'hidden',}}>
-                                <TableStyle style={{overflow:'auto', width:'100%'}}>
-                                    <TableHead style={{height : '4vh'}}>
-                                        <OrderRow>
-                                            <OrderCell>총 매출</OrderCell>
-                                            <OrderCell>{total}</OrderCell>
-                                        </OrderRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    <OrderRow>
-                                            <OrderCell>부가세</OrderCell>
-                                            <OrderCell>{total*0.1}</OrderCell>
-                                        </OrderRow>
-                                        <OrderRow>
-                                            <OrderCell>순매출</OrderCell>
-                                            <OrderCell>{total*0.9}</OrderCell>
-                                        </OrderRow>
-                                    </TableBody>
-                                </TableStyle>                
-                            </TableContainer>                            
-
-        <SmallModal visible={visible}>
-                <Form>
-                    <Title>{date}</Title>
-                    <Text>마감을 진행하겠습니까?</Text>
-                        
-        <Button style={{width:'4.5rem'}} onClick={logoutHandler}>예(홈으로 이동)</Button>
-        <Button onClick={()=>{setVisible(false)}}>아니요</Button>
-                </Form>
-                </SmallModal>
-        <Link to = "/employeeManagement"><Button>직원관리</Button></Link>    
-        <Link to = "/restaurantManagement/stock"><Button>재고 관리</Button></Link>
-        <Button style={{width:'4.5rem'}} onClick={finishClick}>영업마감</Button>
+            <SmallModal visible={visible}>
+                    <Form>
+                        <Title>{date}</Title>
+                        <Text>마감을 진행하겠습니까?</Text>
+                        <Button style={{width:'4.5rem'}} onClick={logoutHandler}>예(홈으로 이동)</Button>
+                        <Button onClick={()=>{setVisible(false)}}>아니요</Button>
+                    </Form>
+            </SmallModal>
+            <div style={{display :'flex', flexDirection : 'row'}}>
+                <Link to = "/employeeManagement"><Button>직원관리</Button></Link>    
+                <Link to = "/restaurantManagement/stock"><Button>재고 관리</Button></Link>
+                <Button style={{width:'4.5rem'}} onClick={finishClick}>영업마감</Button>
+            </div>
+            
+        </div> 
+        </div>
         </>
     );
 };
