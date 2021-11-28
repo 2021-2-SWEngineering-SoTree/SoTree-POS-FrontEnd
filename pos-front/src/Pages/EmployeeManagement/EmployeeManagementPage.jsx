@@ -12,6 +12,7 @@ import EmployeeModifyPage from "./EmployeeModifyPage";
 import EmployeeDeletePage from "./EmployeeDeletePage";
 import EmployeeApprovalPage from "./EmployeeApprovalPage";
 import Spinner from "../../Components/Spinner/Spinner"
+import WorkSchedulePage from "./WorkSchedulePage";
 
 const Div = styled.div`
     max-width: 1980px;
@@ -144,6 +145,12 @@ const EmployeeManagementPage = () => {
         }
     }
 
+    //근무표 추가
+    const onClickSchedule = () =>{
+        setEmployeeManagementChange((employeeManagementChange !=4) ? 4 : 1);
+        setEmployeeList((listOfEmployee !=4) ? 4 : 1);
+    }
+
     const onClickName = () => {
         cello.sort(cello[2]);
         setCells(cello);
@@ -233,9 +240,12 @@ const EmployeeManagementPage = () => {
                     <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}
                                           emptyApprovalFlag={emptyApprovalFlag} isNameButton={false}/>
                 </LeftDiv>
+                {listOfEmployee==4 && <LeftDiv visible={listOfEmployee===4} style={{overflow: "auto", marginTop: "2.0rem"}}>
+                    <WorkSchedulePage/>
+                </LeftDiv>}
                 <RightDiv>
                     <InnerRightDiv>
-                        <Link to="/employeeManagement/workSchedule"><Button>근무표</Button></Link>
+                    <Button onClick={onClickSchedule}>{employeeManagementChange === 4 ? "직원관리로 돌아가기" : "근무표"}</Button>
                         <Button2 onClick={onClickEmployeeCommute}>직원 출퇴근</Button2>
                         <Button onClick={onClickEmployeeList}>{employeeManagementChange === 2 ? "직원관리로 돌아가기" : "직원활동내역"}</Button>
                         <Button2 onClick={onClickEmployeeApproval}>{employeeManagementChange === 3 ? "직원관리로 돌아가기" :"직원 승인"}</Button2>
