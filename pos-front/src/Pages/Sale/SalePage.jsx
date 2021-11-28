@@ -267,8 +267,10 @@ const SalePage = () => {
 
     const changeEmployee=()=>{
         console.log("직원", employeeList);
-        setEmployeeId(employeeList[selectEmployee].personName !== window.localStorage.getItem('userName') ? employeeList[selectEmployee].EmployeeId : -1);
-        setEmployeeName(employeeList[selectEmployee].personName);
+        if(selectEmployee>='0'){
+            setEmployeeId(employeeList[selectEmployee].personName !== window.localStorage.getItem('userName') ? employeeList[selectEmployee].EmployeeId : -1);
+            setEmployeeName(employeeList[selectEmployee].personName);
+        }
     };
 
     let navigation = useNavigate();
@@ -683,12 +685,8 @@ const SalePage = () => {
 
     const getEmployeeList = async() =>{
         let managerId = window.localStorage.getItem('managerId');
-     return axios.post('http://localhost:8080/getAllPersonName', managerId,{headers:{"Content-Type" : "text/plain"}}
+     return axios.post('http://localhost:8080/getComingEmployee', managerId,{headers:{"Content-Type" : "text/plain"}}
             )
-            // .then((res)=>{
-            //     console.log("employee", res);
-            //     setEmployeeList(res.data);
-            // }).catch(e=>console.log(e));
     }
     
     const allCancleHandler = (e)=>{

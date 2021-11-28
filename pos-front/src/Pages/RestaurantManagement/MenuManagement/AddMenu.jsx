@@ -282,9 +282,6 @@ const AddMenu = () =>{
 
                          <div className={2} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[2].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
