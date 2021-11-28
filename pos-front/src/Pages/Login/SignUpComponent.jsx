@@ -464,12 +464,17 @@ const SignUpComponent = ({mode, setSelectCategory, visible}) => {
                             onChange={(e)=>setEmailAddress(e.target.value.trim())}/>
                         </div>
                     </WrapperDiv>
-                    <WrapperDiv>
-                        <div style={{display : 'flex', flexDirection : 'row'}}>
-                            <InputLable>직원여부</InputLable>
-                            <CheckboxInput type = 'checkbox' value={type} onChange={()=>{setType((prev)=>!prev)}}/>
-                        </div>
-                    </WrapperDiv>
+                    {mode !== 'employee' ?
+                        <>
+                            <WrapperDiv>
+                                <div style={{display : 'flex', flexDirection : 'row'}}>
+                                    <InputLable>직원여부</InputLable>
+                                    <CheckboxInput type = 'checkbox' value={type} onChange={()=>{setType((prev)=>!prev)}}/>
+                                </div>
+                            </WrapperDiv>
+                        </>
+                 : null}
+                    
                     {type === false ?
                         <>
                             <WrapperDiv>
