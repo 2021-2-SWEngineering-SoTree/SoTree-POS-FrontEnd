@@ -54,6 +54,7 @@ const Form = styled.form`
     flex-direction : column;
     //overflow-y:scroll; 식재료 많아지면 스크롤바
     height : 40rem;
+    margin-top:4rem;
 `;
 
 const CheckButton = styled.button`
@@ -256,9 +257,6 @@ const AddMenu = () =>{
                         <InputLable>식재료</InputLable>
                         <div className={0} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[0].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -269,9 +267,6 @@ const AddMenu = () =>{
 
                          <div className={1} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[1].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -292,9 +287,6 @@ const AddMenu = () =>{
 
                          <div className={3} style={{display : 'flex', flexDirection : 'row'}}>
                             <StockSelector value={ingredients[3].ingredientName} onChange={handleSelectStock}>
-                            <option value={''}>{''}</option>
-                            <option value={'돼지고기'}>{'돼지고기'}</option>
-                            <option value={'소고기'}>{'소고기'}</option>
                                 {allStock.map((stock)=>
                                     (<option value={stock.stockName}>{stock.stockName}</option>)
                                 )}
@@ -303,7 +295,7 @@ const AddMenu = () =>{
                          </div>
                     </WrapperDiv>
 
-                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em'}}>
+                    <div style={{display : 'flex', justifyContent:'flex-end', marginTop:'1rem', marginLeft : '3em', marginBottom : '1em'}}>
                         <CheckButton onClick = {addMenu}>추가</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>

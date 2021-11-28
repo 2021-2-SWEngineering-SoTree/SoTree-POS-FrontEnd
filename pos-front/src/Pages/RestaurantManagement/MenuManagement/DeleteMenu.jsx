@@ -104,36 +104,18 @@ const DeleteMenu=({menu, id, price, category})=>{
 
         const data2=JSON.stringify(data);
         console.log(data2);
-        check ? axios.delete(`http://localhost:8080/menu/${id}`,
+        check ? axios.put(`http://localhost:8080/menu/delete`,
+            data2,
             {
-                data : data2,
                 headers : {
                     'Content-type': 'application/json; charset=UTF-8'
                 }
             }
-    
         ).then((res)=>{
                 console.log('id='+id,res);
                 check && success();
-            }).catch((error)=>{if (error.response){
-
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-                console.log(error.response.request._response );
-
-                }else if(error.request){
-                
-                    console.log(error.request)
-                
-                }else if(error.message){
-                
-                    console.log(error.message);
-                
-                }
-                fail();
+            }).catch((error)=>{
                 console.log(error);
-                console.log(data)
             })
             :menu ? alert('체크 버튼을 눌러주세요'):alert('메뉴를 선택해주세요');
         }
@@ -143,6 +125,7 @@ const DeleteMenu=({menu, id, price, category})=>{
         <>
         <Form>
         <Title>메뉴 삭제</Title>
+        <br/><br/>
         <Text>
         <Menu>{menu ? menu : '메뉴선택 필수!'}</Menu><TextByMenu>{menu?'메뉴를':''}</TextByMenu>
         </Text>
@@ -150,6 +133,7 @@ const DeleteMenu=({menu, id, price, category})=>{
             {menu?'선택하신 게 맞습니까':'삭제할 메뉴를 선택해주세요!'}
             {menu && <Input type="checkbox" checked={check} onChange={handleCheck} />}
         </UnderText>
+        <br/><br/>
         <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em'}}>
             {menu && <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>}
             <ModalButton name={'닫기'}></ModalButton>
