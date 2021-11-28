@@ -97,13 +97,12 @@ const createRightRowDate = (day, lunch, dinner, full) => {
 
 const MenuAvgTimeTemplate = () => {
 
+    const [leftCell, setLeftCell] = useState([]);
+    const [rightCell, setRightCell] = useState([]);
+
     const leftColumnName = ['번호', '메뉴', '평균 준비 시간(분)'];
     const rightColumnName = ['요일', '점심타임(L)', '저녁타임(D)', '영업시간 전체(F)'];
-    const leftCells = [
-        createLeftRowData(1, '돈까스더미1', '15분더미'),
-        createLeftRowData(2, '돈까스더미2', '15분더미'),
-        createLeftRowData(3, '돈까스더미3', '15분더미'),
-    ];
+
     const rightCells = [
         createRightRowDate('전체', '15','15','15'),
         createRightRowDate('평일', '15','15','15'),
@@ -117,7 +116,7 @@ const MenuAvgTimeTemplate = () => {
         createRightRowDate('토요일', '15','15','15'),
     ];
 
-    const [selectedCategory, setSelectedCategory] = useState();
+    const [selectedCategory, setSelectedCategory] = useState("식사");
 
     const getMenuOfCategory = async () => {
         let managerId = window.localStorage.getItem('managerId');
@@ -132,7 +131,17 @@ const MenuAvgTimeTemplate = () => {
                     "Content-Type": `application/json`,
                 }
             }).then((res) => {
-                console.log(res);
+                console.log(res.data);
+                let leftCells = [ ];
+                let i = 0;
+                for(let key in res.data) {
+                    i += 1;
+                    leftCells.push(
+                        createLeftRowData(i, key, res.data[key])
+                    )
+                }
+                setLeftCell(leftCells);
+                console.log(leftCells);
             })
         } catch (e) {
             console.error(e.message);
@@ -146,8 +155,8 @@ const MenuAvgTimeTemplate = () => {
 
 
     const categoryButtonHandler = (e) => {
-        console.log(e.target.id);
-        setSelectedCategory(e.target.id);
+        console.log(e.target.name);
+        setSelectedCategory(e.target.name);
     }
 
     const showRow = (cells, ele) => {
@@ -186,10 +195,10 @@ const MenuAvgTimeTemplate = () => {
                             </AverageRow>
                         </TableHead>
                         <TableBody >
-                            {leftCells.length ===0 ? <AverageCell>메뉴가 존재하지 않습니다.</AverageCell> : null}
-                            {leftCells.map((td, i)=>
+                            {leftCell.length ===0 ? <AverageCell>메뉴가 존재하지 않습니다.</AverageCell> : null}
+                            {leftCell.map((td, i)=>
                                 <AverageRow key={i}>
-                                    {showRow(leftCells[i], i)}
+                                    {showRow(leftCell[i], i)}
                                 </AverageRow>)
                             }
                         </TableBody>
