@@ -12,6 +12,7 @@ import EmployeeModifyPage from "./EmployeeModifyPage";
 import EmployeeDeletePage from "./EmployeeDeletePage";
 import EmployeeApprovalPage from "./EmployeeApprovalPage";
 import Spinner from "../../Components/Spinner/Spinner"
+import WorkSchedulePage from "./WorkSchedulePage";
 
 const Div = styled.div`
     max-width: 1980px;
@@ -103,6 +104,7 @@ const EmployeeManagementPage = () => {
     const [getNumber, setGetNumber] = useState(-1);
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
     const [celloApproval, setCelloApproval] = useState([]);
+    const [emptyApprovalFlag, setEmptyApprovalFlag] = useState(false);
 
     const [listOfEmployee,  setEmployeeList] = useState(1);  // 버튼 클릭시 LeftDiv 의 변경
 
@@ -138,6 +140,15 @@ const EmployeeManagementPage = () => {
         || employeeManagementChange === 2) ? 3 : 1);
         setEmployeeList((listOfEmployee === 1
             || listOfEmployee === 2) ? 3 : 1);
+        if (celloApproval.length === 0) {
+            setEmptyApprovalFlag(true);
+        }
+    }
+
+    //근무표 추가
+    const onClickSchedule = () =>{
+        setEmployeeManagementChange((employeeManagementChange !=4) ? 4 : 1);
+        setEmployeeList((listOfEmployee !=4) ? 4 : 1);
     }
 
     const onClickName = () => {
@@ -168,15 +179,17 @@ const EmployeeManagementPage = () => {
                 let j = 0;
                 for (let i = 0; i < res.data.length; i++) {
                     // if (res.data[i].position === 'employee') {}
-                    cell2.push(res.data[i].employeeId);
-                    cells.push(CreateRowData('blink', i+1, res.data[i].personName,
-                        res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
                     if (res.data[i].position === 'not_granted_employee') {
                         cell2Approval.push(res.data[i].employeeId);
                         cellsApproval.push(CreateApprovalRowData('blink', j+1, res.data[i].personName,
                             res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, 'approval'))
                         j += 1;
+                    } else {
+                        cell2.push(res.data[i].employeeId);
+                        cells.push(CreateRowData('blink', i+1, res.data[i].personName,
+                            res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
                     }
+
                 }
                 setCells(cells);
                 setEmployeeId(cell2);
@@ -220,14 +233,19 @@ const EmployeeManagementPage = () => {
                     }
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===2} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeActivitiesListPage cello={cello} isNameButton={true}/>
+                    <EmployeeActivitiesListPage cello={cello}
+                                                isNameButton={true}/>
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
-                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval} isNameButton={false}/>
+                    <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}
+                                          emptyApprovalFlag={emptyApprovalFlag} isNameButton={false}/>
                 </LeftDiv>
+                {listOfEmployee==4 && <LeftDiv visible={listOfEmployee===4} style={{overflow: "auto", marginTop: "2.0rem"}}>
+                    <WorkSchedulePage/>
+                </LeftDiv>}
                 <RightDiv>
                     <InnerRightDiv>
-                        <Link to="/employeeManagement/workSchedule"><Button>근무표</Button></Link>
+                    <Button onClick={onClickSchedule}>{employeeManagementChange === 4 ? "직원관리로 돌아가기" : "근무표"}</Button>
                         <Button2 onClick={onClickEmployeeCommute}>직원 출퇴근</Button2>
                         <Button onClick={onClickEmployeeList}>{employeeManagementChange === 2 ? "직원관리로 돌아가기" : "직원활동내역"}</Button>
                         <Button2 onClick={onClickEmployeeApproval}>{employeeManagementChange === 3 ? "직원관리로 돌아가기" :"직원 승인"}</Button2>

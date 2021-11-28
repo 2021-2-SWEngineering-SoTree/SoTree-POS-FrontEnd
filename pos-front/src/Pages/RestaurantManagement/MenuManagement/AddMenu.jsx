@@ -54,6 +54,7 @@ const Form = styled.form`
     flex-direction : column;
     //overflow-y:scroll; 식재료 많아지면 스크롤바
     height : 40rem;
+    margin-top:4rem;
 `;
 
 const CheckButton = styled.button`
@@ -294,7 +295,7 @@ const AddMenu = () =>{
                          </div>
                     </WrapperDiv>
 
-                    <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginBottom : '1em'}}>
+                    <div style={{display : 'flex', justifyContent:'flex-end', marginTop:'1rem', marginLeft : '3em', marginBottom : '1em'}}>
                         <CheckButton onClick = {addMenu}>추가</CheckButton>
                         <CheckButton>닫기</CheckButton>
                     </div>

@@ -189,7 +189,7 @@ const ChangeInfo = ()=>{
     const updateInfo = async () =>{
         const data = {
             userName : name,
-            birthDay : year+"-"+month+"-"+day,
+            birthDay : year+"-"+('0'+month).slice(-2)+"-"+('0'+day).slice(-2)+" 13:30",
             phoneNumber : first+"-"+middle+"-"+last,
             email : emailName+"@"+emailAddress,
             loginId : id,

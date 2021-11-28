@@ -61,7 +61,7 @@ const NotExistDataDiv = styled.div`
 
 
 const MintFormTable = ({columnName, cells, setGetNumber, clickListener,
-                           sortedClickHandler, isNameButton, sorted, emptyFlag}) => {
+                           sortedClickHandler, isNameButton, emptyFlag}) => {
 
     //----------------- check box ---------------------------------------------------
 
@@ -98,11 +98,7 @@ const MintFormTable = ({columnName, cells, setGetNumber, clickListener,
                 <TableHead>
                     <EmployeeManagementRow>
                         {Array(columnName.length).fill(undefined, undefined, undefined).map((tr,i)=>
-                                isNameButton ?
-                                (!sorted?
-                                    <ColumnCell key={i+columnName[i]}>{columnName[i]}<NameSortedButton onClick={()=>sortedClickHandler(i)}><AiOutlineDown/></NameSortedButton></ColumnCell>:
-                                    <ColumnCell key={i+columnName[i]}>{columnName[i]}<NameSortedButton onClick={()=>sortedClickHandler(i)}><IoRefresh/></NameSortedButton></ColumnCell>
-                                )
+                                isNameButton ? <ColumnCell key={i+columnName[i]}>{columnName[i]}<NameSortedButton onClick={()=>sortedClickHandler(i)}><AiOutlineDown/></NameSortedButton></ColumnCell>
                                 :<ColumnCell key={i}>{columnName[i]}</ColumnCell>
                         )}
                     </EmployeeManagementRow>

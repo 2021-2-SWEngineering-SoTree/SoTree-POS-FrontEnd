@@ -16,20 +16,37 @@ const Menu = styled.button`
     background: #7D7272;
     }
 `;
+
+const List = styled.div`
+    & + & {
+        margin-top : 0.3rem
+    }
+    display : flex
+`
+
 const SaleTd = ({rowIndex, cellIndex, arr}) => {
 
     const index = rowIndex*7+cellIndex;
-
     return (
         <Cell key={index}>
             <Menu>
-            <div style={{display: 'flex', flexDirection:'column'}}>
-                <div style={{marginBottom : '1.3rem'}}>
-                    {(index+1>arr.length)? null:arr[index].day}
+            <div style={{marginTop:'7%'}}>
+                <div style={{float:'left', marginTop:'-12%'}}>
+                    {(index+1>arr.length)? null:(arr[index].day!=0)?(+arr[index].day.slice(-2)):null}
                 </div>
-                <div>
-                    {(index+1>arr.length)? null:arr[index].매출}
-                </div>
+                {
+                    (index+1<=arr.length) && (arr[index].day!=0) && (<div style={{float : 'left', marginTop:'8%', marginLeft:'1%'}}>
+                        <List>
+                        L : {(index+1>arr.length)? null:(arr[index].L.length!=0)?' '+arr[index].L:null}
+                        </List>
+                        <List>
+                        D :{(index+1>arr.length)? null:(arr[index].D.length!=0)?' '+arr[index].D:null}
+                        </List>
+                        <List>
+                        F :{(index+1>arr.length)? null:(arr[index].F.length!=0)?' '+arr[index].F:null}
+                        </List>
+                    </div>)
+                }   
             </div>
             </Menu>
         </Cell>
