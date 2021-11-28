@@ -357,7 +357,7 @@ const SalesTemplate = () => {
         let start=+daySeven[0].date;
         let index=-1;
         for(let i=1;i<daySeven.length;i++){
-            if(+daySeven[i].date>start) start=daySeven[i];
+            if(+daySeven[i].date>start) start=daySeven[i].date;
             else{
                 index=i;
                 break;
