@@ -50,7 +50,7 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const leaveColumnName = ['번호', '이름', 'ID', '퇴근 일자', '직급']
     const paymentColumnName = ['결제번호', '이름', '주문 번호', '결제 종류', '결제 금액', '결제 일자']
     const orderColumnName = ['주문번호', '이름', '주문 종류', '주문 합계', '주문 일자']
-    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경량', '수정 일자']
+    const stockColumnName = ['번호', '이름', '재고 번호', '재고 이름', '변경량', '수정 일자','메모']
 
     const date = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
     const currentMonth = date.substr(5,2);
@@ -154,9 +154,10 @@ const EmployeeActivitiesListPage = ({cello}) => {
                 }
                 if (criterion === "STOCK") {
                     for (let i = 0 ; i < result.data.length; i++) {
-                        cells.push( CreateStockRowData(i+1, result.data[i][keys[4]],
-                            result.data[i][keys[0]], result.data[i][keys[2]], result.data[i][keys[5]],
-                            result.data[i][keys[3]]))
+                        let name = result.data[i][keys[5]] === "NULL" ? "관리자": result.data[i][keys[5]];
+                        cells.push( CreateStockRowData(i+1, name,
+                            result.data[i][keys[0]], result.data[i][keys[2]], result.data[i][keys[6]],
+                            result.data[i][keys[3]], result.data[i][keys[4]]))
                     }
                     changeState(cells, stockColumnName);
                 }

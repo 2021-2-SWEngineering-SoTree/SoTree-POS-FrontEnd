@@ -49,7 +49,7 @@ const SaleInfoItem = ({price,colors, criterion, count}) => {
         <>
             <Wrapper>
                 <TopDiv colors={colors}>
-                    <PriceSpan>{price}</PriceSpan> 원
+                    <PriceSpan>{price && price.toLocaleString()}</PriceSpan> 원
                 </TopDiv>
                 <BottomDiv>
                     <LeftText>

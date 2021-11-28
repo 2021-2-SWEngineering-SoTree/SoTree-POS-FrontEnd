@@ -221,6 +221,7 @@ const SalesTemplate = () => {
     const [topMenu,setTopMenu]=useState([]);//top5
     const [daySeven,setDaySeven]=useState([]);//일주일 매출 그래프
     const [allSum,setAllSum]=useState([]); //맨 위표
+    const [todayOrderType, setTodayOrderType] = useState([]); // 오늘 테이블, 포장 주문
     
     const [circle,setCircle]=useState([]);
     const [bar,setBar]=useState([]);
@@ -230,7 +231,7 @@ const SalesTemplate = () => {
     const [lineMax,setLineMax]=useState(0);
 
     useEffect(()=>{
-        console.log(allSum);
+        console.log("ALLSum",allSum);
     },[allSum]);
 
     useEffect(()=>{ //원그래프에 들어갈 데이터 처리
@@ -732,6 +733,7 @@ const SalesTemplate = () => {
                 setTopMenu(res.data.TopFiveMenu);
                 setDaySeven(res.data.recentSevenDays);
                 setAllSum(res.data.saleSummary);
+                setTodayOrderType(res.data.OrderTypeSummary);
             }).catch(e=>{
                 console.log(e);
             })
@@ -936,21 +938,33 @@ const SalesTemplate = () => {
                             </SaleDiv>
 
                             <br/>
-                            <TableContainer style={{float:'right', width: '30vw', height : '15vh', overflow: 'hidden', marginTop:'1%'}}>
+                            <TableContainer style={{float:'right', width: '40vw', height : '15vh', overflow: 'hidden', marginTop:'1%'}}>
                                         <TableStyle>
+                                            <div style={{display:'flex'}}>
                                             <TableHead>
                                                 <OrderRow>
-                                                    <ColumnCell style={{width:'5rem'}} >현금 매출(원)</ColumnCell>
-                                                    <Cell style={{height:'4.5vh',width:'5rem'}}>{allSum.todayCashTotalSale==null?0:allSum.todayCashTotalSale}</Cell>
+                                                    <ColumnCell style={{width:'15vw', height:'4.5vh'}} >현금 매출(원)</ColumnCell>
+                                                    <Cell style={{height:'4.5vh',width:'7vw'}}>{allSum && allSum.todayCashTotalSale==null?0:allSum.todayCashTotalSale.toLocaleString()}</Cell>
                                                 </OrderRow>
                                                 <OrderRow>
-                                                    <ColumnCell style={{height:'4.5vh'}}>카드 매출(원)</ColumnCell>
-                                                    <Cell>{allSum.todayCardTotalSale==null?0:allSum.todayCardTotalSale}</Cell>
+                                                    <ColumnCell style={{width:'50vw', height:'4.5vh'}}>매장 주문(원)</ColumnCell>
+                                                    <Cell style={{height:'4.5vh',width:'40vw'}}>{todayOrderType.length>0 ?  todayOrderType[0].tableTotalSale==null?0:todayOrderType[0].tableTotalSale.toLocaleString()+"\n("
+                                                    + (100 -Math.floor(+todayOrderType[0].takeOutTotalCount*100/(+todayOrderType[0].tableTotalCount + +todayOrderType[0].takeOutTotalCount)))+"%)" : null}</Cell>
                                                 </OrderRow>
                                             </TableHead>
-                                            <TableBody>
-
-                                            </TableBody>
+                                            <TableHead>
+                                                <OrderRow>
+                                                    <ColumnCell style={{width:'15vw', height:'4.5vh'}}>카드 매출(원)</ColumnCell>
+                                                    <Cell style={{height:'4.5vh',width:'7vw'}}>{allSum && allSum.todayCardTotalSale==null?0:allSum.todayCardTotalSale.toLocaleString()}</Cell>
+                                                </OrderRow>
+                                                <OrderRow>
+                                                    <ColumnCell style={{width:'50vw',height:'4.5vh'}}>포장 주문(원)</ColumnCell>
+                                                    <Cell style={{height:'4.5vh',width:'40vw'}}>{todayOrderType.length>0 ? todayOrderType[0].takeOutTotalSale==null?0:todayOrderType[0].takeOutTotalSale.toLocaleString()+"\n("
+                                                    + Math.floor(+todayOrderType[0].takeOutTotalCount*100/(+todayOrderType[0].tableTotalCount + +todayOrderType[0].takeOutTotalCount))+"%)" : null}</Cell>
+                                                </OrderRow>
+                                            </TableHead>
+                                            </div>
+                                            
                                         </TableStyle>                
                             </TableContainer>
                            </>
