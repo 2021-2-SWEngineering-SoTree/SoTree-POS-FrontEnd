@@ -141,14 +141,15 @@ function generateRandomCode(n) {
     return str
 }
 
-const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice);
     const [cardNum,setCardNum]=useState();
     const [month,setMonth]=useState();
     const [getSign, setGetSign]=useState(false);
     const [pay,setPay]=useState(false);
-    
+    const [pay2,setPay2]=useState(false);
+
     const getPaid = async ()=>{
         const managerId = window.localStorage.getItem('managerId');
         console.log(managerId);
@@ -156,7 +157,7 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
         //직원 ID
         const data = JSON.stringify({
             orderId : orderId,
-            employeeId : 1,
+            employeeId : eId,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
             method : '카드',
@@ -242,6 +243,7 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
                     {notTotalPrice && notTotalPrice(all-totalprice);}
                     {setAllprice && setAllprice(all-totalprice);}
                     console.log(res,res.data);
+                    setPay2(true);
                     alert('카드결제가 완료되었습니다');
                 }).catch(e=>{
                     console.log(e);
@@ -273,8 +275,9 @@ const CardPay = ({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPri
             <Templet>
                 <Header>&nbsp;신용카드 결제
                     <ExitBtn onClick={()=>{
-                        setDisplay && setDisplay(0);
-                        !setDisplay && setClick(0)
+                        (!pay&&!pay2) && alert("결제가 아직 완료되지 않았습니다");
+                        (pay||pay2) && setDisplay && setDisplay(0);
+                        (pay||pay2) && !setDisplay && setClick(0)
                     }}>X</ExitBtn>
                 </Header>
                 <Center>
