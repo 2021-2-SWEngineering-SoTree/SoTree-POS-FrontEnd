@@ -8,7 +8,7 @@ import ApprovalWorkSchedulePage from "./ApprovalWorkSchedulePage";
 
 
 
-const EmployeeApprovalPage = ({cells, employeeIdForApproval}) => {
+const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag}) => {
 
     const [getNumber, setGetNumber] = useState(-1);
     const [approval, setApproval] = useState(false);
@@ -21,7 +21,8 @@ const EmployeeApprovalPage = ({cells, employeeIdForApproval}) => {
         } catch (e) {
             console.error(e.message);
         }
-    }, [reConstruct]);
+    }, [reConstruct, emptyApprovalFlag]);
+
 
     let selectedApprovalEmployee = [];
     let selectedApprovalEmployeeId = -1;
@@ -43,7 +44,8 @@ const EmployeeApprovalPage = ({cells, employeeIdForApproval}) => {
             <RectangleModal setSelectCategory={setApproval} visible={approval} TitleName={"직원 승인"}>
                 <ApprovalWorkSchedulePage reConstruct={reConstruct} approval={approval} setApproval={setApproval}/>
             </RectangleModal>
-            <MintFormTable columnName={columnName} cells={cells} setGetNumber={setGetNumber} clickListener={approvalClickHandler}/>
+            <MintFormTable columnName={columnName} cells={cells} setGetNumber={setGetNumber}
+                           clickListener={approvalClickHandler} emptyFlag={emptyApprovalFlag}/>
         </>
     )
 }

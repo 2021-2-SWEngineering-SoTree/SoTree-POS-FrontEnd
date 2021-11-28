@@ -147,8 +147,8 @@ const EmployeeActivitiesListPage = ({cello}) => {
                 }
                 if (criterion === "ORDER") {
                     for (let i = 0 ; i < result.data.length; i++){
-                        cells.push( CreateOrderRowData(i+1, result.data[i][keys[3]],
-                            result.data[i][keys[2]], result.data[i][keys[0]], result.data[i][keys[1]]));
+                        cells.push( CreateOrderRowData(result.data[i][keys[6]], result.data[i][keys[4]],
+                            result.data[i][keys[3]], result.data[i][keys[0]], result.data[i][keys[1]]));
                     }
                     changeState(cells, orderColumnName);
                 }

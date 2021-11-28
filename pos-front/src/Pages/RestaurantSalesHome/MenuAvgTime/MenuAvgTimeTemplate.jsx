@@ -119,7 +119,6 @@ const MenuAvgTimeTemplate = () => {
 
     const [selectedCategory, setSelectedCategory] = useState();
 
-
     const getMenuOfCategory = async () => {
         let managerId = window.localStorage.getItem('managerId');
         const data = {
