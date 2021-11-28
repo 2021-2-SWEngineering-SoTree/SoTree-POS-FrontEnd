@@ -940,9 +940,9 @@ const SalePage = () => {
                 {(click===0) && <SaleDefaultMenuPage onClickCategoryButton={onClickCategoryButton} btnClick={btnClick}
                     categoryMenus={categoryMenus} getIndex={getIndex} makeOrderHandler={makeOrderHandler} backClickHandler={backClickHandler}
                     changeDiv={changeDiv} orderFinishButtonHandler={orderFinishButtonHandler}/>}
-                {(click===1) && <CashPay payedPrice={payedPrice} orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===2)  &&<CardPay payedPrice={payedPrice}orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
-                {(click===3) && <MultiPay orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===1) && <CashPay eId={employeeId} payedPrice={payedPrice} orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===2)  &&<CardPay eId={employeeId} payedPrice={payedPrice}orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
+                {(click===3) && <MultiPay eId={employeeId} orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick}/>}
                 {(click===4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount}/>}
                 {(click===5) && <Event totalPrice={totalPrice} setClick={setClick} updateDiscount ={updateDiscount} totalDiscount = {totalDiscount} /> }
                 {(click===6) && <Receipt orderId={orderId} totalPrice={totalPrice} setClick={setClick}/> }

@@ -183,13 +183,14 @@ function generateRandomCode(n) {
     return str
 }
 
-const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
+const CashPay = memo(({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setpayPrice, setClick, setDisplay, setAllprice}) => {
 
     const [totalprice,setTotalprice]=useState(totalPrice); //받을 금액
     const [price, setPrice]=useState(0); //받은 금액
     const [backPrice, setBackPrice]=useState(0); //거스름 돈
 
     const [pay,setPay]=useState(false);//결제 완료
+    const [pay2,setPay2]=useState(false);
 
     //부모 컴포넌트의 
     const setpayprice = (i) =>{
@@ -222,7 +223,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
         //직원 ID.
         const data = JSON.stringify({
             orderId : orderId,
-            employeeId : 1,
+            employeeId : eId,
             branchId: managerId,
             payTime : new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
             method : '현금',
@@ -251,7 +252,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 setBackPrice(0);
                 console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
-                setPay(true);//결제 완료
+                setPay2(true);//결제 완료
                 alert("현금 영수증을 발급받으실 수 있습니다");
             }).catch(e=>{
                 console.log(e);
@@ -289,6 +290,7 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 setPrice(0);
                 setBackPrice(0);
                 console.log(res,res.data);
+                setPay2(true);
                 alert('현금결제가 완료되었습니다');
             }).catch(e=>{
                 console.log(e);
@@ -345,8 +347,9 @@ const CashPay = memo(({orderId, payedPrice, all, notTotalPrice, totalPrice, setp
             <Templet>
                 <Header>&nbsp;현금 결제
                     <ExitBtn onClick={()=>{
-                        setDisplay && setDisplay(0);
-                        !setDisplay && setClick(0)
+                        (!pay&&!pay2) && alert("결제가 아직 완료되지 않았습니다");
+                        (pay||pay2) && setDisplay && setDisplay(0);
+                        (pay||pay2) && !setDisplay && setClick(0)
                     }}>X</ExitBtn>
                 </Header>
                 <Center>
