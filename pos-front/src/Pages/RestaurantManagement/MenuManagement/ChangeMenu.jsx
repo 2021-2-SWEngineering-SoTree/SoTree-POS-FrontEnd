@@ -54,6 +54,7 @@ const Form = styled.form`
     flex-direction : column;
     //overflow-y:scroll; 식재료 많아지면 스크롤바
     height : 40rem;
+    margin-top:7rem;
 `;
 
 const CheckButton = styled.button`
