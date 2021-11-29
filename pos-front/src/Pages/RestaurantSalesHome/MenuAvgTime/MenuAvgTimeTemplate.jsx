@@ -242,7 +242,7 @@ const MenuAvgTimeTemplate = () => {
             <RightSideDiv>
                 <LargeTitle>+ 고객 평균 소요 시간</LargeTitle>
                 <div style={{float: 'right'}}>단위: 분</div>
-                {rightCell.length ===0 ? <NotExistDataDiv>통계의 내용이 존재하지 않습니다.</NotExistDataDiv> :
+                {rightCell.length ===0 ? <NotExistDataDiv>통계에 필요한 데이터가 충분하지 않습니다.<br/>최소 일주일이상.</NotExistDataDiv> :
                     <TableContainer component={Paper} style={{marginTop: '30px'}}>
                         <AverageTableStyle>
                             <TableHead>
