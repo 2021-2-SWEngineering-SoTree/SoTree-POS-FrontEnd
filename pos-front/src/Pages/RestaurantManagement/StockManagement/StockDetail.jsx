@@ -200,7 +200,7 @@ const getStocksWithOutActive =  async() =>{
                                     stockDetails.length > 0 ? 
                                     stockDetails.map((cell) => (
                                         <StockDetailRow>
-                                            <StockDetailCell component="th" scope="cell">{cell.time.substr(0,16)}</StockDetailCell>
+                                            <StockDetailCell component="th" scope="cell">{cell.time && cell.time.substr(0,16)}</StockDetailCell>
                                             <StockDetailCell>{cell.employee !== null ? cell.employee.user.personName : "관리자"}</StockDetailCell>
                                             <StockDetailCell>{cell.finalQuantity - cell.quantityChanged}</StockDetailCell>
                                             <StockDetailCell colors = {cell.quantityChanged > 0 ? "" : "#FF0000"}>{cell.quantityChanged}</StockDetailCell>

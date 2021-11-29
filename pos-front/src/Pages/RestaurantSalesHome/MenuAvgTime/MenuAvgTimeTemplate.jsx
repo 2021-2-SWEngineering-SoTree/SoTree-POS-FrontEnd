@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Header from '../../../Components/Header';
 import styled from "styled-components";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -159,19 +159,21 @@ const MenuAvgTimeTemplate = () => {
                 console.log(res.data);
                 const data = res.data;
                 let rightCells = [
-                    ['전체', -data['allDay'][0] !== undefined ? -data['allDay'][0].lunchAvg :0, -data['allDay'][0] !== undefined ? -data['allDay'][0].dinnerAvg:0, -data['allDay'][0] !== undefined ? data['allDay'][0].totalAvg :0],
-                    ['평일', -data['weekday'][0] !== undefined ? -data['weekday'][0].lunchAvgWeekday :0,  -data['weekday'][0] !== undefined ?  -data['weekday'][0].dinnerAvgWeekday :0, -data['weekday'][0] !== undefined ? -data['weekday'][0].totalAvgWeekday :0],
-                    ['주말', -data['weekend'][0] !== undefined  ? -data['weekend'][0].lunchAvgWeekend :0, -data['weekend'][0] !== undefined ? -data['weekend'][0].dinnerAvgWeekend :0, -data['weekend'][0] !== undefined ?  -data['weekend'][0].totalAvgWeekend :0],
-                    ['일요일', -data['dayLunch'][6] !== undefined ?   -data['dayLunch'][6].timestampdiff:0, -data['dayDinner'][6] !== undefined ?  -data['dayDinner'][6].timestampdiff:0,   -data['dayAllTime'][6] !== undefined ? -data['dayAllTime'][6].timestampdiff :0],
-                    ['월요일', -data['dayLunch'][1] !== undefined ?   -data['dayLunch'][1].timestampdiff:0, -data['dayDinner'][1] !== undefined ?  -data['dayDinner'][1].timestampdiff:0,   -data['dayAllTime'][1] !== undefined ? -data['dayAllTime'][1].timestampdiff :0],
-                    ['화요일', -data['dayLunch'][0] !== undefined ?   -data['dayLunch'][0].timestampdiff:0, -data['dayDinner'][0] !== undefined ?  -data['dayDinner'][0].timestampdiff:0,   -data['dayAllTime'][0] !== undefined ? -data['dayAllTime'][0].timestampdiff :0],
-                    ['수요일', -data['dayLunch'][2] !== undefined ?   -data['dayLunch'][2].timestampdiff:0, -data['dayDinner'][2] !== undefined ?  -data['dayDinner'][2].timestampdiff:0,   -data['dayAllTime'][2] !== undefined ? -data['dayAllTime'][2].timestampdiff :0],
-                    ['목요일', -data['dayLunch'][3] !== undefined ?   -data['dayLunch'][3].timestampdiff:0, -data['dayDinner'][3] !== undefined ?  -data['dayDinner'][3].timestampdiff:0,   -data['dayAllTime'][3] !== undefined ? -data['dayAllTime'][3].timestampdiff :0],
-                    ['금요일', -data['dayLunch'][4] !== undefined ?   -data['dayLunch'][4].timestampdiff:0, -data['dayDinner'][4] !== undefined ?  -data['dayDinner'][4].timestampdiff:0,   -data['dayAllTime'][4] !== undefined ? -data['dayAllTime'][4].timestampdiff :0],
-                    ['토요일', -data['dayLunch'][5] !== undefined ?   -data['dayLunch'][5].timestampdiff:0, -data['dayDinner'][5] !== undefined ?  -data['dayDinner'][5].timestampdiff:0,   -data['dayAllTime'][5] !== undefined ? -data['dayAllTime'][5].timestampdiff :0],
+                    ['전체', -data['allDay'][0] !== undefined ? data['allDay'][0].lunchAvg :0, data['allDay'][0] !== undefined ? data['allDay'][0].dinnerAvg:0, -data['allDay'][0] !== undefined ? data['allDay'][0].totalAvg :0],
+                    ['평일', -data['weekday'][0] !== undefined ? data['weekday'][0].lunchAvgWeekday :0, data['weekday'][0] !== undefined ?  data['weekday'][0].dinnerAvgWeekday :0, data['weekday'][0] !== undefined ? data['weekday'][0].totalAvgWeekday :0],
+                    ['주말', -data['weekend'][0] !== undefined  ? data['weekend'][0].lunchAvgWeekend :0, data['weekend'][0] !== undefined ? data['weekend'][0].dinnerAvgWeekend :0, data['weekend'][0] !== undefined ?  data['weekend'][0].totalAvgWeekend :0],
+                    ['일요일', -data['dayLunch'][6] !== undefined ?   data['dayLunch'][6].timestampdiff:0, data['dayDinner'][6] !== undefined ?  data['dayDinner'][6].timestampdiff:0,   data['dayAllTime'][6] !== undefined ? data['dayAllTime'][6].timestampdiff :0],
+                    ['월요일', -data['dayLunch'][1] !== undefined ?   data['dayLunch'][1].timestampdiff:0, data['dayDinner'][1] !== undefined ?  data['dayDinner'][1].timestampdiff:0,   data['dayAllTime'][1] !== undefined ? data['dayAllTime'][1].timestampdiff :0],
+                    ['화요일', -data['dayLunch'][0] !== undefined ?   data['dayLunch'][0].timestampdiff:0, data['dayDinner'][0] !== undefined ?  data['dayDinner'][0].timestampdiff:0,   data['dayAllTime'][0] !== undefined ? data['dayAllTime'][0].timestampdiff :0],
+                    ['수요일', -data['dayLunch'][2] !== undefined ?   data['dayLunch'][2].timestampdiff:0, data['dayDinner'][2] !== undefined ?  data['dayDinner'][2].timestampdiff:0,   data['dayAllTime'][2] !== undefined ? data['dayAllTime'][2].timestampdiff :0],
+                    ['목요일', -data['dayLunch'][3] !== undefined ?   data['dayLunch'][3].timestampdiff:0, data['dayDinner'][3] !== undefined ?  data['dayDinner'][3].timestampdiff:0,   data['dayAllTime'][3] !== undefined ? data['dayAllTime'][3].timestampdiff :0],
+                    ['금요일', -data['dayLunch'][4] !== undefined ?   data['dayLunch'][4].timestampdiff:0, data['dayDinner'][4] !== undefined ?  data['dayDinner'][4].timestampdiff:0,   data['dayAllTime'][4] !== undefined ? data['dayAllTime'][4].timestampdiff :0],
+                    ['토요일', -data['dayLunch'][5] !== undefined ?   data['dayLunch'][5].timestampdiff:0, data['dayDinner'][5] !== undefined ?  data['dayDinner'][5].timestampdiff:0,   data['dayAllTime'][5] !== undefined ? data['dayAllTime'][5].timestampdiff :0],
                 ];
                 console.log(rightCells);
                 setRightCell(rightCells);
+                setSelectedCategory('세트메뉴');
+                document.getElementById('세트메뉴').focus();
             })
         } catch (e) {
             console.error(e.message);
@@ -191,6 +193,7 @@ const MenuAvgTimeTemplate = () => {
     const categoryButtonHandler = (e) => {
         console.log(e.target.name);
         setSelectedCategory(e.target.name);
+        document.getElementById(e.target.name).focus();
     }
 
     const showRow = (cells, ele) => {
@@ -203,8 +206,8 @@ const MenuAvgTimeTemplate = () => {
         )
     }
 
-    useEffect(()=>{console.log(rightCell);},[rightCell])
-
+    useEffect(()=>{console.log(rightCell);},[rightCell, leftCell])
+    let ref = useRef();
     return (
         <>
             <div>
@@ -214,13 +217,13 @@ const MenuAvgTimeTemplate = () => {
             <LeftSideDiv>
                 <LargeTitle>+ 메뉴별 평균 준비 시간</LargeTitle>
                 <ButtonDiv>
-                    <CategoryButton id = '세트메뉴' name={'세트메뉴'} onClick={categoryButtonHandler}>세트<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '2~3인분메뉴' name={'2~3인분메뉴'} onClick={categoryButtonHandler}>2~3인분<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '식사메뉴' name={'식사메뉴'} onClick={categoryButtonHandler}>식사<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '사이드메뉴' name={'사이드메뉴'} onClick={categoryButtonHandler}>사이드<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '후식메뉴' name={'후식메뉴'} onClick={categoryButtonHandler}>후식<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '추가메뉴' name={'추가메뉴'} onClick={categoryButtonHandler}>추가<br/>메뉴</CategoryButton>
-                    <CategoryButton id = '주류/음료' name={'주류/음료'} onClick={categoryButtonHandler}>주류/<br/>음료</CategoryButton>
+                    <CategoryButton id = '세트메뉴' name={'세트메뉴'} onClick={categoryButtonHandler} ref={ref}>세트<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '2~3인분메뉴' name={'2~3인분메뉴'} onClick={categoryButtonHandler} ref={ref}>2~3인분<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '식사메뉴' name={'식사메뉴'} onClick={categoryButtonHandler} ref={ref}>식사<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '사이드메뉴' name={'사이드메뉴'} onClick={categoryButtonHandler} ref={ref}>사이드<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '후식메뉴' name={'후식메뉴'} onClick={categoryButtonHandler} ref={ref}>후식<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '추가메뉴' name={'추가메뉴'} onClick={categoryButtonHandler} ref={ref}>추가<br/>메뉴</CategoryButton>
+                    <CategoryButton id = '주류/음료' name={'주류/음료'} onClick={categoryButtonHandler} ref={ref}>주류/<br/>음료</CategoryButton>
                 </ButtonDiv>
                 {leftCell.length ===0 ? <NotExistDataDiv>메뉴가 존재하지 않습니다.</NotExistDataDiv> :
                 <TableContainer component={Paper} style={{marginTop: '30px'}}>
