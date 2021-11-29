@@ -189,10 +189,19 @@ const EmployeeActivitiesListPage = ({cello}) => {
         console.log("선택된 일(day): ", e.target.value);
         setSelectDay(e.target.value);
     }
+
     // sorted
     const copySorted = (arr, i) =>{
+        console.log(arr.slice());
         return arr.slice().sort((a, b) => {
-            return a[i] < b[i] ? -1 : a[i] > b[i] ? 1 : 0;
+            if (orderColumnName[i] !== '주문 합계' && paymentColumnName[i] !== '결제 금액') {
+                return a[i] < b[i] ? -1 : a[i] > b[i] ? 1 : 0;
+            }
+            else {
+                let numberA = parseInt(a[i].toString().replace(/,/g, ''));
+                let numberB = parseInt(b[i].toString().replace(/,/g, ''));
+                return numberA < numberB ? -1 : numberA > numberB ? 1 : 0;
+            }
         });
     }
 
