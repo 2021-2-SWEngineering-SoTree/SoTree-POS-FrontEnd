@@ -4,13 +4,21 @@ import Header from '../../Components/Header';
 import SeatTable from './Seat/SeatTable';
 import Td from './Seat/Td';
 import axios from 'axios';
+import styled from 'styled-components';
+
+const Text = styled.h2`
+    margin-top : 5%;
+    text-align : center;
+`;
 
 const CurrentSeatInfoPage = memo(() => {
     
     const [tableData, setTableData] = useState([]);
     const [takeoutData, setTakeOutData] = useState([]);
-    
-    let size = 16;
+    const [size, setSize] = useState(0);
+
+
+    //let size = 16;
 
 
     const getCurrentTableInfo = async ()=>{
@@ -19,11 +27,15 @@ const CurrentSeatInfoPage = memo(() => {
             headers : {
             "Content-Type" : `application/json`,
         }}).then(async (res)=>{
+            const res3 = await getCurSeatSize();
             const res2 = await getCurrentTakeOutOrderInfo();
             console.log("takeoutOrder", res2.data)
             console.log("tableOrder", res.data)
+            console.log("seatSize",res3.data);
             setTableData(res.data);
             setTakeOutData(res2.data);
+            
+            setSize(res3.data);
         }).catch(e=>{
             console.log(e);
         })
@@ -48,6 +60,14 @@ const CurrentSeatInfoPage = memo(() => {
             "Content-Type" : `application/json`,
         }})
     };
+
+    const getCurSeatSize = async ()=>{
+        let managerId = localStorage.getItem('managerId')
+        return axios.post('http://localhost:8080/getSeatCnt',managerId,{
+        headers : {
+        "Content-Type" : "application/json",
+    }})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
         await getCurrentTableInfo();

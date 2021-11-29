@@ -1,4 +1,4 @@
-import {React, memo} from 'react';
+import {React, memo, useState, useEffect} from 'react';
 import Tr from './Tr';
 import styled from 'styled-components';
 
@@ -12,9 +12,18 @@ const Table = styled.table`
 `;
 
 const SeatTable = memo(({size, tableData}) => {
+
+    useEffect(()=>{
+        console.log("size : "+size);
+        console.log("sqrt : "+parseInt(Math.sqrt(20)));
+    },[])
+
+    let t = size/4;
+    if(size%4!=0) t++;
+
     return (
         <Table>
-            {Array(Math.sqrt(size)).fill().map((tr, i) => <Tr rowIndex={i} size={size} tableData={tableData}/>)}
+            {Array(parseInt(t)).fill().map((tr, i) => <Tr rowIndex={i} size={size} tableData={tableData}/>)}
         </Table>
     );
 });
