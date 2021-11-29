@@ -40,7 +40,7 @@ const data = [
   }
 ];
 
-const BChart=({barData,legend,sp})=> {
+const BChart=({barData,legend,sp , bottomLabel})=> {
   return (
     <BarChart
       width={800}
@@ -58,7 +58,7 @@ const BChart=({barData,legend,sp})=> {
       <YAxis />
       <Tooltip />
       <Legend wrapperStyle={{bottom :legend, left:'5%'}}/>
-      <Bar dataKey="매출" fill="#8884d8" />
+      <Bar dataKey={bottomLabel} fill="#8884d8" />
     </BarChart>
   );
 }
