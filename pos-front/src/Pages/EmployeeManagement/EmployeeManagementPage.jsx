@@ -187,15 +187,16 @@ const EmployeeManagementPage = () => {
                 let j = 0;
                 for (let i = 0; i < res.data.length; i++) {
                     // if (res.data[i].position === 'employee') {}
+                    let date = res.data[i].birthDay.substr(0, 10);
                     if (res.data[i].position === 'not_granted_employee') {
                         cell2Approval.push(res.data[i].employeeId);
                         cellsApproval.push(CreateApprovalRowData('blink', j+1, res.data[i].personName,
-                            res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, 'approval'))
+                            res.data[i].loginId, date, res.data[i].email, res.data[i].phoneNumber, 'approval'))
                         j += 1;
                     } else {
                         cell2.push(res.data[i].employeeId);
                         cells.push(CreateRowData('blink', i+1, res.data[i].personName,
-                            res.data[i].loginId, res.data[i].birthDay, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
+                            res.data[i].loginId, date, res.data[i].email, res.data[i].phoneNumber, res.data[i].position))
                     }
 
                 }

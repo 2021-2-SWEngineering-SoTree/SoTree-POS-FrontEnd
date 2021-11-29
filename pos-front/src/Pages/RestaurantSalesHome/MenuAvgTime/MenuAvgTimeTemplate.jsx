@@ -99,10 +99,6 @@ const createLeftRowData = (number, menu, avgTime) => {
     return [number, menu, avgTime];
 }
 
-const createRightRowDate = (day, lunch, dinner, full) => {
-    return [day, lunch, dinner, full];
-}
-
 
 const MenuAvgTimeTemplate = () => {
 
@@ -111,19 +107,6 @@ const MenuAvgTimeTemplate = () => {
 
     const leftColumnName = ['번호', '메뉴', '평균 준비 시간(분)'];
     const rightColumnName = ['요일', '점심타임(L)', '저녁타임(D)', '영업시간 전체(F)'];
-
-    const rightCells = [
-        createRightRowDate('전체', '15','15','15'),
-        createRightRowDate('평일', '15','15','15'),
-        createRightRowDate('주말', '15','15','15'),
-        createRightRowDate('일요일', '15','15','15'),
-        createRightRowDate('월요일', '15','15','15'),
-        createRightRowDate('화요일', '15','15','15'),
-        createRightRowDate('수요일', '15','15','15'),
-        createRightRowDate('목요일', '15','15','15'),
-        createRightRowDate('금요일', '15','15','15'),
-        createRightRowDate('토요일', '15','15','15'),
-    ];
 
     const [selectedCategory, setSelectedCategory] = useState("식사");
 
@@ -170,10 +153,25 @@ const MenuAvgTimeTemplate = () => {
             // 데이터를 받아오는 동안 시간 소모. await 대기
             await axios.post('http://localhost:8080/payment/getCustomerAvgTime', managerId, {
                 headers: {
-                    "Content-Type": "text/plain"
+                    "Content-Type": `application/json`,
                 }
             }).then((res) => {
                 console.log(res.data);
+                const data = res.data;
+                let rightCells = [
+                    ['전체', -data['allDay'][0].lunchAvg, -data['allDay'][0].dinnerAvg, -data['allDay'][0].totalAvg],
+                    ['평일', -data['weekday'][0].lunchAvgWeekday, -data['weekday'][0].dinnerAvgWeekday, -data['weekday'][0].totalAvgWeekday],
+                    ['주말', -data['weekend'][0].lunchAvgWeekend, -data['weekend'][0].dinnerAvgWeekend, -data['weekend'][0].totalAvgWeekend],
+                    ['일요일', -data['dayLunch'][6].timestampdiff, -data['dayDinner'][6].timestampdiff, -data['dayAllTime'][6].timestampdiff],
+                    ['월요일', -data['dayLunch'][1].timestampdiff, -data['dayDinner'][1].timestampdiff, -data['dayAllTime'][1].timestampdiff],
+                    ['화요일', -data['dayLunch'][0].timestampdiff, -data['dayDinner'][0].timestampdiff, -data['dayAllTime'][0].timestampdiff],
+                    ['수요일', -data['dayLunch'][2].timestampdiff, -data['dayDinner'][2].timestampdiff, -data['dayAllTime'][2].timestampdiff],
+                    ['목요일', -data['dayLunch'][3].timestampdiff, -data['dayDinner'][3].timestampdiff, -data['dayAllTime'][3].timestampdiff],
+                    ['금요일', -data['dayLunch'][4].timestampdiff, -data['dayDinner'][4].timestampdiff, -data['dayAllTime'][4].timestampdiff],
+                    ['토요일', -data['dayLunch'][5].timestampdiff, -data['dayDinner'][5].timestampdiff, -data['dayAllTime'][5].timestampdiff],
+                ];
+                console.log(rightCells);
+                setRightCell(rightCells);
             })
         } catch (e) {
             console.error(e.message);
@@ -243,7 +241,8 @@ const MenuAvgTimeTemplate = () => {
             </LeftSideDiv>
             <RightSideDiv>
                 <LargeTitle>+ 고객 평균 소요 시간</LargeTitle>
-                {rightCells.length ===0 ? <NotExistDataDiv>메뉴가 존재하지 않습니다.</NotExistDataDiv> :
+                <div style={{float: 'right'}}>단위: 분</div>
+                {rightCell.length ===0 ? <NotExistDataDiv>통계의 내용이 존재하지 않습니다.</NotExistDataDiv> :
                     <TableContainer component={Paper} style={{marginTop: '30px'}}>
                         <AverageTableStyle>
                             <TableHead>
@@ -253,9 +252,9 @@ const MenuAvgTimeTemplate = () => {
                                 </AverageRow>
                             </TableHead>
                             <TableBody >
-                                {rightCells.map((td, i)=>
+                                {rightCell.map((td, i)=>
                                     <AverageRow key={i}>
-                                        {showRow(rightCells[i], i)}
+                                        {showRow(rightCell[i], i)}
                                     </AverageRow>)
                                 }
                             </TableBody>
