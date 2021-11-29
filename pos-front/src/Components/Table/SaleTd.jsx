@@ -31,7 +31,7 @@ const SaleTd = ({rowIndex, cellIndex, arr}) => {
         <Cell key={index}>
             <Menu>
             <div style={{marginTop:'7%'}}>
-                <div style={{float:'left', marginTop:'-12%'}}>
+                <div style={{float:'left', marginTop:'-17px'}}>
                     {(index+1>arr.length)? null:(arr[index].day!=0)?(+arr[index].day.slice(-2)):null}
                 </div>
                 {

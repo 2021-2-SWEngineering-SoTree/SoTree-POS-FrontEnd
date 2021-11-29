@@ -329,62 +329,31 @@ const SalesTemplate = () => {
     useEffect(()=>{
         console.log(daySeven);
         if(daySeven.length!=0){
-        const BarData=[
-            {
-                name:'일요일', 매출 :0
-            },
-            {
-                name:'월요일', 매출 :0
-            },
-            {
-                name:'화요일', 매출 :0
-            },
-            {
-                name:'수요일', 매출 :0
-            },
-            {
-                name:'목요일', 매출 :0
-            },
-            {
-                name:'금요일', 매출 :0
-            },
-            {
-                name:'토요일', 매출 :0
-            },
-        ];
-
-        console.log(daySeven);
-        let start=+daySeven[0].date;
-        let index=-1;
-        for(let i=1;i<daySeven.length;i++){
-            if(+daySeven[i].date>start) start=daySeven[i].date;
-            else{
-                index=i;
-                break;
-            }
-        }
-        console.log(index);
-
-        daySeven.map((v,i)=>{
-            let day;
-            let month=new Date().getMonth()+1;
-            if(i<index) month--;
-            const format = nowYear+'-'+month+'-';
-            //new Date('2021-11-24').getDay()
+            const BarData=[];
             
-            if((new Date(format+v.date).getDay())==0) day=0;
-            else if((new Date(format+v.date).getDay())==1) day=1;
-            else if((new Date(format+v.date).getDay())==2) day=2;
-            else if((new Date(format+v.date).getDay())==3) day=3;
-            else if((new Date(format+v.date).getDay())==4) day=4;
-            else if((new Date(format+v.date).getDay())==5) day=5;
-            else if((new Date(format+v.date).getDay())==6) day=6;
-
-            console.log(format+v.date,day);
-            BarData[day].매출+=v.totalSale
+            for(let i=6;i>=0;i--){
+                let now = new Date();
+                let year,month,day;
+                let date = new Date(now.setDate(now.getDate()-i));
+                year=date.getFullYear();
+                month=date.getMonth()+1;
+                day=date.getDate();
+                console.log(year,month,day);
+                BarData.push({
+                    name:year+'-'+('0'+month).slice(-2)+'-'+('0'+day).slice(-2),
+                    매출:0
+                })
             }
-        );
-        setBar(BarData);
+            daySeven.map((v,i)=>{
+                for(let i=0;i<BarData.length;i++){
+                    let day = BarData[i].name.slice(-2);
+                    if(+day==(+v.date)){
+                        BarData[i].매출+=v.totalSale;
+                    }
+                }
+            })
+            console.log(BarData);
+            setBar(BarData);
         }
     },[daySeven]);
     
