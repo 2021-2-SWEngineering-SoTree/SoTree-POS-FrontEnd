@@ -146,11 +146,11 @@ const MenuSalesTemplate = () => {
     const [select,setSelect]=useState(0);
 
     //월별->연도,월 선택
-    const [year,setYear]=useState();
-    const [month,setMonth]=useState();
+    const [year,setYear]=useState(new Date().getFullYear());
+    const [month,setMonth]=useState(new Date().getMonth()+1);
 
     //요일별->요일 선택
-    const [day,setDay]=useState();
+    const [day,setDay]=useState('일요일');
 
     //통계
     const [stats,setStats]=useState([]); //기본

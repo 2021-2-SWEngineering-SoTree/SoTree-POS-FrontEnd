@@ -252,7 +252,7 @@ const CashPay = memo(({eId, orderId, payedPrice, all, notTotalPrice, totalPrice,
                 setBackPrice(0);
                 console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
-                setPay2(true);//결제 완료
+                setPay(true);//결제 완료
                 alert("현금 영수증을 발급받으실 수 있습니다");
             }).catch(e=>{
                 console.log(e);
