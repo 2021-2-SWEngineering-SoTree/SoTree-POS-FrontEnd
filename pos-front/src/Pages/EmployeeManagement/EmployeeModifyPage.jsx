@@ -80,7 +80,7 @@ const CheckButton = styled.button`
     margin-right : 1rem;
 `;
 
-const EmployeeModifyPage = ({}) => {
+const EmployeeModifyPage = ({Id,Data}) => {
     //id 성명 생년월일 전화번호 이메일
 
     const [id, setId]=useState('');
@@ -110,44 +110,31 @@ const EmployeeModifyPage = ({}) => {
     const emailAddressRef = useRef();
     
     const getInfos = async ()=>{
-        // await axios.post('http://localhost:8080/getUserByLoginId',loginId,{
-        //     headers : {
-        //     "Content-Type" : `text/plain`,
-        // }}).then((res)=>{
-        //     const {birthDay, phoneNumber, personName, email}=res.data.user;
-            
-        //     const emailArr=email.split('@');
-        //     const birthArr=birthDay.split('-');
-        //     const phoneArr=phoneNumber.split('-');
-        //     console.log(emailArr,birthArr,phoneArr);
-            
-        //     setName(personName);
-        //     setEmailName(emailArr[0]);
-        //     setEmailAddress(emailArr[1]);
-        //     setFirst(phoneArr[0]);
-        //     setMiddle(phoneArr[1]);
-        //     setLast(phoneArr[2]);
-        //     setYear(birthArr[0]);
+            console.log(Data);
+            setName(Data[2]);
+            setId(Data[3]);
+            const birthArr = Data[4].split('-');
+            const emailArr = Data[5].split('@');
+            const phoneArr = Data[6].split('-');
+            setEmailName(emailArr[0]);
+            setEmailAddress(emailArr[1]);
+            setFirst(phoneArr[0]);
+            setMiddle(phoneArr[1]);
+            setLast(phoneArr[2]);
+            setYear(birthArr[0]);
 
-        //     if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
-        //     setMonth(birthArr[1]);
+            if(birthArr[1][0]==='0') birthArr[1]=birthArr[1][1];
+            setMonth(birthArr[1]);
 
-        //     let day=birthArr[2].slice(0,2);
-        //     if(day[0]==='0'){
-        //         day=day[1];
-        //     }
-        //     console.log(day);
-        //     console.log(emailAddress);
-        //     setDay(day);
-
-        // }).catch(e=>{
-        //     console.log(e);
-        // })
+            let day=birthArr[2].slice(0,2);
+            if(day[0]==='0'){
+                day=day[1];
+            }
+            setDay(day);
     }
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
-        setId();
         await getInfos();
     },[]);
 
@@ -167,24 +154,28 @@ const EmployeeModifyPage = ({}) => {
     }
 
     const updateInfo = async () =>{
+
+        let managerId = window.localStorage.getItem('managerId');
         const data = {
+            branchId : managerId,
+            employeeId : Id,
             userName : name,
-            birthDay : year+"-"+month+"-"+day,
+            birthDay : year+"-"+('0'+month).slice(-2)+"-"+('0'+day).slice(-2)+" 13:30",
             phoneNumber : first+"-"+middle+"-"+last,
             email : emailName+"@"+emailAddress,
             loginId : id
         }
         console.log(data);
-        // await axios.put('http://localhost:8080/updateUser',JSON.stringify(data),{
-        //         headers : {
-        //         "Content-Type" : `application/json;charset=utf8`,
-        //     }}).then((res)=>{
-        //         console.log(res);
-        //         alert('직원 정보가 변경되었습니다!');
-        //         window.location.replace("/myInfo");
-        //     }).catch(e=>{
-        //         alert('입력한 정보를 다시한번 확인해주세요!');
-        // })
+        await axios.put('http://localhost:8080/updateEmployee',JSON.stringify(data),{
+                headers : {
+                "Content-Type" : `application/json;charset=utf8`,
+            }}).then((res)=>{
+                console.log(res);
+                alert('직원 정보가 변경되었습니다!');
+                window.location.replace("/employeeManagement");
+            }).catch(e=>{
+                alert('입력한 정보를 다시한번 확인해주세요!');
+        })
     };
 
     
