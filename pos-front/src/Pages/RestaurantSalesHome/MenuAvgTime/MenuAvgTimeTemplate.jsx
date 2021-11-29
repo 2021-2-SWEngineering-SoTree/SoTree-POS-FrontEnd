@@ -164,9 +164,29 @@ const MenuAvgTimeTemplate = () => {
         }
     }
 
+    const getCustomerAvgTime = async() => {
+        let managerId = window.localStorage.getItem('managerId');
+        try {
+            // 데이터를 받아오는 동안 시간 소모. await 대기
+            await axios.post('http://localhost:8080/payment/getCustomerAvgTime', managerId, {
+                headers: {
+                    "Content-Type": "text/plain"
+                }
+            }).then((res) => {
+                console.log(res.data);
+            })
+        } catch (e) {
+            console.error(e.message);
+        }
+    }
+
+    useEffect( async () => {
+        await getCustomerAvgTime();
+    }, [])
+
     useEffect(async ()=>{
         console.log("useEffect 실행");
-        await getMenuOfCategory()
+        await getMenuOfCategory();
     }, [selectedCategory])
 
 
