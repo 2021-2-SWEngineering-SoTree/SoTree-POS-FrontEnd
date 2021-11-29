@@ -116,11 +116,11 @@ const Login = ({loginCallBack}) => {
                     <ProfileImg src = {profile_Image}/>
                 </div>
                 <InputDiv>
-                    <ImageDiv><BsKey style={{marginTop:'0.2rem'}}/></ImageDiv>
+                    <ImageDiv><BsPerson style={{marginTop:'0.2rem'}}/></ImageDiv>
                     <Input type ="text" value = {id} onChange={(e)=> SetId(e.target.value)} placeholder="user name"/>
                 </InputDiv>
                 <InputDiv>
-                    <ImageDiv><BsPerson style={{marginTop:'0.2rem'}}/></ImageDiv>
+                    <ImageDiv><BsKey style={{marginTop:'0.2rem'}}/></ImageDiv>
                     <Input type ="password" value = {pwd} onChange={(e)=> SetPwd(e.target.value)} placeholder="password"/>
                 </InputDiv>
                 <ButtonDiv>
