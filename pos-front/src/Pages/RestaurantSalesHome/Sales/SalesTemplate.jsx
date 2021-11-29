@@ -341,14 +341,14 @@ const SalesTemplate = () => {
                 console.log(year,month,day);
                 BarData.push({
                     name:year+'-'+('0'+month).slice(-2)+'-'+('0'+day).slice(-2),
-                    매출:0
+                    최근7일매출:0
                 })
             }
             daySeven.map((v,i)=>{
                 for(let i=0;i<BarData.length;i++){
                     let day = BarData[i].name.slice(-2);
                     if(+day==(+v.date)){
-                        BarData[i].매출+=v.totalSale;
+                        BarData[i].최근7일매출+=v.totalSale;
                     }
                 }
             })
@@ -909,6 +909,7 @@ const SalesTemplate = () => {
                             <br/>
                             <TableContainer style={{float:'right', width: '40vw', height : '15vh', overflow: 'hidden', marginTop:'1%'}}>
                                         <TableStyle>
+                                            <div style={{marginTop:'-4vh', fontWeight:'bold', fontSize:'2.3vh', marginBottom : '1vh'}}>[ 오늘 매출 상세 정보 ]</div>
                                             <div style={{display:'flex'}}>
                                             <TableHead>
                                                 <OrderRow>
@@ -1042,7 +1043,7 @@ const SalesTemplate = () => {
                                <>
                                <Title>일별 매출</Title>
                                <GraphDiv style={{marginTop:'12%', minWidth:'10rem'}}>
-                                    <BChart2 barData={bars} legend={'3%'} sp={true}/>
+                                    <BChart2 barData={bars} legend={'3%'} sp={true} bottomLabel={"매출"}/>
                                 </GraphDiv>
                                </>
                            )}
@@ -1052,8 +1053,8 @@ const SalesTemplate = () => {
                             <>
                             <GraphBottom>
                                 <GraphDiv>
-                                    {select!==0 && <BChart legend={'35%'} barData={line} max={lineMax}/>}
-                                    {select===0 && <BChart legend={'35%'} barData={bar}/>}
+                                    {select!==0 && <BChart legend={'35%'} barData={line} max={lineMax} bottomLabel={"매출"}/>}
+                                    {select===0 && <BChart legend={'35%'} barData={bar} bottomLabel={"최근7일매출"}/>}
                                 </GraphDiv>
                             </GraphBottom>
                             </>
@@ -1089,24 +1090,29 @@ const SalesTemplate = () => {
                     {select==2 && (
                     <>
                     <Title>이번 주 정보</Title>
-                    <TableContainer margin='10px' style={{height : '87%', marginTop:'-3%'}}>
+                    <TableContainer margin='10px' style={{height : '87%', marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{(weekCardSum+weekCashSum).toLocaleString()}</Cell>
+                                                <Cell>{(weekCardSum || weekCashSum) && (weekCardSum+weekCashSum).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{weekCardSum.toLocaleString()}</Cell>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(원)</ColumnCell>
+                                                <Cell>{(weekCardSum || weekCashSum) && ((weekCardSum+weekCashSum)*0.1).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{weekCashSum.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{weekCashSum.toLocaleString()}</Cell>
+                                                <Cell>{(weekCardSum || weekCashSum) && ((weekCardSum+weekCashSum)*0.9).toLocaleString()}</Cell>
                                             </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{weekCardSum && weekCardSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{weekCardSum && weekCashSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            
                                         <TableBody>
 
                                         </TableBody>
@@ -1118,24 +1124,29 @@ const SalesTemplate = () => {
                     {select==1 &&(
                         <>
                         <Title>이번 달 정보</Title>
-                        <TableContainer  margin='10px' style={{height : '87%',marginTop:'-3%'}}>
+                        <TableContainer  margin='10px' style={{height : '87%',marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{(monthCashSum+monthCardSum).toLocaleString()}</Cell>
+                                                <Cell>{(monthCashSum || monthCardSum) && (monthCashSum+monthCardSum).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{monthCardSum.toLocaleString()}</Cell>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(원)</ColumnCell>
+                                                <Cell>{(monthCashSum || monthCardSum) && ((monthCashSum+monthCardSum)*0.1).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{monthCashSum.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{monthCashSum.toLocaleString()}</Cell>
+                                                <Cell>{(monthCashSum || monthCardSum) && ((monthCashSum+monthCardSum)*0.9).toLocaleString()}</Cell>
                                             </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{monthCardSum && monthCardSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{monthCashSum && monthCashSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            
                                         <TableBody>
 
                                         </TableBody>
@@ -1171,33 +1182,38 @@ const SalesTemplate = () => {
                     {select==4 && (
                     <>
                     <Title>기간 누적 매출</Title>
-                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-6%'}}>
+                    <TableContainer  margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                     <TableStyle>
                                             
-                                            <OrderRow style={{height:'5vh'}}>
+                                            <OrderRow style={{height:'4.2vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{allData.length!=0 ? allData[0].totalSale.toLocaleString() : 0}</Cell>
+                                                <Cell>{allData.length!==0 ? (allData[0].totalSale === null ? 0 : allData[0].totalSale.toLocaleString()) : 0}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>포장 매출(원)</ColumnCell>
-                                                <Cell>{orderData.length!=0 ? (orderData[0].takeOutTotalSale==null?0:orderData[0].takeOutTotalSale.toLocaleString()): 0}</Cell>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(10%)(원)</ColumnCell>
+                                                <Cell>{allData.length!==0 ? (allData[0].totalSale === null ? 0 : (allData[0].totalSale*0.1).toLocaleString()) : 0}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%', fontSize:'1rem'}}>매장식사 매출(원)</ColumnCell>
-                                                <Cell>{orderData.length!=0 ? (orderData[0].tableTotalSale==null?0:orderData[0].tableTotalSale.toLocaleString()): 0}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{allData.length!=0 ? allData[0].cardTotalSale.toLocaleString() : 0}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{allData.length!=0 ? allData[0].cashTotalSale.toLocaleString() : 0}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
+                                            <OrderRow style={{height:'4.2vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{allData.length!=0 ? (allData[0].totalSale*0.9).toLocaleString() : 0}</Cell>
+                                                <Cell>{allData.length!==0 ? (allData[0].totalSale === null ? 0 : (allData[0].totalSale*0.9).toLocaleString()) : 0}</Cell>
                                             </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>포장 매출(원)</ColumnCell>
+                                                <Cell>{orderData.length!==0 ? (orderData[0].takeOutTotalSale==null?0:orderData[0].takeOutTotalSale.toLocaleString()): 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>매장식사 매출(원)</ColumnCell>
+                                                <Cell>{orderData.length!==0 ? (orderData[0].tableTotalSale==null?0:orderData[0].tableTotalSale.toLocaleString()): 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{allData.length!==0 ? (allData[0].cardTotalSale === null ? 0: allData[0].cardTotalSale.toLocaleString()) : 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{allData.length!==0 ? (allData[0].cashTotalSale === null ? 0 : allData[0].cashTotalSale.toLocaleString()) : 0}</Cell>
+                                            </OrderRow>
+                                            
                                         <TableBody>
 
                                         </TableBody>
@@ -1211,23 +1227,27 @@ const SalesTemplate = () => {
                     {(select==3)&&(
                     <>
                     <Title>누적 매출</Title>
-                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-3%'}}>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'7vh'}}>
+                                        <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{(monthDayCard+monthDayCash).toLocaleString()}</Cell>
+                                                <Cell>{(monthDayCard || monthDayCash) && (monthDayCard+monthDayCash).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{monthDayCard.toLocaleString()}</Cell>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(원)</ColumnCell>
+                                                <Cell>{(monthDayCard || monthDayCash) && ((monthDayCard+monthDayCash)*0.1).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{monthDayCash.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{((monthDayCard+monthDayCash)*0.9).toLocaleString()}</Cell>
+                                                <Cell>{(monthDayCard || monthDayCash) && ((monthDayCard+monthDayCash)*0.9).toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{monthDayCard && monthDayCard.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{monthDayCash && monthDayCash.toLocaleString()}</Cell>
                                             </OrderRow>
                                         <TableBody>
 
@@ -1240,32 +1260,37 @@ const SalesTemplate = () => {
                     {(select==4)&&(
                     <>
                     <Title>전체 매출</Title>
-                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-6%'}}>
+                    <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'5vh'}}>
+                                            <OrderRow style={{height:'4.2vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{allAllData.length!=0 && allAllData[0].totalSale.toLocaleString()}</Cell>
+                                                <Cell>{allAllData.length!==0 ? (allAllData[0].totalSale === null ? 0 : allAllData[0].totalSale.toLocaleString()) : 0}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>포장 매출(원)</ColumnCell>
-                                                <Cell>{allOrderData.length!=0 ? (allOrderData[0].takeOutTotalSale==null?0:allOrderData[0].takeOutTotalSale.toLocaleString()): 0}</Cell>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(10%)(원)</ColumnCell>
+                                                <Cell>{allAllData.length!==0 ? (allAllData[0].totalSale === null ? 0 : (allAllData[0].totalSale*0.1).toLocaleString()) : 0}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%', fontSize:'1rem'}}>매장식사 매출(원)</ColumnCell>
-                                                <Cell>{allOrderData.length!=0 ? (allOrderData[0].tableTotalSale==null?0:allOrderData[0].tableTotalSale.toLocaleString()): 0}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{allAllData.length!=0 && allAllData[0].cardTotalSale.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{allAllData.length!=0 && allAllData[0].cashTotalSale.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'5vh'}}>
+                                            <OrderRow style={{height:'4.2vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{allAllData.length!=0 && (allAllData[0].totalSale*0.9).toLocaleString()}</Cell>
+                                                <Cell>{allAllData.length!==0 ? (allAllData[0].totalSale === null ? 0 :(allAllData[0].totalSale*0.9).toLocaleString()) : 0}</Cell>
                                             </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>포장 매출(원)</ColumnCell>
+                                                <Cell>{allOrderData.length!==0 ? (allOrderData[0].takeOutTotalSale==null?0:allOrderData[0].takeOutTotalSale.toLocaleString()): 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>매장식사 매출(원)</ColumnCell>
+                                                <Cell>{allOrderData.length!==0 ? (allOrderData[0].tableTotalSale==null?0:allOrderData[0].tableTotalSale.toLocaleString()): 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{allAllData.length!==0 ? (allAllData[0].cardTotalSale === null ? 0 : allAllData[0].cardTotalSale.toLocaleString()) : 0}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'4.2vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{allAllData.length!==0 ? (allAllData[0].cashTotalSale === null ? 0 : allAllData[0].cashTotalSale.toLocaleString()) : 0}</Cell>
+                                            </OrderRow>
+                                            
                                         <TableBody>
 
                                         </TableBody>
@@ -1276,24 +1301,29 @@ const SalesTemplate = () => {
                     {select==1 &&(
                         <>
                         <Title>연 매출</Title>
-                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-3%'}}>
+                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{(yearCardSum+yearCashSum).toLocaleString()}</Cell>
+                                                <Cell>{(yearCardSum || yearCashSum) && (yearCardSum+yearCashSum).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{yearCardSum.toLocaleString()}</Cell>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(원)</ColumnCell>
+                                                <Cell>{(yearCardSum || yearCashSum) &&((yearCardSum+yearCashSum)*0.1).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{yearCashSum.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{((yearCardSum+yearCashSum)*0.9).toLocaleString()}</Cell>
+                                                <Cell>{(yearCardSum || yearCashSum) &&((yearCardSum+yearCashSum)*0.9).toLocaleString()}</Cell>
                                             </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{yearCardSum && yearCardSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{yearCashSum && yearCashSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            
                                         <TableBody>
 
                                         </TableBody>
@@ -1304,23 +1334,27 @@ const SalesTemplate = () => {
                     {select==2 &&(
                         <>
                         <Title>이번 달 매출</Title>
-                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-3%'}}>
+                        <TableContainer margin='10px' style={{height : '87%', overflow: 'hidden', marginTop:'-4%'}}>
                                     <TableStyle>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>총 매출(원)</ColumnCell>
-                                                <Cell>{(monthCashSum+monthCardSum).toLocaleString()}</Cell>
+                                                <Cell>{(monthCashSum || monthCardSum) && (monthCashSum+monthCardSum).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
-                                                <Cell>{monthCardSum.toLocaleString()}</Cell>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>부가세(원)</ColumnCell>
+                                                <Cell>{(monthCashSum || monthCardSum) && ((monthCashSum+monthCardSum)*0.1).toLocaleString()}</Cell>
                                             </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
-                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
-                                                <Cell>{monthCashSum.toLocaleString()}</Cell>
-                                            </OrderRow>
-                                            <OrderRow style={{height:'7vh'}}>
+                                            <OrderRow style={{height:'6vh'}}>
                                                 <ColumnCell style={{width:'36%'}}>순 매출(원)</ColumnCell>
-                                                <Cell>{((monthCashSum+monthCardSum)*0.9).toLocaleString()}</Cell>
+                                                <Cell>{(monthCashSum || monthCardSum) && ((monthCashSum+monthCardSum)*0.9).toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>카드 매출(원)</ColumnCell>
+                                                <Cell>{monthCardSum && monthCardSum.toLocaleString()}</Cell>
+                                            </OrderRow>
+                                            <OrderRow style={{height:'6vh'}}>
+                                                <ColumnCell style={{width:'36%'}}>현금 매출(원)</ColumnCell>
+                                                <Cell>{monthCashSum && monthCashSum.toLocaleString()}</Cell>
                                             </OrderRow>
                                         <TableBody>
 

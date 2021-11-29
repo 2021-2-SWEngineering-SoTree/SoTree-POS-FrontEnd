@@ -140,8 +140,11 @@ const StockTemplate = () => {
                 </LeftDiv>
                 <RightDiv>
                         <Button onClick={onClickChange}>재고 수정</Button>
-                        <Link to="/restaurantManagement/stock/stockDetail" state={clickedIndex? stock[clickedIndex].stockName:""}>
-                            <Button>재고 추적</Button>
+                        <Link to="/restaurantManagement/stock/stockDetail" state={clickedIndex >= '0' ? stock[clickedIndex].stockName:""}>
+                            <Button onClick={(e)=>{if(clickedIndex <'0'){
+                                e.preventDefault();
+                                alert("재고를 선택해주세요.");
+                            }}}>재고 추적</Button>
                         </Link>
                         <Button onClick={onClickAdd}>재고 추가</Button>
                         <Button onClick={onClickDelete}>재고 삭제</Button>
