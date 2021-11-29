@@ -41,9 +41,7 @@ const EmployeeDeletePage = ({id, name}) => {
 
     const [check,setCheck]=useState(false);
 
-    const success = (e)=>{
-        alert('직원이 삭제되었습니다');
-    }
+
 
     const fail = () =>{
         alert('직원을 삭제할 수 없습니다');
@@ -55,28 +53,27 @@ const EmployeeDeletePage = ({id, name}) => {
     }
 
     const handleClick = async (e) =>{
-        // let managerId = window.localStorage.getItem('managerId');
-        // const data = {
-        //     branchId : managerId,
-        //     employeeId : id
-        // };
-
-        // const data2=JSON.stringify(data);
-        // console.log(data2);
-        // check ? axios.put(`http://localhost:8080/deleteEmployee`,data2,
-        //     {    
-        //         headers : {
-        //             'Content-type': 'application/json; charset=UTF-8'
-        //         }
-        //     }
-    
-        //     ).then((res)=>{
-        //         check && success();
-        //     }).catch((error)=>{
-        //         fail();
-        //         console.log(error);
-        //     })
-        // :alert('체크 버튼을 눌러주세요');
+        alert("직원을 삭제합니다");
+        window.location.replace("/employeeManagement");
+        let managerId = window.localStorage.getItem('managerId');
+        const data = {
+            branchId : managerId,
+            employeeId : id
+        };
+        const data2=JSON.stringify(data);
+        console.log(data2);
+        check ? axios.put(`http://localhost:8080/deleteEmployee`,data2,
+            {    
+                headers : {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+            }
+            ).then((res)=>{
+            }).catch((error)=>{
+                fail();
+                console.log(error);
+            })
+        :alert('체크 버튼을 눌러주세요');
         
     }
 
