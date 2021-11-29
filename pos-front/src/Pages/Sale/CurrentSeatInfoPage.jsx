@@ -15,7 +15,7 @@ const CurrentSeatInfoPage = memo(() => {
     
     const [tableData, setTableData] = useState([]);
     const [takeoutData, setTakeOutData] = useState([]);
-    const [size, setSize] = useState(0);
+    const [size, setSize] = useState(16);
 
 
     //let size = 16;
@@ -27,16 +27,12 @@ const CurrentSeatInfoPage = memo(() => {
             headers : {
             "Content-Type" : `application/json`,
         }}).then(async (res)=>{
-            const res3 = await getCurSeatSize();
             const res2 = await getCurrentTakeOutOrderInfo();
             console.log("takeoutOrder", res2.data)
             console.log("tableOrder", res.data)
-            console.log("seatSize",res3.data);
             setTableData(res.data);
             setTakeOutData(res2.data);
-            
-            setSize(res3.data);
-        }).catch(e=>{
+            }).catch(e=>{
             console.log(e);
         })
     };
@@ -61,24 +57,17 @@ const CurrentSeatInfoPage = memo(() => {
         }})
     };
 
-    const getCurSeatSize = async ()=>{
-        let managerId = localStorage.getItem('managerId')
-        return axios.post('http://localhost:8080/getSeatCnt',managerId,{
-        headers : {
-        "Content-Type" : "application/json",
-    }})
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
-        await getCurrentTableInfo();
-    },[])
+      await getCurrentTableInfo();
+      },[])
 
     return (
         <div>
             <Header text ={"판매"} restaurantName = {localStorage.getItem('storeName')}/>
             <div style= {{display : 'flex', width:'99%', margin:'0.5rem -0.5rem 0.5rem 0.5rem', height:'100%'}}>
                 <div style={{width:'80%'}}>
-                    <SeatTable size = {size} tableData = {tableData}/>
+                    <SeatTable size = {window.localStorage.getItem('SeatSize')} tableData = {tableData}/>
                 </div>
                 <div style={{width:'20%', marginLeft:'0.3rem'}}>
                     <div style={{width:'102%'}}>
@@ -88,7 +77,7 @@ const CurrentSeatInfoPage = memo(() => {
                     <div style={{display : 'flex', flexDirection:'column'}}>
                         <table style={{display : 'flex', flexDirection:'column', borderCollapse : 'collapse', border : '5px solid #000000' }}>
                         {Array(4).fill().map((tr, i)=> 
-                            <Td rowIndex={0} cellIndex={100+i} size={size/4} tableData ={takeoutData} top={"0rem"}/>)
+                            <Td rowIndex={0} cellIndex={100+i} size={window.localStorage.getItem('SeatSize')/4} tableData ={takeoutData} top={"0rem"}/>)
                         }
                         </table>
                         

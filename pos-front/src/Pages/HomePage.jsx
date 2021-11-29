@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import SoTree_Main_Logo from '../Assets/SoTree_Vector_Logo.svg'
 import UserInfo from '../Components/UserInfo';
@@ -7,6 +7,7 @@ import RestaurantSalesHomePage from './RestaurantSalesHome/RestaurantSalesHomePa
 import ClosePage from './Close/ClosePage';
 import EmployeeManagementPage from './EmployeeManagement/EmployeeManagementPage';
 import SalePage from './Sale/SalePage';
+import axios from 'axios';
 
 import { Link, Routes, Route } from 'react-router-dom';
 
@@ -72,6 +73,22 @@ const HomePage = () => {
 
     let name = window.localStorage.getItem('userName');
     let storeName = window.localStorage.getItem('storeName');
+
+    
+    const getCurSeatSize = async ()=>{
+        let managerId = localStorage.getItem('managerId')
+        return axios.post('http://localhost:8080/getSeatCnt',managerId,{
+        headers : {
+        "Content-Type" : "application/json",
+    }})
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async()=>{
+      let res = await getCurSeatSize();
+      console.log("Check seat data ", res.data);
+      window.localStorage.setItem('SeatSize', res.data);
+    },[])
+
     
     return (
         <Div>
