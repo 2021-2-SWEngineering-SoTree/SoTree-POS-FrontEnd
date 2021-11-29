@@ -192,6 +192,7 @@ const RestaurantManagementPage = () => {
         }}).then((res)=>{
             console.log(res.data);
             alert("좌석이 변경되었습니다!");
+            window.localStorage.setItem('SeatSize',seatNumber);
             window.location.replace("/restaurantManagement")
             //setStats(res.data);
             
