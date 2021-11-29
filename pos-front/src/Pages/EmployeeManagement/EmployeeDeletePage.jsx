@@ -37,7 +37,7 @@ const Input = styled.input`
     height : 1.4rem;
 `;
 
-const EmployeeDeletePage = ({menu}) => {
+const EmployeeDeletePage = ({id, name}) => {
 
     const [check,setCheck]=useState(false);
 
@@ -55,16 +55,16 @@ const EmployeeDeletePage = ({menu}) => {
     }
 
     const handleClick = async (e) =>{
-        e.preventDefault();
         // let managerId = window.localStorage.getItem('managerId');
         // const data = {
+        //     branchId : managerId,
+        //     employeeId : id
         // };
 
         // const data2=JSON.stringify(data);
         // console.log(data2);
-        // check ? axios.delete(`http://localhost:8080/menu/${id}`,
-        //     {
-        //         data : data2,
+        // check ? axios.put(`http://localhost:8080/deleteEmployee`,data2,
+        //     {    
         //         headers : {
         //             'Content-type': 'application/json; charset=UTF-8'
         //         }
@@ -76,22 +76,28 @@ const EmployeeDeletePage = ({menu}) => {
         //         fail();
         //         console.log(error);
         //     })
-        //     :menu ? alert('체크 버튼을 눌러주세요'):alert('메뉴를 선택해주세요');
-        //
+        // :alert('체크 버튼을 눌러주세요');
+        
     }
 
 
     return (
         <>
-        <div style={{marginTop:'30%'}}>
+        <form>
+        <div style={{marginTop:'30%'}}>     
         <Text>
-        <Menu>{menu ? menu : '직원선택 필수!'}</Menu><TextByMenu>{menu?'직원을':''}</TextByMenu>
+        <Menu>{name}</Menu><TextByMenu>직원을</TextByMenu>
         </Text>
         <UnderText>
-            {menu?'선택하신 게 맞습니까':'삭제할 직원을 선택해주세요!'}
-            {menu && <Input type="checkbox" checked={check} onChange={handleCheck} />}
+            선택하신 게 맞습니까?
+            <Input type="checkbox" checked={check} onChange={handleCheck} />
         </UnderText>
+        <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginTop:'8em'}}>
+            <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>
+            <ModalButton name={'닫기'}></ModalButton>
         </div>
+        </div>
+        </form>
         </>
     );
 };

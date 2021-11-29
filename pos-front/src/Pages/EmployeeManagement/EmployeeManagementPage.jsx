@@ -127,8 +127,14 @@ const EmployeeManagementPage = () => {
         }
     }
     const onClickEmployeeAdd = () => { setAddEmployee(!addEmployee); }
-    const onClickEmployeeChange = () => { setChangeEmployee(!changeEmployee); }
-    const onClickEmployeeDelete = () => { setDeleteEmployee(!deleteEmployee); }
+    const onClickEmployeeChange = () => {
+        if(cello.length!=0 && getNumber!=-1)setChangeEmployee(!changeEmployee);
+        else alert('수정할 직원을 선택해주세요');
+    }
+    const onClickEmployeeDelete = () => { 
+        if(cello.length!=0 && getNumber!=-1) setDeleteEmployee(!deleteEmployee); 
+        else alert("삭제할 직원을 선택해주세요");
+    }
     const onClickEmployeeList = () => {
         setEmployeeManagementChange((employeeManagementChange === 1
         || employeeManagementChange === 3) ? 2 : 1);
@@ -161,6 +167,7 @@ const EmployeeManagementPage = () => {
         while (Date.now() < wakeUpTime) {}
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async () => {
         try {
             let managerId = window.localStorage.getItem('managerId');
@@ -170,6 +177,7 @@ const EmployeeManagementPage = () => {
                     "Content-Type" : `application/json`,
                 }
             }).then((res)=>{
+                console.log(res.data);
                 const cells = [];
                 const cell2 = [];
                 const cellsApproval = [];
@@ -210,6 +218,14 @@ const EmployeeManagementPage = () => {
 
     }, [loading])
 
+    useEffect(()=>{
+        if(cello.length!=0 && employeeId.length!=0){
+        console.log(getNumber,deleteEmployee);
+        console.log(cello[getNumber][3]);
+        console.log(employeeId[getNumber]);
+        }
+    },[deleteEmployee]);
+
     return (
         <>
             <RectangleModal setSelectCategory={setCommute} visible={commute} TitleName={"직원 출퇴근"}>
@@ -219,10 +235,10 @@ const EmployeeManagementPage = () => {
                 <EmployeeAddPage visible={addEmployee} setSelectCategory={setAddEmployee} />
             </RectangleModal>
             <RectangleModal setSelectCategory={setChangeEmployee} visible={changeEmployee} TitleName={"직원 수정"} mode={'employee'}>
-                <EmployeeModifyPage/>
+                {cello.length!=0 && employeeId.length!=0 && getNumber!=-1 &&changeEmployee && <EmployeeModifyPage Id={employeeId[getNumber]} Data={cello[getNumber]}/>}
             </RectangleModal>
             <RectangleModal setSelectCategory={setDeleteEmployee} visible={deleteEmployee} TitleName={"직원 삭제"} mode={'delete'}>
-                <EmployeeDeletePage/>
+                {cello.length!=0 && employeeId.length!=0 && getNumber!=-1 && <EmployeeDeletePage id={employeeId[getNumber]} name={cello[getNumber][2]}/>}
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>
