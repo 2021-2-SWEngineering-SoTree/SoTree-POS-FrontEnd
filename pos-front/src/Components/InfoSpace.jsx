@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import styled from 'styled-components';
 
 const Templet = styled.div`
@@ -21,12 +22,12 @@ const RightFont = styled.div`
     line-height:50%;
 `
 
-const InfoSpace = ({name, value, color}) =>{
+const InfoSpace = ({ name, value, color }) => {
     return (
         <>
             <Templet>
-                <LeftFont style={{color:color}}><h3>{name}</h3></LeftFont>
-                <RightFont style={{color:color}}><h3>{value}</h3></RightFont>
+                <LeftFont style={{ color: color }}><h3>{name}</h3></LeftFont>
+                <RightFont style={{ color: color }}><h3>{value}</h3></RightFont>
             </Templet>
         </>
     )
