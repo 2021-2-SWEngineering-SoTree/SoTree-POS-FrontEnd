@@ -78,7 +78,13 @@ const EmployeeActivitiesListPage = ({cello}) => {
     const formatOfTime = (year, month, day) => {
         let date = '';
         if(day === "" || day === '-1') { date = String(selectYear) + '-' + String(selectMonth); }
-        else { date = String(selectYear) + - + String(selectMonth) + '-' + String(selectDay) }
+        else { 
+            if(selectDay.length==1)
+                date = String(selectYear) + - + String(selectMonth) + '-0' + String(selectDay)
+            else   
+              date = String(selectYear) + - + String(selectMonth) + '-' + String(selectDay)
+            
+        }
         console.log(date);
         return date;
     }
