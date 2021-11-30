@@ -100,6 +100,7 @@ const MonthSelector = styled.select`
     background-color : #F2F8F9;
     margin-left : 3%;
     text-align : center;
+    width : 4rem;
 `;
 
 const InputSign = styled.div`
@@ -297,7 +298,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                                     <InputLabel>할부 개월</InputLabel>
                                     <MonthSelector value={month} onChange={(e)=>{setMonth(e.target.value)}}>
                                         <option name="month" value="">---</option>
-                                        <option name="month" value="0">X</option>
+                                        <option name="month" value="0">일시불</option>
                                         <option name="month" value="1">1</option>
                                         <option name="month" value="2">2</option>
                                         <option name="month" value="3">3</option>

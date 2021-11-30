@@ -171,17 +171,17 @@ const ClosePage = () => {
                 <TableStyle style={{border:'1px solid black', overflow:'auto', width:'100%'}}>
                     <TableHead >
                         <OrderRow style={{border:'1px solid black'}}>
-                            <OrderCell style={{width : '30%', height : '8vh'}}>총 매출</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9', width : '30%', height : '8vh'}}>총 매출</OrderCell>
                             <OrderCell>{total.toLocaleString()}</OrderCell>
                         </OrderRow>
                     </TableHead>
                     <TableBody>
                     <OrderRow>
-                            <OrderCell style={{height : '8vh'}}>부가세</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '8vh'}}>부가세</OrderCell>
                             <OrderCell>{(total*0.1).toLocaleString()}</OrderCell>
                         </OrderRow>
                         <OrderRow>
-                            <OrderCell style={{height : '8vh'}}>순매출</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '8vh'}}>순매출</OrderCell>
                             <OrderCell>{(total*0.9).toLocaleString()}</OrderCell>
                         </OrderRow>
                     </TableBody>
