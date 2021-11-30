@@ -236,10 +236,10 @@ const EmployeeManagementPage = () => {
                 <EmployeeAddPage visible={addEmployee} setSelectCategory={setAddEmployee} />
             </RectangleModal>
             <RectangleModal setSelectCategory={setChangeEmployee} visible={changeEmployee} TitleName={"직원 수정"} mode={'employee'}>
-                {cello.length!=0 && employeeId.length!=0 && getNumber!=-1 &&changeEmployee && <EmployeeModifyPage Id={employeeId[getNumber]} Data={cello[getNumber]}/>}
+                {cello.length!==0 && employeeId.length!==0 && getNumber!==-1 &&changeEmployee && <EmployeeModifyPage Id={employeeId[getNumber]} Data={cello[getNumber]}/>}
             </RectangleModal>
             <RectangleModal setSelectCategory={setDeleteEmployee} visible={deleteEmployee} TitleName={"직원 삭제"} mode={'delete'}>
-                {cello.length!=0 && employeeId.length!=0 && getNumber!=-1 && <EmployeeDeletePage id={employeeId[getNumber]} name={cello[getNumber][2]}/>}
+                {cello.length!==0 && employeeId.length!==0 && getNumber!==-1 && <EmployeeDeletePage id={employeeId[getNumber]} name={cello[getNumber][2]}/>}
             </RectangleModal>
             <Header text={"직원 관리"} restaurantName={localStorage.getItem('storeName')}/>
             <Div>

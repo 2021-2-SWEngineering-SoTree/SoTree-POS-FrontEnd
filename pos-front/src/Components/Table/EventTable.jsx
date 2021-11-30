@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -18,7 +18,6 @@ const ColumnCell = styled.td`
 
 // td style
 const EventCell = styled.td`
-    background-color: #FFFFFF;
     color: #000000;
     font-size: 20px;
     text-align: center;
@@ -26,11 +25,8 @@ const EventCell = styled.td`
 
 // tr style
 const EventRow = styled.tr`
-    background-color: #FFFFFF;
+    background-color: ${props => props.checked ? '#E4E6E7': '#F2F8F9'};
     height : 4vh;
-    &:focus {
-        background-color : #FF0000;
-    }
 `;
 
 // table style
@@ -48,6 +44,7 @@ const TableButton = styled.button`
 
 const EventTable = ({columnName, cells, eventApply, setEventId, selectIndex}) => {
 
+    const [selection, setSelection] = useState('');
     //----------------- check box ---------------------------------------------------
 
     // 더미 해결해야됨.
@@ -59,10 +56,21 @@ const EventTable = ({columnName, cells, eventApply, setEventId, selectIndex}) =>
     };
 
     //--------------------------------------------------------------------------------
-
-    const ClickHandler = (index,e)=>{
+    const showRow = (cells, ele) => {
+        return (
+            Array(cells.length).fill(undefined, undefined, undefined).map((obj, j)=>
+                <EventCell key={cells+j} >
+                    {j !== 0 ?  // 일단 value 를 더미로 넣은거임.
+                        <TableButton value={cells+j} onClick={onClickButton}>{cells[j]}</TableButton>
+                        : cells[j]}
+                </EventCell>)
+        )
+    }
+    
+    const ClickHandler = (a,e)=>{
         e.preventDefault();
-        selectIndex(index);
+        setSelection(a);
+        selectIndex(a);
     }
 
     // choice 봐야됨.
@@ -80,7 +88,7 @@ const EventTable = ({columnName, cells, eventApply, setEventId, selectIndex}) =>
                     <TableBody >
                         {cells.length ===0 ? <EventCell>이벤트가 존재하지 않습니다.</EventCell> : null}
                         {cells.map((td, i)=>
-                            <EventRow key={i} onClick={(e)=>{ClickHandler(i,e)}}>
+                            <EventRow key={i} onClick={(e)=>{ClickHandler(i,e)}} checked={i === selection ? true : false}>
                                 <EventCell>{i+1}</EventCell>
                                 <EventCell>{td.eventName}</EventCell>
                                 <EventCell>{td.eventDiscountRate === null ? td.eventDiscountValue.toLocaleString()+"원" : td.eventDiscountRate*100 + "%"}</EventCell>

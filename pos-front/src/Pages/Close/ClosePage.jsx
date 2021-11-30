@@ -81,6 +81,8 @@ const ClosePage = () => {
     const [visible, setVisible]=useState(false);
     const [stats,setStats]=useState([]); //기본
     const [total,setTotal] = useState(0);
+    const [sale, setSale] = useState([]);
+    const [method, setMethod] = useState([])
     
     useEffect(()=>{
         setTotal(stats.reduce(
@@ -93,9 +95,9 @@ const ClosePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
         const date = new Date();
-        const today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-        const managerId = window.localStorage.getItem('managerId');
+        const today = date.getFullYear() + '-' + ("0" + (1 + date.getMonth())).slice(-2) + '-' + ("0" + date.getDate()).slice(-2);
         
+        const managerId = window.localStorage.getItem('managerId');
         const data={
             branchId : managerId,
             stDate : today,
@@ -105,8 +107,12 @@ const ClosePage = () => {
         await axios.post('http://localhost:8080/menuStatistic/getAll',data,{
         headers : {
         "Content-Type" : "application/json",
-    }}).then((res)=>{
+    }}).then(async(res)=>{
+        let todaysummary = await getTodaySale(today);
         console.log(res.data);
+        console.log("today", todaysummary.data);
+        setMethod(todaysummary.data.OrderTypeSummary);
+        setSale(todaysummary.data.saleSummary);
         setStats(res.data);
         
     }).catch(e=>{
@@ -125,6 +131,21 @@ const ClosePage = () => {
         setVisible(true);
     }
 
+    const getTodaySale = async() => {       
+        const managerId = window.localStorage.getItem('managerId');
+        let date = new Date();
+        const data={
+            branchId : managerId,
+            start : date.getFullYear()+'-01-01',
+            end : date.getFullYear()+'-12-32'
+        }
+        console.log(data);
+     return  await axios.post('http://localhost:8080/payment/getTodayCloseSale',data,{
+        headers : {
+        "Content-Type" : "application/json",
+        }})
+    }
+
     return (
         <>
         <SmallModal visible={visible}>
@@ -141,8 +162,8 @@ const ClosePage = () => {
         <Header text ={"마감"} restaurantName = {localStorage.getItem('storeName')}/>
         <div style={{height : '89vh', width : '99vw', display:'flex', flexDirection : 'row'}}>
         <div style={{width:'60%'}}>
-            <Titles>당일 매출 현황</Titles>
-            <TableContainer style={{marginLeft:'5%',marginTop :'1vh',height : '70%',overflow: 'hidden', width : "90%"}}>
+            <Titles style={{marginLeft : '2.5vw', fontWeight:'bold'}}>당일 매출 현황</Titles>
+            <TableContainer style={{marginLeft:'5%',marginTop :'1vh',height : '70%',overflow: 'auto', width : "90%"}}>
                 <TableStyle style={{overflow:'auto', width:'100%'}}>
                     <TableHead style={{height : '4vh'}}>
                         <OrderRow>
@@ -152,7 +173,7 @@ const ClosePage = () => {
                             <ColumnCell>판매금액</ColumnCell>
                         </OrderRow>
                     </TableHead>
-                    <TableBody>
+                    <TableBody >
                         {stats.length>0 && stats.map((cell, index) => (
                             <OrderRow style={{height : '3.8vh'}}>
                                 <OrderCell component="th" scope="cell">{index+1}</OrderCell>
@@ -167,28 +188,44 @@ const ClosePage = () => {
         </div>
         <div style={{width : "40%",display :'flex', flexDirection : 'column', justifyContent : 'center',
             alignItems:'center' }}>
-            <TableContainer style={{width:'60%', marginLeft:'-2%',marginTop :'9vh', marginBottom:'6vh',height : '40%',overflow: 'hidden',}}>
+            <TableContainer style={{width:'60%', marginLeft:'-2%',marginTop :'10vh', marginBottom:'6vh',height : '60%',overflow: 'hidden',}}>
                 <TableStyle style={{border:'1px solid black', overflow:'auto', width:'100%'}}>
                     <TableHead >
                         <OrderRow style={{border:'1px solid black'}}>
-                            <OrderCell style={{backgroundColor:'#8DDEE9', width : '30%', height : '8vh'}}>총 매출</OrderCell>
-                            <OrderCell>{total.toLocaleString()}</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9', width : '30%', height : '6vh'}}>총 매출</OrderCell>
+                            <OrderCell>{sale.todaySale && sale.todaySale.toLocaleString()}</OrderCell>
                         </OrderRow>
                     </TableHead>
                     <TableBody>
                     <OrderRow>
-                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '8vh'}}>부가세</OrderCell>
-                            <OrderCell>{(total*0.1).toLocaleString()}</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>부가세</OrderCell>
+                            <OrderCell>{sale.todaySale && (sale.todaySale*0.1).toLocaleString()}</OrderCell>
                         </OrderRow>
                         <OrderRow>
-                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '8vh'}}>순매출</OrderCell>
-                            <OrderCell>{(total*0.9).toLocaleString()}</OrderCell>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>순매출</OrderCell>
+                            <OrderCell>{sale.todaySale && (sale.todaySale*0.9).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                        <OrderRow>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>카드매출</OrderCell>
+                            <OrderCell>{sale.todayCardTotalSale && (sale.todayCardTotalSale).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                        <OrderRow>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>현금매출</OrderCell>
+                            <OrderCell>{sale.todayCashTotalSale && (sale.todayCashTotalSale).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                        <OrderRow>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>테이블매출</OrderCell>
+                            <OrderCell>{method[0] && (method[0].tableTotalSale).toLocaleString()}</OrderCell>
+                        </OrderRow>
+                        <OrderRow>
+                            <OrderCell style={{backgroundColor:'#8DDEE9',height : '6vh'}}>포장매출</OrderCell>
+                            <OrderCell>{method[0] && (method[0].takeOutTotalSale).toLocaleString()}</OrderCell>
                         </OrderRow>
                     </TableBody>
                 </TableStyle>                
             </TableContainer>   
 
-            <div style={{display:'flex'}}>        
+            <div style={{display:'flex', marginTop:'-7vh'}}>        
             <Link to = "/employeeManagement"><Button onClick={()=>alert("직원 관리 페이지로 이동합니다")}>직원 관리</Button></Link>
             &nbsp;&nbsp;&nbsp;
             <Link to = "/restaurantManagement/stock"><Button onClick={()=>alert("재고 관리 페이지로 이동합니다")}>재고 관리</Button></Link>
