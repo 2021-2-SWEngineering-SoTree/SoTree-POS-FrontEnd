@@ -12,10 +12,9 @@
   * BackEnd</br>
   박서진, 조현준</br></br>
 
-# Framework version
-### [React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
+# Framework
+### <div><img src="https://user-images.githubusercontent.com/54761791/144091426-ef924d39-bad8-4d3c-a9d4-e38052db58b0.png" width="100" height="70"/></div>[React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
-* * *
 # npm Packages
 ```
 - 11.04
