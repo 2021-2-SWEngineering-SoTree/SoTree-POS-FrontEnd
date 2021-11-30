@@ -114,6 +114,7 @@ const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval}) => {
 
     const [weekState, setWeekState] = useState(['N', 'N', 'N', 'N', 'N', 'N', 'N']);
 
+
     const onClickSubmit = async() => {
         console.log(weekState);
         let managerId = window.localStorage.getItem('managerId');
@@ -132,6 +133,7 @@ const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval}) => {
                     alert("직원 승인 오류, 다시 진행 바람");
             })
         }
+        setWeekState(['N', 'N', 'N', 'N', 'N', 'N', 'N'])
     }
 
     const onChangeHandler = (e) => {

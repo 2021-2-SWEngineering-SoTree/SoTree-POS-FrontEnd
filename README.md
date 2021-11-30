@@ -1,5 +1,21 @@
 # SoTree-POS-FrontEnd
-2021-2 Software Engineering project 
+<h4>2021-2 Software Engineering project <h4/>
+<h4>2021-02 소프트웨어공학개론_01 SoTree 팀 FrontEnd<h4/>
+  
+![GitHub weekly commit](https://img.shields.io/github/commit-activity/w/2021-2-SWEngineering-SoTree/SoTree-POS-FrontEnd)
+![GitHub last commit](https://img.shields.io/github/last-commit/2021-2-SWEngineering-SoTree/SoTree-POS-FrontEnd)
+  </br>
+  * Scrum Master/Full</br>
+  이호준</br></br>
+  * FrontEnd</br>
+  서혜민, 최지환</br></br>
+  * BackEnd</br>
+  박서진, 조현준</br></br>
+
+# Framework
+### <div><div><img src="https://user-images.githubusercontent.com/54761791/144091426-ef924d39-bad8-4d3c-a9d4-e38052db58b0.png" width="100" height="70"/></div>[React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)</div>
+
+### <div>Javascript 1.7 <img src="https://img.shields.io/badge/Javascript-C7A60F?style=flat-square&logo=Javascript&logoColor=white"/></a></div>
 
 # npm Packages
 ```

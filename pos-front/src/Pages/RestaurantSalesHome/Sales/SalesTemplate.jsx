@@ -173,6 +173,14 @@ const getWeekCount =(dateStr)=>{
     return weekSeq;
 }
 
+const getWeekNo= (v_date_str) => {
+    var date = new Date();
+    if(v_date_str){
+     date = new Date(v_date_str);
+    }
+    return Math.ceil(date.getDate() / 7);
+}
+
 const SalesTemplate = () => {
 
     const managerId = window.localStorage.getItem('managerId');
@@ -231,7 +239,6 @@ const SalesTemplate = () => {
     const [lineMax,setLineMax]=useState(0);
 
     useEffect(()=>{
-        console.log("ALLSum",allSum);
     },[allSum]);
 
     useEffect(()=>{ //원그래프에 들어갈 데이터 처리
@@ -252,7 +259,6 @@ const SalesTemplate = () => {
             })
             }
         );
-        console.log(CircleData);
         setCircle(CircleData);
 
     },[daySum]);
@@ -261,7 +267,6 @@ const SalesTemplate = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
         setMonthWeekData([]);
-        console.log(month);
         if(month!=''){
             let selectedMonth=month;
             if(month<10) selectedMonth='0'+selectedMonth;
@@ -270,12 +275,10 @@ const SalesTemplate = () => {
                 start : nowYear+'-'+selectedMonth+'-00',
                 end : nowYear+'-'+selectedMonth+'-32',
             }
-            console.log(data);
             await axios.post('http://localhost:8080/payment/getALLSortedBYWEEK',data,{
             headers : {
             "Content-Type" : "application/json",
             }}).then((res)=>{
-                console.log(res.data);
                 setMonthWeekData(res.data);
             }).catch(e=>{
                 console.log(e);
@@ -284,21 +287,17 @@ const SalesTemplate = () => {
     },[month])
 
     useEffect(()=>{
-        console.log(monthWeekData);
         if(monthWeekData.length==0){
             setLineMax(0);
         }
         else{
             let length = monthWeekData.length;
-            console.log(length);
             //배열의 마지막에 위치한게 가장 최근 주 정보.
-            setWeekCardSum(monthWeekData[length-1].cardTotalSale);
-            setWeekCashSum(monthWeekData[length-1].cashTotalSale);
+            //setWeekCardSum(monthWeekData[length-1].cardTotalSale);
+            //setWeekCashSum(monthWeekData[length-1].cashTotalSale);
             setLineMax(-1);
         }
-        console.log("바뀜");
         const len = getWeekCount(nowYear+''+month);
-        console.log(len);
         const LineData=[];
         for(let i=1;i<=len;i++){
             LineData.push({
@@ -306,28 +305,28 @@ const SalesTemplate = () => {
                 매출:0
             })
         }
-        console.log(LineData);
 
-        let weekSum=0;
-        for(let i=1;i<month;i++){
-            weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
-            if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
-        }
-        console.log(weekSum);
+        //let weekSum=0;
+        //for(let i=1;i<month;i++){
+        //    weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
+        //    if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
+        //}
+        //console.log(weekSum);
+        //monthWeekData.map((v,i)=>{
+        //    const sales=v.totalSale;
+        //    if(sales>lineMax) setLineMax(sales);
+        //    console.log(v,i);
+        //    LineData[+v.weeks-weekSum+1].매출+=sales;
+        //});
+
         monthWeekData.map((v,i)=>{
-            const sales=v.totalSale;
-            if(sales>lineMax) setLineMax(sales);
-            console.log(v,i);
-            LineData[+v.weeks-weekSum+1].매출+=sales;
-        });
-
-        console.log(LineData);
+            LineData[i].매출+=v.totalSale;
+        })
         setLine(LineData);
 
     },[monthWeekData]);
 
     useEffect(()=>{
-        console.log(daySeven);
         if(daySeven.length!=0){
             const BarData=[];
             
@@ -338,7 +337,6 @@ const SalesTemplate = () => {
                 year=date.getFullYear();
                 month=date.getMonth()+1;
                 day=date.getDate();
-                console.log(year,month,day);
                 BarData.push({
                     name:year+'-'+('0'+month).slice(-2)+'-'+('0'+day).slice(-2),
                     최근7일매출:0
@@ -352,14 +350,12 @@ const SalesTemplate = () => {
                     }
                 }
             })
-            console.log(BarData);
             setBar(BarData);
         }
     },[daySeven]);
     
     //월별통계에서 연도 다르게할떄마다 data달라지므로  
     useEffect(()=>{
-        console.log("바뀜");
         const LineData=[
             {
                 name:'1월', 매출 :0
@@ -398,7 +394,6 @@ const SalesTemplate = () => {
                 name:'12월', 매출 :0
             },
         ];
-        console.log(monthData);
         if(monthData.length==0){
             setLineMax(0);
         }
@@ -417,7 +412,6 @@ const SalesTemplate = () => {
             }
             LineData[month-1].매출+=v.totalSale;
         });
-        console.log(LineData);
         setLine(LineData);
 
         //연도 카드, 현금매출
@@ -441,13 +435,11 @@ const SalesTemplate = () => {
             start : nowYear+'-01-00',
             end : nowYear+'-12-32'
         }
-        console.log(data);
         await axios.post('http://localhost:8080/payment/getALLSortedByMonth',data,{
         headers : {
         "Content-Type" : "application/json",
         }}).then((res)=>{
             startData=res.data;
-            console.log(startData);
         }).catch(e=>{
             console.log(e);
         })
@@ -456,17 +448,37 @@ const SalesTemplate = () => {
             let month;
             month=v.months;
             if(month==nowMonth) {
-                console.log(v);
                 setMonthCardSum(v.cardTotalSale); //이번달 카드매출
                 setMonthCashSum(v.cashTotalSale); //이번달 현금매출
             }
         });
+        
+        
+        //이번주정보
+        let selectedMonth=nowMonth;
+        if(nowMonth<10) selectedMonth='0'+selectedMonth;
+        const date={
+            branchId : managerId,
+            start : nowYear+'-'+selectedMonth+'-00',
+            end : nowYear+'-'+selectedMonth+'-32',
+        }
+        let dateStr = nowYear+'-'+selectedMonth+'-'+('0'+new Date().getDate()).slice(-2);
+        let week = getWeekNo(dateStr);
+        await axios.post('http://localhost:8080/payment/getALLSortedBYWEEK',date,{
+        headers : {
+        "Content-Type" : "application/json",
+        }}).then((res)=>{
+            console.log(res.data);
+            setWeekCardSum(res.data[week-1].cardTotalSale);
+            setWeekCashSum(res.data[week-1].cashTotalSale);
+        }).catch(e=>{
+        })
+        
     },[])
 
     // 월별 통계 연도->data
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
-        console.log('year',year);
         
         if(year!=''){
             const data={
@@ -474,13 +486,11 @@ const SalesTemplate = () => {
                 start : year+'-01-00',
                 end : year+'-12-32'
             }
-            console.log(data);
             await axios.post('http://localhost:8080/payment/getALLSortedByMonth',data,{
             headers : {
             "Content-Type" : "application/json",
             }}).then((res)=>{
                 setMonthData(res.data);
-                console.log(res.data);
             }).catch(e=>{
                 console.log(e);
             })
@@ -491,7 +501,6 @@ const SalesTemplate = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
         if(select==3){
-        console.log(dayData);
         const data=[
             {
                 name:'일요일', 매출 :0
@@ -517,15 +526,12 @@ const SalesTemplate = () => {
         ];
 
         dayData.map((v,i)=>{
-            console.log(v.dateRange);
             data[v.dateRange-1].매출+=v.totalSale;
         })
-        console.log(data);
 
         setLine(data);
         
         const circle=data.filter((v)=>v.매출!=0);
-        console.log(circle);
         setCircle(circle);
         }
 
@@ -534,7 +540,6 @@ const SalesTemplate = () => {
             start:nowYear+'-'+('0'+dayMonth).slice(-2)+'-00',
             end:nowYear+'-'+('0'+dayMonth).slice(-2)+'-32'
         }
-        console.log(date);
         await axios.post('http://localhost:8080/payment/getSaleInfoBetween',date,{
             headers : {
             "Content-Type" : "application/json",
@@ -552,10 +557,7 @@ const SalesTemplate = () => {
     //월의 일수만큼 배열만들어서 monthdaydata 해당 일 수 의 매출 넣어주기
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
-        console.log(monthDayData);
-        console.log(dayYear,dayMonth);
         const lastday = new Date(dayYear,dayMonth,0).getDate();
-        console.log(lastday);
 
         if(lastday>=0){
         const whole = Array(lastday);
@@ -568,10 +570,8 @@ const SalesTemplate = () => {
         monthDayData.map((v,i)=>{
             whole[v.dateRange-1].매출=v.totalSale;
         });
-        console.log(whole);//현재 달의 일수만큼 일별 매출 들어간 배열.
 
         const firstday = new Date(dayYear,dayMonth,1).getDate();
-        console.log(firstday);//해당 월의 첫날의 요일
         
         //setDayMonthWhole
         const newArr = [];
@@ -584,13 +584,11 @@ const SalesTemplate = () => {
     },[monthDayData]);
 
     useEffect(()=>{
-        console.log(dayMonthWhole)
     },[dayMonthWhole]);
     
     //일일 선택 날짜 변경시, new data
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async()=>{
-        console.log(dayYear,dayMonth);
         setDayMonthWhole([]);
         setMonthDayCard(0);
         setMonthDayCash(0);
@@ -603,12 +601,10 @@ const SalesTemplate = () => {
             start : dayYear+`-${month}-00`,
             end : dayYear+`-${nextmonth}`
         }
-        console.log(data);
         await axios.post('http://localhost:8080/payment/getDaySaleInfo',data,{
         headers : {
         "Content-Type" : "application/json",
         }}).then((res)=>{
-            console.log(res.data);
             setDayData(res.data.dayOfWeekSaleSummary);
             setMonthDayData(res.data.daySaleSummary);
             setMonthKindData(res.data.orderTypeSummary);
@@ -618,18 +614,13 @@ const SalesTemplate = () => {
     },[dayYear,dayMonth]);
 
     useEffect(()=>{
-        console.log(monthKindData);
     },[monthKindData]);
 
     useEffect(()=>{
-        console.log("line 바뀜");
-        console.log(line);
     },[line]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
-        console.log(select);
-        console.log(allSum);
         //graphData 초기화.
         setCircle([]);
         setBar([]);
@@ -644,17 +635,14 @@ const SalesTemplate = () => {
         setAllData([]);
         setOrderData([]);
         if(select==2) {
-            console.log(line);
             setLines([]);
             setMonth(nowMonth);
         }
         if(select==1) {
-            console.log(line);
             setLines([]);
             setYear(nowYear); //현재 연도로 초기화.
         }
         if(select==3) {
-            console.log(line);
             setLines([]);
             setDayYear(nowYear);
             setDayMonth(nowMonth);
@@ -662,26 +650,22 @@ const SalesTemplate = () => {
         if(select==4){
             const date={
                 branchId:managerId,
-                start:'2010-01-01',
+                start:'2010-01-00',
                 end:nowYear+1+'-01-01'
             }
-            console.log(date);
             await axios.post('http://localhost:8080/payment/getSaleInfoBetween',date,{
                 headers : {
                 "Content-Type" : "application/json",
                 }}).then((res)=>{
-                    console.log(res.data);
                     setAllAllData(res.data.sumSummary);
                     setAllOrderData(res.data.orderTypeSumSummary);
                 }).catch(e=>{
                     console.log(e);
                 })
-            console.log(date);
         }
     },[select]);
 
     useEffect(()=>{
-        console.log(allOrderData,allOrderData.length);
     },[allOrderData]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -692,12 +676,10 @@ const SalesTemplate = () => {
                 start : nowYear+'-01-00',
                 end : nowYear+'-12-32'
             }
-            console.log(data);
             await axios.post('http://localhost:8080/payment/getTodaySummarySale',data,{
             headers : {
             "Content-Type" : "application/json",
             }}).then((res)=>{
-                console.log(res.data);
                 setDaySum(res.data.DaySummary);
                 setTopMenu(res.data.TopFiveMenu);
                 setDaySeven(res.data.recentSevenDays);
@@ -714,20 +696,16 @@ const SalesTemplate = () => {
     //직접 입력
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
-        console.log("datecheck", startDate, endDate);
         if(startDate!=undefined && endDate!=undefined){
             const data={
                 branchId : managerId,
                 start : startDate,
                 end : endDate+' 24:01'
             }
-            console.log(data);
             await axios.post('http://localhost:8080/payment/getSaleInfoBetween',data,{
             headers : {
             "Content-Type" : "application/json",
             }}).then((res)=>{
-                console.log(res.data);
-                console.log(res.data.orderTypeSumSummary);
                 setEachData(res.data.dateSaleSummary);
                 setTimeData(res.data.hourSummary);
                 setAllData(res.data.sumSummary);
@@ -741,11 +719,9 @@ const SalesTemplate = () => {
     },[startDate,endDate])
 
     useEffect(()=>{
-        console.log(orderData)
     },[orderData]);
 
     useEffect(()=>{
-        console.log(eachData);
         const data=[];
         eachData.map((v,i)=>{
             data.push({
@@ -754,12 +730,10 @@ const SalesTemplate = () => {
             })
         })
 
-        console.log(data);
         setBars(data);
     },[eachData]);
 
     useEffect(()=>{
-        console.log(timeData);
         const data=[
             {
                 name:'0~2시',
@@ -797,11 +771,9 @@ const SalesTemplate = () => {
 
         timeData.map((v,i)=>{
             let index=Math.floor(v.hour/3);
-            console.log(v,index);
             data[index].매출+=v.totalSale;
         });
 
-        console.log(data);
         setLines(data);
     },[timeData]);
     
@@ -964,7 +936,7 @@ const SalesTemplate = () => {
                                         <OrderRow style={{height : '3.8vh'}}>
                                             <ColumnCell style={{width:'6%'}}>매출</ColumnCell>
                                             {line.length>0 && line.map((cell, index) => 
-                                                <OrderCell style={{width:'6.5%'}}>{cell.매출.toLocaleString()}</OrderCell>
+                                                <OrderCell style={{width:'7.5%', fontSize:'1rem'}}>{cell.매출.toLocaleString()}</OrderCell>
                                             )}
                                         </OrderRow>
                     
@@ -1018,7 +990,7 @@ const SalesTemplate = () => {
                                     <ColumnCell style={{minWidth:'5rem'}}>매출(원)</ColumnCell>
                                     {dayMonthWhole && dayMonthWhole.length>0 && dayMonthWhole.map((cell, index) => (
                                         
-                                            <OrderCell style={{minWidth:'6rem'}} scope="cell">{cell.매출.toLocaleString()}</OrderCell>
+                                            <OrderCell style={{minWidth:'6rem', fontSize:'1rem'}} scope="cell">{cell.매출.toLocaleString()}</OrderCell>
                                         
                                     ))}
                                     </OrderRow>
