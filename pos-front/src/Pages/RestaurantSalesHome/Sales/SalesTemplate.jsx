@@ -596,7 +596,7 @@ const SalesTemplate = () => {
         setMonthDayCash(0);
         let month=('0'+dayMonth).slice(-2)
         let nextmonth;
-        if(month=='12') nextmonth='01';
+        if(month=='12') nextmonth='13';
         else nextmonth=('0'+(+dayMonth+1)).slice(-2)
         const data={
             branchId : managerId,
