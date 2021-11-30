@@ -353,13 +353,13 @@ const MenuSalesTemplate = () => {
 
                     <GraphTemp>
                         <GraphLeft>
-                        <Title style={{marginLeft:'15%', marginTop:'-%'}}>
+                        <Title style={{marginLeft:'15%', marginTop:'%'}}>
                             {(select===0) &&  '전체 통계'}
                             {(select===1) &&  '월별 통계'}
                             {(select===2) &&  '요일별 통계'}
                         </Title>
-                            <TableContainer style={{marginLeft:'5%',marginTop :'-3%',height : '70%',overflow: 'hidden',}}>
-                                <TableStyle style={{overflow:'auto', width:'100%'}}>
+                            <TableContainer style={{marginLeft:'5%',marginTop :'-1%',height : '70%',overflow: 'auto',}}>
+                                <TableStyle style={{overflow:'auto', width:'100%', marginTop:'-1%'}}>
                                     <TableHead style={{height : '4vh'}}>
                                         <OrderRow>
                                             <ColumnCell>NO</ColumnCell>
