@@ -714,12 +714,12 @@ const SalesTemplate = () => {
     //직접 입력
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async ()=>{
-        console.log(startDate,endDate);
+        console.log("datecheck", startDate, endDate);
         if(startDate!=undefined && endDate!=undefined){
             const data={
                 branchId : managerId,
                 start : startDate,
-                end : endDate
+                end : endDate+' 24:01'
             }
             console.log(data);
             await axios.post('http://localhost:8080/payment/getSaleInfoBetween',data,{
