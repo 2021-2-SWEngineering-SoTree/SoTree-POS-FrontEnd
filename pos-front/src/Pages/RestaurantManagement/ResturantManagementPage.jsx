@@ -223,9 +223,9 @@ const RestaurantManagementPage = () => {
                              onKeyPress={(e)=> {/*if(e.key === 'Enter') pwdRef.current.focus();*/}}/>
                         </div>
                     </WrapperDiv>
-                        <LeftDiv>
-                        <Button style={{width:'9rem'}} type = "submit" onClick={onSubmitHandler}>확인</Button>
-                        <Button style={{width:'9rem'}} onClick={()=>{setVisible(false)}}>취소</Button>
+                        <LeftDiv style={{display:'flex',marginTop:'23%', justifyContent:'flex-end'}}>
+                        <Button style={{width:'7rem', height:'4rem'}} type = "submit" onClick={onSubmitHandler}>확인</Button>
+                        <Button style={{marginLeft:'1.5rem',width:'7rem', height:'4rem'}} onClick={()=>{setVisible(false)}}>취소</Button>
                         </LeftDiv>
                         
                     </Form>
