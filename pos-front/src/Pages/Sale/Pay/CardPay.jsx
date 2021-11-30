@@ -46,7 +46,7 @@ const TopContent = styled.div`
 `;
 
 const CostDiv = styled.div`
-    border : 1px soild black;
+    border : 1px black solid;
     background-color : #F2F8F9;
     color : red;
     height : 24%;
@@ -326,7 +326,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                                     window.location.replace("/CurrentSeatInfo"
                             )}} style={{position:'absolute',marginBottom:'10rem',marginLeft:'13%', width:'9rem', height:'3rem',backgroundColor:'#505D5E', color:'white'}}>나가기</BottomRightBtn>
                             )}
-                            </BottomContent>)
+                            </BottomContent>
                     </Content>
                 </Center>
 
