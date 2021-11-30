@@ -190,11 +190,13 @@ const MultiPay = ({eId, orderId, payedPrice, notTotalPrice, totalPrice, setpayPr
                             <BottomContent>
                                 <BottomInContent>
                                     <InputDiv>
-                                        <InputLabel onClick={()=>{setDisplay(1)}}>현 금</InputLabel>
+                                        <InputLabel onClick={()=>{
+                                            cash>0?setDisplay(1):alert("결제 금액을 입력해주세요")}}>현 금</InputLabel>
                                         <InputNumber onChange={onChangeCash} value={cash}></InputNumber>
                                     </InputDiv>
                                     <InputDiv>
-                                        <InputLabel onClick={()=>{setDisplay(2)}}>신용카드</InputLabel>
+                                        <InputLabel onClick={()=>{
+                                            card>0?setDisplay(2):alert("결제 금액을 입력해주세요")}}>신용카드</InputLabel>
                                         <InputNumber onChange={onChangeCard} value={card}></InputNumber>
                                     </InputDiv>                                    
                                 </BottomInContent>

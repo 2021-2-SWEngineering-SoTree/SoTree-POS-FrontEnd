@@ -821,7 +821,8 @@ const SalePage = () => {
     return (
         <>
 
-            <Header text={"판매"} restaurantName={localStorage.getItem('storeName')} />
+            {click === 3 && <Header text={"판매"} restaurantName={localStorage.getItem('storeName')} none={true}/>}
+            {!(click === 3) && <Header text={"판매"} restaurantName={localStorage.getItem('storeName')} />}
             <Div>
 
                 <LeftDiv>
@@ -952,7 +953,7 @@ const SalePage = () => {
                         changeDiv={changeDiv} orderFinishButtonHandler={orderFinishButtonHandler} />}
                     {(click === 1) && <CashPay eId={employeeId} payedPrice={payedPrice} orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} />}
                     {(click === 2) && <CardPay eId={employeeId} payedPrice={payedPrice} orderId={orderId} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} />}
-                    {(click === 3) && <MultiPay eId={employeeId} orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} />}
+                    {(click === 3) &&  <MultiPay eId={employeeId} orderId={orderId} payedPrice={payedPrice} notTotalPrice={setNottotalPrice} employee={employeeId} totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} />}
                     {(click === 4) && <DisCount totalPrice={totalPrice} setpayPrice={calcPayedPrice} setClick={setClick} updateDiscount={updateDiscount} totalDiscount={totalDiscount} />}
                     {(click === 5) && <Event totalPrice={totalPrice} setClick={setClick} updateDiscount={updateDiscount} totalDiscount={totalDiscount} />}
                     {(click === 6) && <Receipt orderId={orderId} totalPrice={totalPrice} setClick={setClick} />}

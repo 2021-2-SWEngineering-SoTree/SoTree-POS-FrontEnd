@@ -60,7 +60,7 @@ const BackButton = styled.button`
     border-radius: 30px;
 `;
 
-const Header = memo(({text,restaurantName}) => {
+const Header = memo(({text,restaurantName, none}) => {
 
     const navigate = useNavigate();
     const logoClickHandler = ()=>{
@@ -87,11 +87,13 @@ const Header = memo(({text,restaurantName}) => {
             </LeftDiv>
             <RightDiv>
                 <div style={{display:'flex', flexDirection:'row', float : 'right'}}>
+                    {!none && 
                     <div>
                         <BackButton onClick={() => navigate(-1)}>
                             <AiOutlineArrowLeft style={{color:'white', fontSize:'2.5rem'}}/>
                         </BackButton>
                     </div>
+                    }
                     <div style={{display:'flex', flexDirection:'column', marginLeft:'2rem'}}>
                         <RestaurantNameDiv>{restaurantName}</RestaurantNameDiv><br/>
                         <TimeName>{time}</TimeName>
