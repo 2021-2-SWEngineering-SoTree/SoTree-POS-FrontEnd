@@ -5,7 +5,6 @@ import SmallTable from "../../../Components/Table/SmallTable";
 import { MdOutlineInput } from "react-icons/md";
 import { GiMoneyStack } from "react-icons/gi";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { Link, useNavigate } from 'react-router-dom';
 
 const BottomButton = styled.button`
     background-color : #474D4E;
@@ -57,13 +56,6 @@ const RightBottomDiv = styled.div`
 const SaleDefaultMenuPage = ({onClickCategoryButton, categoryMenus, getIndex, makeOrderHandler, backClickHandler, changeDiv, btnClick, orderFinishButtonHandler}) => {
 
     const categoryButtonHandler = (e)=> onClickCategoryButton(e);
-
-    let navigation = useNavigate();
-
-    const cashPayHandler = (e)=>{
-    }
-
-    const changeDivHandler = (e)=> {changeDiv(e);}
 
     return (
         <>
