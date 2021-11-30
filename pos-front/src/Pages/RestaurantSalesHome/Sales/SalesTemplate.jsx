@@ -267,7 +267,7 @@ const SalesTemplate = () => {
             if(month<10) selectedMonth='0'+selectedMonth;
             const data={
                 branchId : managerId,
-                start : nowYear+'-'+selectedMonth+'-01',
+                start : nowYear+'-'+selectedMonth+'-00',
                 end : nowYear+'-'+selectedMonth+'-32',
             }
             console.log(data);

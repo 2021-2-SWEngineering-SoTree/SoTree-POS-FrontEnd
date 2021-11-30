@@ -191,10 +191,10 @@ const EventTemplate = () => {
                                         </OrderRow>
                                     </TableHead>
                                     <TableBody>
-                                        {events.length>0 && events.map((cell, index) => (
+                                        {events.length>0 && events.map((cell, i) => (
                                         index<11 &&
-                                        <OrderRow style={{height : '3.8vh'}} onClick={(e)=>{eventSelectHandler(index,e)}} ref={ref}>
-                                            <OrderCell component="th" scope="cell">{index+1}</OrderCell>
+                                        <OrderRow style={{height : '3.8vh'}} onClick={(e)=>{eventSelectHandler(i,e)}} ref={ref} checked={i===index ? true : false}>
+                                            <OrderCell component="th" scope="cell">{i+1}</OrderCell>
                                             <OrderCell>{cell.eventName}</OrderCell>
                                             <OrderCell>{cell.eventDiscountValue === null ? cell.eventDiscountRate*100+"%" : cell.eventDiscountValue.toLocaleString()}</OrderCell>
                                             <OrderCell>{cell.criticalPoint.toLocaleString()+"원"}</OrderCell>
