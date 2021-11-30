@@ -191,6 +191,7 @@ const CashPay = memo(({eId, orderId, payedPrice, all, notTotalPrice, totalPrice,
 
     const [pay,setPay]=useState(false);//결제 완료
     const [pay2,setPay2]=useState(false);
+    const [end,setEnd]=useState(false);
 
     //부모 컴포넌트의 
     const setpayprice = (i) =>{
@@ -253,6 +254,7 @@ const CashPay = memo(({eId, orderId, payedPrice, all, notTotalPrice, totalPrice,
                 console.log(res,res.data);
                 alert('현금결제가 완료되었습니다');
                 setPay(true);//결제 완료
+                setEnd(true);
                 alert("현금 영수증을 발급받으실 수 있습니다");
             }).catch(e=>{
                 console.log(e);
@@ -266,38 +268,44 @@ const CashPay = memo(({eId, orderId, payedPrice, all, notTotalPrice, totalPrice,
     }
 
     const getPay=async()=>{
-        if(price>=totalprice && !notTotalPrice) getPaid();
-        else if(price>=totalprice) {
-            //복합결제
-            //totalprice
-            const managerId = window.localStorage.getItem('managerId');
-            const data = JSON.stringify(
-                {
-                    payTime:new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
-                    method : '현금',
-                    price : totalprice,
-                    branchId : managerId
-                }
-            );
-            console.log(data);
-            await axios.post('http://localhost:8080/payment/combinePay',data, {
-            headers : {
-            "Content-Type" : "application/json",
-            }}).then((res)=>{
-                {setAllprice && setAllprice(all-totalPrice);}
-                {notTotalPrice && notTotalPrice(all-totalprice);}
-                setTotalprice(0);
-                setPrice(0);
-                setBackPrice(0);
-                console.log(res,res.data);
-                setPay2(true);
-                alert('현금결제가 완료되었습니다');
-            }).catch(e=>{
-                console.log(e);
-                alert('결제가 실패하였습니다');
-            })
+        if(!end){
+            let go=window.confirm('결제를 진행하시겠습니까?');
+            if(go){
+            if(price>=totalprice && !notTotalPrice) getPaid();
+            else if(price>=totalprice) {
+                //복합결제
+                //totalprice
+                const managerId = window.localStorage.getItem('managerId');
+                const data = JSON.stringify(
+                    {
+                        payTime:new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '').substr(0,16),
+                        method : '현금',
+                        price : totalprice,
+                        branchId : managerId
+                    }
+                );
+                console.log(data);
+                await axios.post('http://localhost:8080/payment/combinePay',data, {
+                headers : {
+                "Content-Type" : "application/json",
+                }}).then((res)=>{
+                    {setAllprice && setAllprice(all-totalPrice);}
+                    {notTotalPrice && notTotalPrice(all-totalprice);}
+                    setTotalprice(0);
+                    setPrice(0);
+                    setBackPrice(0);
+                    console.log(res,res.data);
+                    setPay2(true);
+                    setEnd(true);
+                    alert('현금결제가 완료되었습니다');
+                }).catch(e=>{
+                    console.log(e);
+                    alert('결제가 실패하였습니다');
+                })
+            }
+            else if(price===0 || totalprice===0 || price<totalprice) alert('금액이 부족합니다!');
         }
-        else if(price===0 || totalprice===0 || price<totalprice) alert('금액이 부족합니다!');
+        }else alert("결제가 완료되었습니다");
     }
 
     const [cardNum,setCardNum]=useState();
