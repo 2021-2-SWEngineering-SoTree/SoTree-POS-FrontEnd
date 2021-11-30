@@ -83,15 +83,18 @@ const Receipt = ({orderId, setClick}) => {
 
     useEffect(async ()=>{
         try {
-            getReceipt().then(res =>{
-                console.log(res);
+            getTakeOutTicket().then(res =>{
+                console.log("가져온 TakeoutTicket 값:", res);
+            })
+            getReceipt().then(res => {
+                console.log("가져온 Receipt 값: " ,res);
             })
         } catch (e) {
             console.log(e.message);
         }
     },[]);
 
-    const getReceipt = async () => {
+    const getTakeOutTicket = async () => {
             let managerId = window.localStorage.getItem('managerId');
             console.log("managerId", managerId);
             console.log("orderId", orderId);
@@ -105,6 +108,20 @@ const Receipt = ({orderId, setClick}) => {
                     "Content-Type" : `application/json`,
                 }
             })
+    }
+
+    const getReceipt = async () => {
+        let managerId = window.localStorage.getItem('managerId');
+        const data = {
+            branchId: managerId,
+            orderId: orderId,
+            paymentId: -1,
+        }
+        await axios.post('http://localhost:8080/payment/getReceipt', JSON.stringify(data), {
+            headers : {
+                "Content-Type" : `application/json`,
+            }
+        })
     }
 
     const [display,setDisplay]=useState(0);
