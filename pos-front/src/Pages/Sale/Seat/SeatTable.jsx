@@ -18,8 +18,8 @@ const SeatTable = memo(({size, tableData}) => {
         console.log("sqrt : "+parseInt(Math.sqrt(20)));
     },[])
 
-    let t = size/4;
-    if(size%4!=0) t++;
+    let t = parseInt(Math.sqrt(size));
+    if(size%parseInt(Math.sqrt(size))!=0) t++;
 
     return (
         <Table>

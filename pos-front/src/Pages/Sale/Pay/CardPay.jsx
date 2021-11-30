@@ -100,6 +100,7 @@ const MonthSelector = styled.select`
     background-color : #F2F8F9;
     margin-left : 3%;
     text-align : center;
+    width : 4rem;
 `;
 
 const InputSign = styled.div`
@@ -149,6 +150,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
     const [getSign, setGetSign]=useState(false);
     const [pay,setPay]=useState(false);
     const [pay2,setPay2]=useState(false);
+    const [end,setEnd]=useState(false);
 
     const getPaid = async ()=>{
         const managerId = window.localStorage.getItem('managerId');
@@ -184,6 +186,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                 console.log(res,res.data);
                 alert('카드결제가 완료되었습니다');
                 setPay(true);
+                setEnd(true);
                 
             }).catch(e=>{
                 console.log(e);
@@ -197,20 +200,27 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
     }
 
     const btnClick=()=>{
-        console.log(month);
-        if(month!=undefined && month!=''){
-            getPay(function() {
-            const num = generateRandomCode(16);
-            num.replace('0','1');
-            console.log(num);
-            setCardNum(+num);
-            // const rand = Math.floor(Math.random()*12)+1;
-            // doOpenCheck(rand);
-            {totalprice>=50000 && setGetSign(true);}
-            })
+        if(!end){
+            let go = window.confirm('결제를 진행하시겠습니까?');
+            if(go){
+                if(month!=undefined && month!=''){
+                    getPay(function() {
+                    const num = generateRandomCode(16);
+                    num.replace('0','1');
+                    console.log(num);
+                    setCardNum(+num);
+                    // const rand = Math.floor(Math.random()*12)+1;
+                    // doOpenCheck(rand);
+                    if(totalprice>=50000){
+                        alert("5만원 이상이므로 서명을 받습니다");
+                        setGetSign(true);
+                    
+                    }
+                })}
+                else alert("할부 개월을 입력해주세요");
+            }
         }
-        else alert("할부 개월을 입력해주세요");
-    
+        else alert("결제가 완료되었습니다")
     };
 
     const getPay= (callback)=> {
@@ -220,7 +230,6 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
           setTimeout(async function(){
             if (!notTotalPrice) {
                 getPaid();
-                alert('결제!');
             }
             else {
                 //복합결제
@@ -244,6 +253,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                     {setAllprice && setAllprice(all-totalprice);}
                     console.log(res,res.data);
                     setPay2(true);
+                    setEnd(true);
                     alert('카드결제가 완료되었습니다');
                 }).catch(e=>{
                     console.log(e);
@@ -297,7 +307,7 @@ const CardPay = ({eId, orderId, payedPrice, all, notTotalPrice, totalPrice, setp
                                     <InputLabel>할부 개월</InputLabel>
                                     <MonthSelector value={month} onChange={(e)=>{setMonth(e.target.value)}}>
                                         <option name="month" value="">---</option>
-                                        <option name="month" value="0">X</option>
+                                        <option name="month" value="0">일시불</option>
                                         <option name="month" value="1">1</option>
                                         <option name="month" value="2">2</option>
                                         <option name="month" value="3">3</option>

@@ -77,9 +77,17 @@ const EmployeeActivitiesListPage = ({cello}) => {
 
     const formatOfTime = (year, month, day) => {
         let date = '';
-        if(day === "" || day === '-1') { date = String(selectYear) + '-' + String(selectMonth); }
-        else { date = String(selectYear) + - + String(selectMonth) + '-' + String(selectDay) }
-        console.log(date);
+        if(day === "" || day === '-1') {
+            date = selectMonth.length === 1 ? String(selectYear) + '-0' + String(selectMonth) : String(selectYear) + '-' + String(selectMonth);
+         }
+        else { 
+            if(selectDay.length===1)
+                date = selectMonth.length === 1 ? String(selectYear) + '-0' + String(selectMonth) + '-0' + String(selectDay) : String(selectYear) + '-' + String(selectMonth) + '-0' + String(selectDay);
+            else   
+              date = selectMonth.length === 1 ? String(selectYear) + '-0' + String(selectMonth) + '-' + String(selectDay) : String(selectYear) + '-' + String(selectMonth) + '-' + String(selectDay) 
+            
+        }
+        console.log("Check data !!! ", date);
         return date;
     }
 

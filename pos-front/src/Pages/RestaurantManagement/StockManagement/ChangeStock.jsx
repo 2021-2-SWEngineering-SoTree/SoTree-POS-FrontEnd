@@ -120,7 +120,7 @@ const ChangeStock = ({onClickChange, stock, clickedIndex}) => {
                 stockName: stock[clickedIndex].stockName,
                 managerId: managerId,
                 stockDetailList: ingredients,
-            };
+     };
             const data2 = JSON.stringify(data);
             console.log("data2: ", data2);
             await axios.put(`http://localhost:8080/stock/update`,
