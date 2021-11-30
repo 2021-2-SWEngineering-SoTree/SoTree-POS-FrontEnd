@@ -39,20 +39,13 @@ const Input = styled.input`
 
 const EmployeeDeletePage = ({id, name}) => {
 
-    const [check,setCheck]=useState(false);
-
-
-
     const fail = () =>{
         alert('직원을 삭제할 수 없습니다');
     }
 
-    const handleCheck = async(e)=>{
-        e.preventDefault();
-        setCheck(!check);
-    }
 
     const handleClick = async (e) =>{
+        e.preventDefault();
         alert("직원을 삭제합니다");
         window.location.replace("/employeeManagement");
         let managerId = window.localStorage.getItem('managerId');
@@ -62,7 +55,7 @@ const EmployeeDeletePage = ({id, name}) => {
         };
         const data2=JSON.stringify(data);
         console.log(data2);
-        check ? axios.put(`http://localhost:8080/deleteEmployee`,data2,
+        axios.put(`http://localhost:8080/deleteEmployee`,data2,
             {    
                 headers : {
                     'Content-type': 'application/json; charset=UTF-8'
@@ -72,11 +65,8 @@ const EmployeeDeletePage = ({id, name}) => {
             }).catch((error)=>{
                 fail();
                 console.log(error);
-            })
-        :alert('체크 버튼을 눌러주세요');
-        
+            })        
     }
-
 
     return (
         <>
@@ -87,7 +77,6 @@ const EmployeeDeletePage = ({id, name}) => {
         </Text>
         <UnderText>
             선택하신 게 맞습니까?
-            <Input type="checkbox" checked={check} onChange={handleCheck} />
         </UnderText>
         <div style={{display : 'flex', justifyContent:'flex-end', marginLeft : '3em', marginTop:'8em'}}>
             <ModalButton name={'삭제'} onClick={handleClick}></ModalButton>
