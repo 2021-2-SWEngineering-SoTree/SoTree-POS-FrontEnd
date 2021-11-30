@@ -59,17 +59,7 @@ const EventTable = ({columnName, cells, eventApply, setEventId, selectIndex}) =>
     };
 
     //--------------------------------------------------------------------------------
-    const showRow = (cells, ele) => {
-        return (
-            Array(cells.length).fill(undefined, undefined, undefined).map((obj, j)=>
-                <EventCell key={cells+j}>
-                    {j !== 0 ?  // 일단 value 를 더미로 넣은거임.
-                        <TableButton value={cells+j} onClick={onClickButton}>{cells[j]}</TableButton>
-                        : cells[j]}
-                </EventCell>)
-        )
-    }
-    
+
     const ClickHandler = (index,e)=>{
         e.preventDefault();
         selectIndex(index);
