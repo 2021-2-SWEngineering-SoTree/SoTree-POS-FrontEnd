@@ -13,7 +13,9 @@
   박서진, 조현준</br></br>
 
 # Framework
-### <div><img src="https://user-images.githubusercontent.com/54761791/144091426-ef924d39-bad8-4d3c-a9d4-e38052db58b0.png" width="100" height="70"/></div>[React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
+### <div><div><img src="https://user-images.githubusercontent.com/54761791/144091426-ef924d39-bad8-4d3c-a9d4-e38052db58b0.png" width="100" height="70"/></div>[React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)</div>
+
+### <div>Javascript 1.7 <img src="https://img.shields.io/badge/Javascript-C7A60F?style=flat-square&logo=Javascript&logoColor=white"/></a></div>
 
 # npm Packages
 ```
