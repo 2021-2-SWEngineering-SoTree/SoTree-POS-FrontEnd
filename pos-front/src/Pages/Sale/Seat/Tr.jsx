@@ -3,10 +3,10 @@ import Td from './Td'
 const Tr = ({rowIndex, size, tableData}) => {
 
     
-    let t= 4;
+    let t= parseInt(Math.sqrt(size));
 
-    if((rowIndex+1)*4 > size){
-        t = size - rowIndex*4;
+    if((rowIndex+1)*parseInt(Math.sqrt(size)) > size){
+        t = size - rowIndex*parseInt(Math.sqrt(size));
     }
 
     return (

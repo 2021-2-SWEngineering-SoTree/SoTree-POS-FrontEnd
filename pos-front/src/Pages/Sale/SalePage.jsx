@@ -677,6 +677,10 @@ const SalePage = () => {
 
     const orderFinishButtonHandler = () => {
         let managerId = window.localStorage.getItem('managerId');
+        if (params.state[0].seatNum >= 100 && (totalPrice+totalDiscount !== 0)) {
+            alert("결제를 먼제 진행해주세요!");
+            return;
+        }
         const data = JSON.stringify({
             orderId: orderId,
             branchId: managerId,

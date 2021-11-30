@@ -76,7 +76,7 @@ const CurrentSeatInfoPage = memo(() => {
                     </div>
                     <div style={{display : 'flex', flexDirection:'column'}}>
                         <table style={{display : 'flex', flexDirection:'column', borderCollapse : 'collapse', border : '5px solid #000000' }}>
-                        {Array(4).fill().map((tr, i)=> 
+                        {Array(parseInt(Math.sqrt(window.localStorage.getItem('SeatSize')))).fill().map((tr, i)=> 
                             <Td rowIndex={0} cellIndex={100+i} size={window.localStorage.getItem('SeatSize')/4} tableData ={takeoutData} top={"0rem"}/>)
                         }
                         </table>
