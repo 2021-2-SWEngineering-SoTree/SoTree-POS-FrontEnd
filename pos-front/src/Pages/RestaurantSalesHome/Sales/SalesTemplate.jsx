@@ -173,6 +173,14 @@ const getWeekCount =(dateStr)=>{
     return weekSeq;
 }
 
+const getWeekNo= (v_date_str) => {
+    var date = new Date();
+    if(v_date_str){
+     date = new Date(v_date_str);
+    }
+    return Math.ceil(date.getDate() / 7);
+}
+
 const SalesTemplate = () => {
 
     const managerId = window.localStorage.getItem('managerId');
@@ -267,7 +275,7 @@ const SalesTemplate = () => {
             if(month<10) selectedMonth='0'+selectedMonth;
             const data={
                 branchId : managerId,
-                start : nowYear+'-'+selectedMonth+'-01',
+                start : nowYear+'-'+selectedMonth+'-00',
                 end : nowYear+'-'+selectedMonth+'-32',
             }
             console.log(data);
@@ -292,8 +300,8 @@ const SalesTemplate = () => {
             let length = monthWeekData.length;
             console.log(length);
             //배열의 마지막에 위치한게 가장 최근 주 정보.
-            setWeekCardSum(monthWeekData[length-1].cardTotalSale);
-            setWeekCashSum(monthWeekData[length-1].cashTotalSale);
+            //setWeekCardSum(monthWeekData[length-1].cardTotalSale);
+            //setWeekCashSum(monthWeekData[length-1].cashTotalSale);
             setLineMax(-1);
         }
         console.log("바뀜");
@@ -308,20 +316,22 @@ const SalesTemplate = () => {
         }
         console.log(LineData);
 
-        let weekSum=0;
-        for(let i=1;i<month;i++){
-            weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
-            if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
-        }
-        console.log(weekSum);
-        monthWeekData.map((v,i)=>{
-            const sales=v.totalSale;
-            if(sales>lineMax) setLineMax(sales);
-            console.log(v,i);
-            LineData[+v.weeks-weekSum+1].매출+=sales;
-        });
+        //let weekSum=0;
+        //for(let i=1;i<month;i++){
+        //    weekSum+=getWeekCount(nowYear+''+('0'+i).slice(-2));
+        //    if(i!=1 &&( new Date(nowYear+'-'+('0'+i).slice(-2)+'-01').getDay()!=0)) weekSum--;
+        //}
+        //console.log(weekSum);
+        //monthWeekData.map((v,i)=>{
+        //    const sales=v.totalSale;
+        //    if(sales>lineMax) setLineMax(sales);
+        //    console.log(v,i);
+        //    LineData[+v.weeks-weekSum+1].매출+=sales;
+        //});
 
-        console.log(LineData);
+        monthWeekData.map((v,i)=>{
+            LineData[i].매출+=v.totalSale;
+        })
         setLine(LineData);
 
     },[monthWeekData]);
@@ -461,6 +471,27 @@ const SalesTemplate = () => {
                 setMonthCashSum(v.cashTotalSale); //이번달 현금매출
             }
         });
+        
+        
+        //이번주정보
+        let selectedMonth=nowMonth;
+        if(nowMonth<10) selectedMonth='0'+selectedMonth;
+        const date={
+            branchId : managerId,
+            start : nowYear+'-'+selectedMonth+'-00',
+            end : nowYear+'-'+selectedMonth+'-32',
+        }
+        let dateStr = nowYear+'-'+selectedMonth+'-'+('0'+new Date().getDate()).slice(-2);
+        let week = getWeekNo(dateStr);
+        await axios.post('http://localhost:8080/payment/getALLSortedBYWEEK',date,{
+        headers : {
+        "Content-Type" : "application/json",
+        }}).then((res)=>{
+            setWeekCardSum(res.data[week-1].cardTotalSale);
+            setWeekCashSum(res.data[week-1].cashTotalSale);
+        }).catch(e=>{
+        })
+        
     },[])
 
     // 월별 통계 연도->data
@@ -662,7 +693,7 @@ const SalesTemplate = () => {
         if(select==4){
             const date={
                 branchId:managerId,
-                start:'2010-01-01',
+                start:'2010-01-00',
                 end:nowYear+1+'-01-01'
             }
             console.log(date);
