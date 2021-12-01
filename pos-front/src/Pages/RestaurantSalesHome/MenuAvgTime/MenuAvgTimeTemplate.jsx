@@ -129,10 +129,9 @@ const MenuAvgTimeTemplate = () => {
                 for(let key in res.data) {
                     i += 1;
                     let menu = "";
-                    if(res.data[key] === -1) {
-                        menu = "준비시간이 존재하지 않습니다."
-                    }
-                    else {
+                    if(res.data[key] == -1){
+                        continue;
+                    }else{
                         menu = res.data[key];
                     }
                     leftCells.push(
