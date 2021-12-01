@@ -105,7 +105,7 @@ const EmployeeManagementTableStyle = styled.table`
     width: 100%;
 `;
 
-const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval}) => {
+const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval, setApprovalClick, approvalClick}) => {
 
     const columnName = ['선택', '일', '월', '화', '수', '목', '금', '토'];
     const tableRowName = ['N(Non)', 'F(Full)', 'L(Lunch)', 'D(Dinner)'];
@@ -134,6 +134,7 @@ const ApprovalWorkSchedulePage = ({reConstruct, approval, setApproval}) => {
             })
         }
         setWeekState(['N', 'N', 'N', 'N', 'N', 'N', 'N'])
+        setApprovalClick(!approvalClick);
     }
 
     const onChangeHandler = (e) => {

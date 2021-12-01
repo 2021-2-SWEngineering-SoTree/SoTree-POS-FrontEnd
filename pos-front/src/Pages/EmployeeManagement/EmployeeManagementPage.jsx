@@ -105,6 +105,7 @@ const EmployeeManagementPage = () => {
     const [cello, setCells] = useState([]);     // 초반 테이블 내용
     const [celloApproval, setCelloApproval] = useState([]);
     const [emptyApprovalFlag, setEmptyApprovalFlag] = useState(false);
+    const [approvalClick, setApprovalClick] = useState(false);
 
     const [listOfEmployee,  setEmployeeList] = useState(1);  // 버튼 클릭시 LeftDiv 의 변경
 
@@ -203,6 +204,9 @@ const EmployeeManagementPage = () => {
                 setCells(cells);
                 setEmployeeId(cell2);
                 setCelloApproval(cellsApproval);
+                if (cellsApproval.length === 0) {
+                    setEmptyApprovalFlag(true);
+                }
                 setEmployeeIdForApproval(cell2Approval);
 
                 console.log(employeeId);
@@ -213,7 +217,7 @@ const EmployeeManagementPage = () => {
         } catch (e) {
             console.error(e.message);
         }
-    }, [listOfEmployee, employeeManagementChange]);
+    }, [listOfEmployee, employeeManagementChange, approvalClick]);
 
     useEffect(async () => {
 
@@ -255,7 +259,8 @@ const EmployeeManagementPage = () => {
                 </LeftDiv>
                 <LeftDiv visible={listOfEmployee===3} style={{overflow: "auto", marginTop: "2.0rem"}}>
                     <EmployeeApprovalPage cells={celloApproval} employeeIdForApproval={employeeIdForApproval}
-                                          emptyApprovalFlag={emptyApprovalFlag} isNameButton={false}/>
+                                          emptyApprovalFlag={emptyApprovalFlag} isNameButton={false}
+                                          setApprovalClick={setApprovalClick} approvalClick={approvalClick}/>
                 </LeftDiv>
                 {listOfEmployee==4 && <LeftDiv visible={listOfEmployee===4} style={{overflow: "auto", marginTop: "2.0rem"}}>
                     <WorkSchedulePage/>
