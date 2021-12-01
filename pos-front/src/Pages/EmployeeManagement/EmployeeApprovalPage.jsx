@@ -3,7 +3,7 @@ import MintFormTable from "../../Components/Table/MintFormTable";
 import RectangleModal from "../../Components/Modal/RectangleModal";
 import ApprovalWorkSchedulePage from "./ApprovalWorkSchedulePage";
 
-const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag}) => {
+const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag, setApprovalClick, approvalClick}) => {
 
     const [getNumber, setGetNumber] = useState(-1);
     const [approval, setApproval] = useState(false);
@@ -16,7 +16,7 @@ const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag})
         } catch (e) {
             console.error(e.message);
         }
-    }, [reConstruct, emptyApprovalFlag]);
+    }, [reConstruct, emptyApprovalFlag, cells]);
 
 
     let selectedApprovalEmployee = [];
@@ -37,7 +37,8 @@ const EmployeeApprovalPage = ({cells, employeeIdForApproval, emptyApprovalFlag})
     return (
         <>
             <RectangleModal setSelectCategory={setApproval} visible={approval} TitleName={"직원 승인"}>
-                <ApprovalWorkSchedulePage reConstruct={reConstruct} approval={approval} setApproval={setApproval}/>
+                <ApprovalWorkSchedulePage reConstruct={reConstruct} approval={approval} setApproval={setApproval}
+                                          setApprovalClick={setApprovalClick} approvalClick={approvalClick}/>
             </RectangleModal>
             <MintFormTable columnName={columnName} cells={cells} setGetNumber={setGetNumber}
                            clickListener={approvalClickHandler} emptyFlag={emptyApprovalFlag}/>
