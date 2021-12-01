@@ -57,7 +57,7 @@ const Center = styled.div`
 `;
 
 const Content = styled.div`
-    width : 60%;
+    width : 70%;
     height : 80%;
     margin : 0 auto;
 `
@@ -103,6 +103,7 @@ const Receipt = ({orderId, setClick}) => {
 
     const [paymentInfo, setPaymentInfo] = useState([]);
     const [commonInfo, setCommonInfo] = useState({});
+    const [pay, setPay] = useState([]);
 
     const [display,setDisplay]=useState(0);
 
@@ -143,9 +144,10 @@ const Receipt = ({orderId, setClick}) => {
 
                 const menuInfo = [['메뉴', '수량', '가격']];
                 for (let i = 1 ; i < result.length; i++){
-                    menuInfo.push([result[i].MenuName, result[i].Quantity, result[i].Price]);
+                    menuInfo.push([result[i].MenuName, result[i].Quantity, Number(result[i].Price).toLocaleString()]);
                 }
                 console.log(menuInfo);
+                setPay(result[0]);
                 setCommonInfo(storeInfo);
                 setPaymentInfo(menuInfo);
             })
@@ -164,6 +166,10 @@ const Receipt = ({orderId, setClick}) => {
         )
     }
 
+    const minus = (a, b) =>{
+        return +a - +b;
+    }
+
     return (
         <>
             {display===0 &&
@@ -180,7 +186,36 @@ const Receipt = ({orderId, setClick}) => {
                                     <ReceiptTableStyle>
                                         <TableHead>
                                             <ReceiptRow>
-                                                <ColumnCell/><ColumnCell style={{fontSize: '25px'}}>주문 내역</ColumnCell><ColumnCell/>
+                                                <ColumnCell/><ColumnCell style={{fontSize: '25px', fontWeight:'bold'}}>가게 정보</ColumnCell><ColumnCell/>
+                                            </ReceiptRow>
+                                        </TableHead>
+                                            <ReceiptRow >
+                                                <ColumnCell>가게이름: </ColumnCell>
+                                                <ColumnCell>{commonInfo && commonInfo['StoreName']}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>가게대표: </ColumnCell>
+                                                <ColumnCell>{commonInfo && commonInfo['Manager']}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>전화번호: </ColumnCell>
+                                                <ColumnCell>{commonInfo && commonInfo['PhoneNumber']}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>담당직원: </ColumnCell>
+                                                <ColumnCell>{commonInfo && commonInfo['Employee'] !== 'null' ? commonInfo['Employee'] : window.localStorage.getItem('userName')}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>결제시간: </ColumnCell>
+                                                <ColumnCell>{pay && pay.PayTime ? pay.PayTime : ' '}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>결제방법: </ColumnCell>
+                                                <ColumnCell>{pay && pay.PayMethod ? pay.PayMethod : ' '}</ColumnCell>
+                                            </ReceiptRow>
+                                        <TableHead>
+                                            <ReceiptRow>
+                                                <ColumnCell/><ColumnCell style={{fontSize: '25px', fontWeight:'bold', textAlign:'left'}}>주문 내역</ColumnCell><ColumnCell/>
                                             </ReceiptRow>
                                         </TableHead>
                                         <TableBody >
@@ -192,21 +227,34 @@ const Receipt = ({orderId, setClick}) => {
                                                 {Array(3).fill(undefined, undefined, undefined).map((td, i)=>
                                                 <ColumnCell><hr style={{color:'#999999', borderStyle: 'dotted'}}/></ColumnCell>)}
                                             </ReceiptRow>
-                                            <ReceiptRow>
-                                                <ColumnCell>가게이름: </ColumnCell>
-                                                <ColumnCell>{commonInfo['StoreName']}</ColumnCell>
+                                            <ReceiptRow >
+                                                <ColumnCell>공급가액 </ColumnCell>
+                                                <ColumnCell> </ColumnCell>
+                                                <ColumnCell>{pay && Number((+pay.OrderPrice)*0.9).toLocaleString()}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow >
+                                                <ColumnCell>부가세 </ColumnCell>
+                                                <ColumnCell> </ColumnCell>
+                                                <ColumnCell>{pay && ((+pay.OrderPrice)*0.1).toLocaleString()}</ColumnCell>
                                             </ReceiptRow>
                                             <ReceiptRow>
-                                                <ColumnCell>가게대표: </ColumnCell>
-                                                <ColumnCell>{commonInfo['Manager']}</ColumnCell>
+                                                {Array(3).fill(undefined, undefined, undefined).map((td, i)=>
+                                                <ColumnCell><hr style={{color:'#999999', borderStyle: 'dotted'}}/></ColumnCell>)}
                                             </ReceiptRow>
                                             <ReceiptRow>
-                                                <ColumnCell>전화번호: </ColumnCell>
-                                                <ColumnCell>{commonInfo['PhoneNumber']}</ColumnCell>
+                                                <ColumnCell>합계: </ColumnCell>
+                                                <ColumnCell> </ColumnCell>
+                                                <ColumnCell>{pay !==undefined &&  Number(+pay.OrderPrice).toLocaleString()}</ColumnCell>
                                             </ReceiptRow>
                                             <ReceiptRow>
-                                                <ColumnCell>담당직원: </ColumnCell>
-                                                <ColumnCell>{commonInfo['Employee']}</ColumnCell>
+                                                <ColumnCell>할인가: </ColumnCell>
+                                                <ColumnCell> </ColumnCell>
+                                                <ColumnCell>{pay && Number((parseInt(pay.OrderPrice)-parseInt(pay.FinalPrice))).toLocaleString()}</ColumnCell>
+                                            </ReceiptRow>
+                                            <ReceiptRow>
+                                                <ColumnCell>결제금액: </ColumnCell>
+                                                <ColumnCell> </ColumnCell>
+                                                <ColumnCell>{pay && Number(+pay.FinalPrice).toLocaleString()}</ColumnCell>
                                             </ReceiptRow>
                                         </TableBody>
                                     </ReceiptTableStyle>

@@ -663,6 +663,7 @@ const SalePage = () => {
         const data = JSON.stringify({
             orderId: orderId,
             managerId: managerId,
+            employeeId : employeeId,
         });
         const url = seatNum < 100 ? 'http://localhost:8080/order/deleteTableOrder' : 'http://localhost:8080/order/deleteTakeoutOrder';
         await axios.delete(url, {
