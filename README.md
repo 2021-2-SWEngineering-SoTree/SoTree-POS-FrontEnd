@@ -2,7 +2,7 @@
 <h4>2021-2 Software Engineering project <h4/>
 <h4>2021-02 소프트웨어공학개론_01 SoTree 팀 FrontEnd<h4/>
 
-  * Scrum Master/Full </br>
+  * Scrum Master/Full Stack </br>
   [이호준](https://github.com/hojunlee-hj) [![](https://img.shields.io/badge/Github-hojunlee_hj-blue?style=flat-square&logo=Github)](https://github.com/hojunlee-hj)
   
   * FrontEnd </br>
@@ -53,7 +53,7 @@ npm install react-spinners
 1. git init 
 2. git clone https://github.com/2021-2-SWEngineering-SoTree/SoTree-POS-FrontEnd.git
 3. cd pos-front/
-4. npm install
+4. npm install ( vscode 등의 terimnal pos-front 폴더로 디렉토리 이동 후 npm install 수행 / git terminal 오류 발생 버그 존재 )
 5. npm start ( x => npm run start )
 ```
 
