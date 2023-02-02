@@ -14,6 +14,15 @@
   [조현준](https://github.com/chohj1111) [![](https://img.shields.io/badge/Github-chohj1111-blue?style=flat-square&logo=Github)](https://github.com/chohj1111) </br></br>
   </br>
   
+# 시연 자료
+Figma 화면 구성 URL: https://www.figma.com/file/XIXGfiGZoAGjhutlrejq4D/SoTree-UI?node-id=0%3A1
+|메인 화면|전체 화면 구상도|
+|---|---|
+|![image](https://user-images.githubusercontent.com/54761791/216198165-dca94f12-c533-4d2f-8654-59540073595c.png)|![image](https://user-images.githubusercontent.com/54761791/216200458-4f355972-b185-45e0-97ab-dacc5b2e373b.png)|
+|좌석 화면|주문 화면|
+|![image](https://user-images.githubusercontent.com/54761791/216198289-a2c81cf3-94db-4156-88dc-18cad07c62f2.png)|![image](https://user-images.githubusercontent.com/54761791/216198379-11b3c931-65ea-476f-9ae1-95316f782f6f.png)|
+|직원 관리|통계 화면|
+|![image](https://user-images.githubusercontent.com/54761791/216198705-bd301ef5-6e57-4d17-948c-58c31c69d35f.png)|![image](https://user-images.githubusercontent.com/54761791/216198774-4b5cc967-6af1-40d8-8217-90aa5f2e4fc9.png)|
   
 # 기술스택
 
