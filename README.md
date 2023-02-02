@@ -24,6 +24,8 @@ Figma 화면 구성 URL: https://www.figma.com/file/XIXGfiGZoAGjhutlrejq4D/SoTre
 |직원 관리|통계 화면|
 |![image](https://user-images.githubusercontent.com/54761791/216198705-bd301ef5-6e57-4d17-948c-58c31c69d35f.png)|![image](https://user-images.githubusercontent.com/54761791/216198774-4b5cc967-6af1-40d8-8217-90aa5f2e4fc9.png)|
   
+  </br>
+  
 # 기술스택
 
 ### ![](https://img.shields.io/badge/React-17.0.2-%2361DAFB?style=flat-square&logo=react) ![](https://img.shields.io/badge/Create--React--App-grey?style=flat-square&logo=react) ![](https://img.shields.io/badge/Javascript-1.7-yellow?style=flat-square&logo=javascript) ![](https://img.shields.io/badge/React--router--dom-6.0.2-%23CA4245?style=flat-square&logo=reactrouter) ![](https://img.shields.io/badge/styled--components-5.3.3-%23DB7093?style=flat-square&logo=styled-components)
